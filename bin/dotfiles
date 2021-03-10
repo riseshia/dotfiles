@@ -5,10 +5,12 @@ if ! [ $# -eq 1 ]; then
   exit 1
 fi
 
+DOTDOTFILES_PATH=$(dirname "$0")/..
+
 command="$1"
 case $command in
-  update) git pull -f origin main;;
-  upgrade) bin/mitamae local lib/recipe.rb;;
+  update) cd $DOTDOTFILES_PATH && git pull -f origin main;;
+  upgrade) cd $DOTDOTFILES_PATH && bin/mitamae local lib/recipe.rb;;
   *) echo "$command is not exist command. update|upgrade is only available."; exit 1;;
 esac
 
