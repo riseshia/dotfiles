@@ -8,7 +8,7 @@ fi
 command="$1"
 case $command in
   update) git pull -f origin main;;
-  upgrade) bin/mitamae local recipe.rb;;
+  upgrade) bin/mitamae local lib/recipe.rb;;
   *) echo "$command is not exist command. update|upgrade is only available."; exit 1;;
 esac
 
