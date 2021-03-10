@@ -9,3 +9,5 @@ else
   echo "'$DEPLOY_DEST_DIR' dir exist. Skip repository cloning."
 fi
 
+echo "Update dotfiles source."
+cd $DEPLOY_DEST_DIR && git pull -f origin main
