@@ -10,7 +10,7 @@ else
 fi
 
 echo "Update dotfiles source."
-cd $DEPLOY_DEST_DIR && git pull -f origin main
+cd $DEPLOY_DEST_DIR && git fetch && git reset --hard origin/main
 
 if ! command -v dotfiles; then
   echo "dotfiles manager isn't installed. Let's setup."
