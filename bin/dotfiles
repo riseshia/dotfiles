@@ -1,0 +1,14 @@
+#!/bin/bash
+
+if ! [ $# -eq 1 ]; then
+  echo "How to use: dotfiles update|upgrade"
+  exit 1
+fi
+
+command="$1"
+case $command in
+  update) git pull -f origin main;;
+  upgrade) bin/mitamae local recipe.rb;;
+  *) echo "$command is not exist command. update|upgrade is only available."; exit 1;;
+esac
+

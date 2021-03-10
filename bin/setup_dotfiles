@@ -1,0 +1,35 @@
+#!/bin/bash
+set -e
+
+mitamae_version="1.12.2"
+mitamae_darwin_sha256="801c9b76e10bc9c802cad54402725addaeeff361bf52a52c0cd270bb8716bccc"
+
+mitamae_cache="mitamae-${mitamae_version}"
+
+if ! [ -f "bin/${mitamae_cache}" ]; then
+  case "$(uname)" in
+    # Support only Apple Silicon
+    "Darwin")
+      mitamae_bin="mitamae-aarch64-darwin"
+      mitamae_sha256="$mitamae_darwin_sha256"
+      ;;
+    *)
+      echo "unexpected uname: $(uname)"
+      exit 1
+      ;;
+  esac
+
+  curl -o "bin/${mitamae_bin}.tar.gz" -fL "https://github.com/itamae-kitchen/mitamae/releases/download/v${mitamae_version}/${mitamae_bin}.tar.gz"
+  sha256="$(/usr/bin/openssl dgst -sha256 "bin/${mitamae_bin}.tar.gz" | cut -d" " -f2)"
+  if [ "$mitamae_sha256" != "$sha256" ]; then
+    echo "checksum verification failed!\nexpected: ${mitamae_sha256}\n  actual: ${sha256}"
+    rm "bin/${mitamae_bin}.tar.gz"
+    exit 1
+  fi
+  tar xvzf "bin/${mitamae_bin}.tar.gz" && rm "bin/${mitamae_bin}.tar.gz"
+
+  mv "${mitamae_bin}" "bin/${mitamae_cache}"
+  chmod +x "bin/${mitamae_cache}"
+fi
+
+ln -sf "${mitamae_cache}" bin/mitamae

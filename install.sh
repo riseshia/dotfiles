@@ -11,3 +11,12 @@ fi
 
 echo "Update dotfiles source."
 cd $DEPLOY_DEST_DIR && git pull -f origin main
+
+if ! command -v dotfiles; then
+  echo "dotfiles manager isn't installed. Let's setup."
+  $DEPLOY_DEST_DIR/bin/setup_dotfiles
+else
+  echo "dotfiles manager is already installed. Skip install."
+fi
+
+PATH=$PATH:$HOME/.dotfiles/bin dotfiles upgrade
