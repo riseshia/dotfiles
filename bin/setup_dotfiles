@@ -1,8 +1,8 @@
 #!/bin/bash
 set -e
 
-mitamae_version="1.12.2"
-mitamae_darwin_sha256="801c9b76e10bc9c802cad54402725addaeeff361bf52a52c0cd270bb8716bccc"
+mitamae_version="1.12.1"
+mitamae_darwin_sha256="8a8b4ca6e8436addc86d121cc031e14ec1dadba145172acca8b98ab71c84be8f"
 
 mitamae_cache="mitamae-${mitamae_version}"
 
