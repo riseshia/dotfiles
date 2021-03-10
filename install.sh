@@ -1,6 +1,21 @@
 #!/bin/sh
 set -e
 
+if [ `uname` = 'Darwin' ]; then
+  echo "Check xcode command-line tool installed."
+  xcode-select -p 1>/dev/null
+  if [ $? -eq 0 ]; then
+    echo "Confirmed. Skip invoke 'xcode-select --install'."
+  else
+    echo "Not installed. try to install."
+    xcode-select --install
+  fi
+
+  if ! command -v brew; then
+    /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+  fi
+fi
+
 DEPLOY_DEST_DIR="$HOME/.dotfiles"
 if [ ! -d $DEPLOY_DEST_DIR ]; then
   echo "'$DEPLOY_DEST_DIR' dir isn't exist."
