@@ -1,5 +1,7 @@
 # Dotfiles
 
+Rebirth of https://github.com/riseshia/legacy-dotfiles
+
 ## Installation
 
 ```
