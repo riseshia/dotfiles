@@ -1,0 +1,22 @@
+[user]
+    name = Shia
+    email = rise.shia@gmail.com
+[core]
+    excludesFile = ~/.gitignore
+    editor = vim
+[color]
+    ui = true
+[push]
+    default = simple
+[pull]
+    rebase = true
+[submodule]
+    recurse = true
+[url "git@github.com:"]
+    pushInsteadOf = https://github.com/
+    pushInsteadOf = git://github.com/
+[url "git@gist.github.com:"]
+    pushInsteadOf = https://gist.github.com/
+    pushInsteadOf = git://gist.github.com/
+[credential]
+    helper = osxkeychain
