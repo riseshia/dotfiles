@@ -4,7 +4,6 @@ filetype off                  " required
 " XXX: DISABLE vundle temporary
 " set the runtime path to include Vundle and initialize
 " set rtp+=~/.vim/bundle/Vundle.vim
-" set rtp+=/usr/local/opt/fzf
 " call vundle#begin()
 
 " alternatively, pass a path where Vundle should install plugins
@@ -105,6 +104,7 @@ endif
 nnoremap <leader>wtf oputs "#" * 90<c-m>puts caller<c-m>puts "#" * 90<esc>
 
 " fzf - buffer selection
+set rtp+=/usr/local/opt/fzf
 function! s:buflist()
   redir => ls
   silent ls
