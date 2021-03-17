@@ -12,3 +12,5 @@ execute "change default shell to bash" do
   not_if "test $SHELL = '#{brew_bash_path}'"
   command "chsh -s #{brew_bash_path}"
 end
+
+dotfile ".bash_profile"
