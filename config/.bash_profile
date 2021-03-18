@@ -47,6 +47,9 @@ export PATH="$(brew --prefix)/share/git-core/contrib/diff-highlight:${PATH}"
 # yarn
 # export PATH="$HOME/.yarn/bin:${PATH}"
 
+# rust
+source "$HOME/.cargo/env"
+
 # tab autocompletion with cycle style
 bind TAB:menu-complete
 
