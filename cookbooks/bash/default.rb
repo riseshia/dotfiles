@@ -14,3 +14,4 @@ execute "change default shell to bash" do
 end
 
 dotfile ".bash_profile"
+dotfile ".alacritty.yml"
