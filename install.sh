@@ -2,15 +2,8 @@
 set -e
 
 if [ `uname` = 'Darwin' ]; then
-  echo "Check xcode command-line tool installed."
-  xcode-select -p 1>/dev/null
-  if [ $? -eq 0 ]; then
-    echo "Confirmed. Skip invoke 'xcode-select --install'."
-  else
-    echo "Not installed. try to install."
-    xcode-select --install
-  fi
-
+  # Start from brew install which check xcode command-line tool availability.
+  # Ref: https://github.com/Homebrew/install/blob/dee8df98bfb65588007c666034c6e1ad0733b1b6/install.sh#L626-L633
   if ! command -v brew; then
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
   fi
