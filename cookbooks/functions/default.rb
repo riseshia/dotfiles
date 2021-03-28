@@ -15,6 +15,9 @@ define :ruby, as_global: false do
   end
 
   if params[:as_global]
-    execute "rbenv global #{version}"
+    execute "Set #{version} as global Ruby" do
+      not_if "rbenv global | grep -q '#{version}'"
+      command "rbenv global #{version}"
+    end
   end
 end
