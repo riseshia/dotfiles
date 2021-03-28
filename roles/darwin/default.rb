@@ -7,3 +7,7 @@ include_cookbook 'vim'
 include_cookbook 'fzf'
 include_cookbook 'rust'
 include_cookbook 'z'
+include_cookbook 'rbenv'
+ruby '3.0.0' do
+  as_global true
+end
