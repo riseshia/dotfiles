@@ -1,7 +1,7 @@
-# eval "$(rbenv init -)"
-# eval "$(pyenv init -)"
-
 export PATH="$HOME/.dotfiles/bin:${PATH}"
+
+eval "$(rbenv init -)"
+# eval "$(pyenv init -)"
 
 export EDITOR=vim
 
