@@ -58,4 +58,4 @@ export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 
 # z
-# [ -f $(brew --prefix)/etc/profile.d/z.sh ] && . $(brew --prefix)/etc/profile.d/z.sh
+[ -f $(brew --prefix)/etc/profile.d/z.sh ] && . $(brew --prefix)/etc/profile.d/z.sh
