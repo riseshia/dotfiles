@@ -37,6 +37,7 @@ alias gpp='gpu && gpush'
 # alias gs='git status'
 # alias run_pg='pg_ctl -D /usr/local/var/postgres start'
 alias v='vim'
+alias ls='ls -alh'
 
 # custom functions
 # export PATH="$HOME/.bash_functions:${PATH}"
