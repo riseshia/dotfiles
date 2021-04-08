@@ -13,5 +13,9 @@ execute "change default shell to bash" do
   command "chsh -s #{brew_bash_path}"
 end
 
-dotfile ".bash_profile"
+execute "add 'source .dotbash' to bash_profile" do
+  script = "source ~/.dotfiles/config/.dotbash"
+  not_if "grep -q '#{script}' ~/.bash_profile"
+  command "echo '#{script}' >> ~/.bash_profile"
+end
 dotfile ".alacritty.yml"
