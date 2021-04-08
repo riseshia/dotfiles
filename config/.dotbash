@@ -1,4 +1,6 @@
-export PATH="$HOME/.dotfiles/bin:${PATH}"
+if [[ -z $TMUX ]]; then
+  export PATH="$HOME/.dotfiles/bin:${PATH}"
+fi
 
 eval "$(rbenv init -)"
 # eval "$(pyenv init -)"
@@ -43,7 +45,9 @@ alias ls='ls -alh'
 # export PATH="$HOME/.bash_functions:${PATH}"
 
 # brew git
-export PATH="$(brew --prefix)/share/git-core/contrib/diff-highlight:${PATH}"
+if [[ -z $TMUX ]]; then
+  export PATH="$(brew --prefix)/share/git-core/contrib/diff-highlight:${PATH}"
+fi
 
 # yarn
 # export PATH="$HOME/.yarn/bin:${PATH}"
