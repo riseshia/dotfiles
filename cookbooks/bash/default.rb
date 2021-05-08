@@ -19,3 +19,4 @@ execute "add 'source .dotbash' to bash_profile" do
   command "echo '#{script}' >> ~/.bash_profile"
 end
 dotfile ".alacritty.yml"
+dotfile ".bash_functions"

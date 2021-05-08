@@ -2,11 +2,22 @@
 
 if [[ -z $TMUX ]]; then
   export PATH="$HOME/.dotfiles/bin:${PATH}"
+  # custom functions
+  export PATH="$HOME/.bash_functions:${PATH}"
 fi
+
+
+
+# Change primary prompt
+# Add git status
+source ~/.bash_functions/git-prompt.sh
+export GIT_PS1_SHOWDIRTYSTATE=1
+export PS1='\W$(__git_ps1 " (%s)")$ '
 
 eval "$(rbenv init -)"
 # eval "$(pyenv init -)"
 
+# Set default editor to vim
 export EDITOR=vim
 
 # Path to the bash it configuration
@@ -20,7 +31,7 @@ export EDITOR=vim
 unset MAILCHECK
 
 # Set this to false to turn off version control status checking within the prompt for all themes
-export SCM_CHECK=true
+# export SCM_CHECK=true
 
 # Load Bash It
 # source $BASH_IT/bash_it.sh
@@ -43,9 +54,6 @@ alias gpp='gpu && gpush'
 alias v='vim'
 alias ls='ls -alh'
 
-# custom functions
-# export PATH="$HOME/.bash_functions:${PATH}"
-
 # brew git
 if [[ -z $TMUX ]]; then
   export PATH="$(brew --prefix)/share/git-core/contrib/diff-highlight:${PATH}"
@@ -57,12 +65,16 @@ fi
 # rust
 source "$HOME/.cargo/env"
 
-# tab autocompletion with cycle style
-bind TAB:menu-complete
-
 # python
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
+
+# Completion
+## git command
+source ~/.bash_functions/git-completion.bash
+
+# tab autocompletion with cycle style
+bind TAB:menu-complete
 
 # z
 [ -f $(brew --prefix)/etc/profile.d/z.sh ] && . $(brew --prefix)/etc/profile.d/z.sh
