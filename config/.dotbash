@@ -1,3 +1,5 @@
+# vi set: ft=bash
+
 if [[ -z $TMUX ]]; then
   export PATH="$HOME/.dotfiles/bin:${PATH}"
 fi
