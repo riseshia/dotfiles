@@ -45,6 +45,11 @@ call minpac#add('jparise/vim-graphql')
 
 " End of Loading plugins
 
+" Add command for minpac
+command! PackUpdate call minpac#update()
+command! PackClean  call minpac#clean()
+command! PackStatus call minpac#status()
+
 filetype plugin indent on    " required
 
 set expandtab
