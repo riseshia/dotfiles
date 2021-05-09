@@ -1,32 +1,36 @@
-set nocompatible              " be iMproved, required
+" Normally this if-block is not needed, because `:set nocp` is done
+" automatically when .vimrc is found. However, this might be useful
+" when you execute `vim -u .vimrc` from the command line.
+if &compatible
+  " `:set nocp` has many side effects. Therefore this should be done
+  " only when 'compatible' is set.
+  set nocompatible
+endif
+
 filetype off                  " required
 
-" XXX: DISABLE vundle temporary
-" set the runtime path to include Vundle and initialize
-" set rtp+=~/.vim/bundle/Vundle.vim
-" call vundle#begin()
+" Init minpac
+packadd minpac
+call minpac#init()
 
-" alternatively, pass a path where Vundle should install plugins
-"call vundle#begin('~/some/path/here')
+" minpac must have {'type': 'opt'} so that it can be loaded with `packadd`.
+call minpac#add('k-takata/minpac', {'type': 'opt'})
 
-" let Vundle manage Vundle, required
-" Plugin 'VundleVim/Vundle.vim'
+" Enable plugins
+call minpac#add('bronson/vim-trailing-whitespace')
+
+call minpac#add('christoomey/vim-tmux-navigator')
+call minpac#add('sgur/vim-editorconfig')
+call minpac#add('tomtom/tcomment_vim')
+call minpac#add('tpope/vim-surround')
 
 " Plugin 'airblade/vim-gitgutter'
-" Plugin 'bronson/vim-trailing-whitespace'
-" Plugin 'christoomey/vim-tmux-navigator'
-" Plugin 'google/vim-jsonnet'
-" Plugin 'hashivim/vim-terraform'
 " Plugin 'jgdavey/vim-blockle'
-" Plugin 'mattn/emmet-vim'
 " Plugin 'nathanaelkane/vim-indent-guides'
-" Plugin 'sgur/vim-editorconfig'
-" Plugin 'tomtom/tcomment_vim'
 " Plugin 'tpope/vim-rhubarb'
 " Plugin 'tpope/tpope-vim-abolish'
 " Plugin 'tpope/vim-fugitive'
 " Plugin 'tpope/vim-rails'
-" Plugin 'tpope/vim-surround'
 " Plugin 'tpope/vim-unimpaired'
 
 " Snippet
@@ -34,11 +38,12 @@ filetype off                  " required
 " Plugin 'honza/vim-snippets'
 
 " Syntax Highlight
-" Plugin 'sheerun/vim-polyglot'
-" Plugin 'jparise/vim-graphql'
+call minpac#add('google/vim-jsonnet')
+call minpac#add('hashivim/vim-terraform')
+call minpac#add('sheerun/vim-polyglot')
+call minpac#add('jparise/vim-graphql')
 
-" All of your Plugins must be added before the following line
-" call vundle#end()            " required
+" End of Loading plugins
 
 filetype plugin indent on    " required
 
@@ -128,15 +133,3 @@ nnoremap <silent> <C-p> :call fzf#run({
 \   'options': '+m',
 \   'down':    len(<sid>buflist()) + 2
 \ })<CR>
-
-" To ignore plugin indent changes, instead use:
-" filetype plugin on
-"
-" Brief help
-" :PluginList       - lists configured plugins
-" :PluginInstall    - installs plugins; append `!` to update or just :PluginUpdate
-" :PluginSearch foo - searches for foo; append `!` to refresh local cache
-" :PluginClean      - confirms removal of unused plugins; append `!` to auto-approve removal
-"
-" see :h vundle for more details or wiki for FAQ
-" Put your non-Plugin stuff after this line
