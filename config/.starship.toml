@@ -1,0 +1,33 @@
+add_newline = false
+
+format = """
+$username\
+$hostname\
+$kubernetes\
+$directory\
+$git_branch\
+$git_commit\
+$git_state\
+$git_status\
+$docker_context\
+$package\
+$cmake\
+$elixir\
+$erlang\
+$java\
+$nodejs\
+$python\
+$red\
+$ruby\
+$rust\
+$swift\
+$terraform\
+$vagrant\
+$aws\
+$gcloud\
+$env_var\
+$custom\
+$jobs\
+$status\
+$shell\
+$character"""
