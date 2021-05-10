@@ -23,6 +23,7 @@ call minpac#add('christoomey/vim-tmux-navigator')
 call minpac#add('sgur/vim-editorconfig')
 call minpac#add('tomtom/tcomment_vim')
 call minpac#add('tpope/vim-surround')
+call minpac#add('neoclide/coc.nvim')
 
 " Plugin 'airblade/vim-gitgutter'
 " Plugin 'jgdavey/vim-blockle'
@@ -42,6 +43,7 @@ call minpac#add('google/vim-jsonnet')
 call minpac#add('hashivim/vim-terraform')
 call minpac#add('sheerun/vim-polyglot')
 call minpac#add('jparise/vim-graphql')
+call minpac#add('kevinoid/vim-jsonc')
 
 " End of Loading plugins
 

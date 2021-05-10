@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+vim -c "PackUpdate"
+vim -c "CocInstall coc-rust-analyzer coc-tsserver"

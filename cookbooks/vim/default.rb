@@ -13,3 +13,6 @@ execute "Install minpac for vim" do
 end
 
 dotfile ".vimrc"
+dotfile ".vim/coc-settings.json" do
+  source "coc-settings.json"
+end
