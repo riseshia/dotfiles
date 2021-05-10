@@ -12,3 +12,5 @@ include_cookbook 'rbenv'
 ruby '3.0.0' do
   as_global true
 end
+include_cookbook 'nodebrew'
+nodejs 'v16.1.0'

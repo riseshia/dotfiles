@@ -10,7 +10,16 @@ if command -v starship > /dev/null; then
   eval "$(starship init bash)"
 fi
 
-eval "$(rbenv init -)"
+# rbenv unless it loaded.
+if ! test -v RBENV_SHELL; then
+  eval "$(rbenv init - --no-rehash)"
+fi
+
+# nodebrew unless it loaded.
+if ! command -v nodebrew; then
+  export PATH=$HOME/.nodebrew/current/bin:$PATH
+fi
+
 # eval "$(pyenv init -)"
 
 # Set default editor to vim
