@@ -89,6 +89,10 @@ set wildignore+=*/tmp/cache/assets/*/sprockets/*,*/tmp/cache/assets/*/sass/*
 " Disable OS X index files
 set wildignore+=.DS_Store
 
+" coc config
+" Use <cr> to confirm completion
+inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm() : "\<C-g>u\<CR>"
+
 " Python Indent configuration
 let g:pyindent_open_paren = '&sw'
 let g:pyindent_continue = '&sw'
