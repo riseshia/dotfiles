@@ -112,9 +112,6 @@ if (exists('+colorcolumn'))
   highlight ColorColumn ctermbg=9
 endif
 
-" puts the caller
-nnoremap <leader>wtf oputs "#" * 90<c-m>puts caller<c-m>puts "#" * 90<esc>
-
 " fzf - buffer selection
 set rtp+=/usr/local/opt/fzf
 function! s:buflist()
