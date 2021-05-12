@@ -16,7 +16,7 @@ if ! test -v RBENV_SHELL; then
 fi
 
 # nodebrew unless it loaded.
-if ! command -v nodebrew; then
+if ! command -v nodebrew > /dev/null; then
   export PATH=$HOME/.nodebrew/current/bin:$PATH
 fi
 
