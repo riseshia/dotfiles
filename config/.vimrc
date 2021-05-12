@@ -69,7 +69,7 @@ set cursorline
 
 syntax enable
 syntax sync fromstart
-" colorscheme monokai
+colorscheme monokai
 
 " Disable output and VCS files
 set wildignore+=*.o,*.out,*.obj,.git,*.rbc,*.rbo,*.class,.svn,*.gem

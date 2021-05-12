@@ -16,3 +16,9 @@ dotfile ".vimrc"
 dotfile ".vim/coc-settings.json" do
   source "coc-settings.json"
 end
+
+link "#{vim_config_dir}/colors" do
+  to File.expand_path("../../../config/vim-colors", __FILE__)
+  user node[:user]
+  force true
+end
