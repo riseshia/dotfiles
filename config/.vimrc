@@ -38,6 +38,9 @@ call minpac#add('neoclide/coc.nvim')
 " Plugin 'SirVer/ultisnips'
 " Plugin 'honza/vim-snippets'
 
+" statusline
+call minpac#add('vim-airline/vim-airline')
+
 " Syntax Highlight
 call minpac#add('google/vim-jsonnet')
 call minpac#add('hashivim/vim-terraform')
@@ -70,6 +73,11 @@ set cursorline
 syntax enable
 syntax sync fromstart
 colorscheme monokai
+
+" airline config
+let g:airline_section_x = ''
+let g:airline_section_y = ''
+let g:airline_section_z = ''
 
 " Disable output and VCS files
 set wildignore+=*.o,*.out,*.obj,.git,*.rbc,*.rbo,*.class,.svn,*.gem
@@ -226,11 +234,6 @@ command! -nargs=? Fold :call     CocAction('fold', <f-args>)
 
 " Add `:OR` command for organize imports of the current buffer.
 command! -nargs=0 OR   :call     CocAction('runCommand', 'editor.action.organizeImport')
-
-" Add (Neo)Vim's native statusline support.
-" NOTE: Please see `:h coc-status` for integrations with external plugins that
-" provide custom statusline: lightline.vim, vim-airline.
-set statusline^=%{coc#status()}%{get(b:,'coc_current_function','')}
 
 " Mappings for CoCList
 " Show all diagnostics.
