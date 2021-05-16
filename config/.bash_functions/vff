@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+
+if [[ $# -gt 1 ]]; then
+  echo 'Usage: vff <keyword>'
+  exit 2
+fi
+
+target_file=$(fzf --query=$1 --preview='head {}')
+if [[ $? -eq 0 ]]; then
+  vim $target_file
+fi
