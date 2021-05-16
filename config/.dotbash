@@ -71,5 +71,10 @@ source "$(brew --prefix)/etc/bash_completion.d/git-completion.bash"
 # tab autocompletion with cycle style
 bind TAB:menu-complete
 
+# fzf
+if command -v fzf > /dev/null; then
+  export FZF_DEFAULT_COMMAND='git ls-files'
+fi
+
 # z
 [ -f $(brew --prefix)/etc/profile.d/z.sh ] && . $(brew --prefix)/etc/profile.d/z.sh
