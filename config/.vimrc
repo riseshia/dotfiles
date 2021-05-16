@@ -293,5 +293,4 @@ function! s:gitgrep(query)
 endfunction
 command! -nargs=? Ggrep call s:gitgrep(<f-args>)
 
-nnoremap <silent> <S-p> :GFiles<CR>
 nnoremap <silent> <C-p> :Buffers<CR>
