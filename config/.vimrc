@@ -23,6 +23,7 @@ call minpac#add('sgur/vim-editorconfig')
 call minpac#add('tomtom/tcomment_vim')
 call minpac#add('tpope/vim-surround')
 call minpac#add('neoclide/coc.nvim')
+call minpac#add('junegunn/fzf', {'do': 'call fzf#install'})
 call minpac#add('junegunn/fzf.vim')
 
 " Plugin 'airblade/vim-gitgutter'
@@ -281,28 +282,15 @@ if (exists('+colorcolumn'))
   highlight ColorColumn ctermbg=9
 endif
 
-" fzf - buffer selection
-set rtp+=/usr/local/opt/fzf
-function! s:buflist()
-  redir => ls
-  silent ls
-  redir END
-  return split(ls, '\n')
-endfunction
-
-function! s:bufopen(e)
-  execute 'buffer' matchstr(a:e, '^[ 0-9]*')
-endfunction
-
 :command EE Explore
 
-" Git grep shortcut
-:command -nargs=+ GgrepCw execute 'silent Ggrep' <q-args> | cw | redraw!
-nnoremap <silent> vv :GgrepCw
-nnoremap <silent> <C-w>p :FZF<CR>
-nnoremap <silent> <C-p> :call fzf#run({
-\   'source':  reverse(<sid>buflist()),
-\   'sink':    function('<sid>bufopen'),
-\   'options': '+m',
-\   'down':    len(<sid>buflist()) + 2
-\ })<CR>
+" Add git grep command
+setlocal grepprg=git\ grep\ -I\ --line-number
+function! s:gitgrep(query)
+  execute 'silent grep! ' . a:query
+  cw
+  redraw!
+endfunction
+command! -nargs=? Ggrep call s:gitgrep(<f-args>)
+
+nnoremap <silent> <C-p> :GFiles<CR>
