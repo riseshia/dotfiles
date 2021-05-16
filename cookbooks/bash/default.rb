@@ -15,9 +15,8 @@ execute "change default shell to bash" do
 end
 
 execute "add 'source .dotbash' to bash_profile" do
-  script = "source ~/.dotfiles/config/.dotbash"
-  not_if "grep -q '#{script}' ~/.bash_profile"
-  command "echo '#{script}' >> ~/.bash_profile"
+  not_if "grep -q '.dotbash' ~/.bash_profile"
+  command "echo 'source ~/.dotfiles/config/.dotbash' >> ~/.bash_profile"
 end
 dotfile ".alacritty.yml"
 dotfile ".bash_functions"
