@@ -18,7 +18,6 @@ call minpac#add('k-takata/minpac', {'type': 'opt'})
 
 " Enable plugins
 call minpac#add('bronson/vim-trailing-whitespace')
-
 call minpac#add('christoomey/vim-tmux-navigator')
 call minpac#add('sgur/vim-editorconfig')
 call minpac#add('tomtom/tcomment_vim')
