@@ -1241,5 +1241,9 @@
         }
       }
     }
+  },
+  // diagnostic-languageservers
+  "diagnostic-languageserver.filetypes": {
+    "sh": "shellcheck"
   }
 }

@@ -1,4 +1,5 @@
 package "bash"
+package "shellcheck"
 
 brew_bash_path = "$(brew --prefix)/bin/bash"
 
