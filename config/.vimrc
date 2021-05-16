@@ -255,6 +255,9 @@ nnoremap <silent><nowait> <space>k  :<C-u>CocPrev<CR>
 " Resume latest coc list.
 nnoremap <silent><nowait> <space>p  :<C-u>CocListResume<CR>
 
+" Override color-scheme from monokai
+hi CocErrorFloat guifg=#e73c50 ctermfg=196
+
 " Python Indent configuration
 let g:pyindent_open_paren = '&sw'
 let g:pyindent_continue = '&sw'
