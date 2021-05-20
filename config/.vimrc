@@ -21,7 +21,6 @@ call minpac#add('bronson/vim-trailing-whitespace')
 call minpac#add('christoomey/vim-tmux-navigator')
 call minpac#add('sgur/vim-editorconfig')
 call minpac#add('tomtom/tcomment_vim')
-call minpac#add('tpope/vim-unimpaired')
 call minpac#add('tpope/vim-surround')
 call minpac#add('neoclide/coc.nvim')
 call minpac#add('junegunn/fzf', {'do': 'call fzf#install()'})
@@ -283,6 +282,13 @@ if (exists('+colorcolumn'))
 endif
 
 :command EE Explore
+
+" Quickfix mapping
+nnoremap <silent> [q :cprevious<CR>
+nnoremap <silent> ]q :cnext<CR>
+nnoremap <silent> [Q :cfirst<CR>
+nnoremap <silent> ]Q :clast<CR>
+
 
 " Add git grep command
 set grepprg=git\ grep\ -I\ --line-number
