@@ -285,7 +285,8 @@ endif
 :command EE Explore
 
 " Add git grep command
-setlocal grepprg=git\ grep\ -I\ --line-number
+set grepprg=git\ grep\ -I\ --line-number
+set grepformat=%f:%l:%m
 function! s:gitgrep(query)
   execute 'silent grep! ' . a:query
   cw
