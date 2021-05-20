@@ -24,7 +24,7 @@ call minpac#add('tomtom/tcomment_vim')
 call minpac#add('tpope/vim-unimpaired')
 call minpac#add('tpope/vim-surround')
 call minpac#add('neoclide/coc.nvim')
-call minpac#add('junegunn/fzf', {'do': 'call fzf#install'})
+call minpac#add('junegunn/fzf', {'do': 'call fzf#install()'})
 call minpac#add('junegunn/fzf.vim')
 
 " Plugin 'airblade/vim-gitgutter'
