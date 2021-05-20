@@ -288,10 +288,10 @@ endif
 set grepprg=git\ grep\ -I\ --line-number
 set grepformat=%f:%l:%m
 function! s:gitgrep(query)
-  execute 'silent grep! ' . a:query
+  execute 'silent grep ' . a:query
   cw
   redraw!
 endfunction
-command! -nargs=? Ggrep call s:gitgrep(<f-args>)
+command! -nargs=+ Ggrep execute 'silent grep <args> | cw | redraw!'
 
 nnoremap <silent> <C-p> :Buffers<CR>
