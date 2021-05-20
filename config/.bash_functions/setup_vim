@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
 vim -c "call minpac#update('', {'do': 'quit | quit'})"
-vim -c "CocInstall coc-rls coc-tsserver coc-diagnostic coc-json"
+vim -c "CocInstall coc-rust-analyzer coc-tsserver coc-diagnostic coc-json"

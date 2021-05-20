@@ -1245,7 +1245,5 @@
   // diagnostic-languageservers
   "diagnostic-languageserver.filetypes": {
     "sh": "shellcheck"
-  },
-  // rust-client
-  "rust.clippy_preference": "on"
+  }
 }
