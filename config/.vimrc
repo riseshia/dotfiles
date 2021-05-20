@@ -21,6 +21,7 @@ call minpac#add('bronson/vim-trailing-whitespace')
 call minpac#add('christoomey/vim-tmux-navigator')
 call minpac#add('sgur/vim-editorconfig')
 call minpac#add('tomtom/tcomment_vim')
+call minpac#add('tpope/vim-unimpaired')
 call minpac#add('tpope/vim-surround')
 call minpac#add('neoclide/coc.nvim')
 call minpac#add('junegunn/fzf', {'do': 'call fzf#install'})
@@ -33,7 +34,6 @@ call minpac#add('junegunn/fzf.vim')
 " Plugin 'tpope/tpope-vim-abolish'
 " Plugin 'tpope/vim-fugitive'
 " Plugin 'tpope/vim-rails'
-" Plugin 'tpope/vim-unimpaired'
 
 " Snippet
 " Plugin 'SirVer/ultisnips'
