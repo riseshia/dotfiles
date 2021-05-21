@@ -1,9 +1,21 @@
 # vi set: ft=bash
 
+function append_path_unless_exist () {
+  if ! [[ $# -eq 1 ]]; then
+    echo "Usage: append_path_unless_exist 'some_path'"
+    exit 2
+  fi
+
+  local new_path=$1
+  if ! [[ $PATH =~ $new_path ]]; then
+    export PATH="$new_path:${PATH}"
+  fi
+}
+
 if [[ -z $TMUX ]]; then
-  export PATH="$HOME/.dotfiles/bin:${PATH}"
+  append_path_unless_exist "$HOME/.dotfiles/bin"
   # add custom commands' path
-  export PATH="$HOME/.bash_commands:${PATH}"
+  append_path_unless_exist "$HOME/.bash_commands"
 fi
 
 # Load starship it exists & unless loaded.
@@ -17,9 +29,7 @@ if ! declare -f rbenv > /dev/null; then
 fi
 
 # Load nodebrew unless it loaded.
-if ! command -v nodebrew > /dev/null; then
-  export PATH=$HOME/.nodebrew/current/bin:$PATH
-fi
+append_path_unless_exist "$HOME/.nodebrew/current/bin"
 
 # Set default editor to vim
 export EDITOR=vim
@@ -49,9 +59,7 @@ alias v='vim'
 alias ls='ls -alh'
 
 # brew git
-if [[ -z $TMUX ]]; then
-  export PATH="$(brew --prefix)/share/git-core/contrib/diff-highlight:${PATH}"
-fi
+append_path_unless_exist "$(brew --prefix)/share/git-core/contrib/diff-highlight"
 
 # yarn
 # export PATH="$HOME/.yarn/bin:${PATH}"
