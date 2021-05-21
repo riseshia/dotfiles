@@ -31,6 +31,9 @@ fi
 # Load nodebrew unless it loaded.
 append_path_unless_exist "$HOME/.nodebrew/current/bin"
 
+export LC_ALL=en_US.UTF-8
+export LANG=en_US.UTF-8
+
 # Set default editor to vim
 export EDITOR=vim
 
@@ -66,10 +69,6 @@ append_path_unless_exist "$(brew --prefix)/share/git-core/contrib/diff-highlight
 
 # rust
 source "$HOME/.cargo/env"
-
-# python
-export LC_ALL=en_US.UTF-8
-export LANG=en_US.UTF-8
 
 # Completion
 ## git command
