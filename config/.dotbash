@@ -78,3 +78,8 @@ fi
 
 # z
 [ -f $(brew --prefix)/etc/profile.d/z.sh ] && . $(brew --prefix)/etc/profile.d/z.sh
+
+# Load misc profiles
+for profile in ~/.dotfiles/config/.dotbash_profile.d/*.sh ; do
+  source "$profile"
+done
