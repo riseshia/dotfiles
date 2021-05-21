@@ -40,32 +40,21 @@ export EDITOR=vim
 # Don't check mail when opening terminal.
 unset MAILCHECK
 
-# Set this to false to turn off version control status checking within the prompt for all themes
-# export SCM_CHECK=true
-
 # alias
 alias be='bundle exec'
 alias c='clear'
 alias deploy='bundle exec cap production deploy'
 alias q='exit'
-# alias gb='git branch'
-# alias gc='git commit'
-# alias gd='git diff HEAD'
 alias gg='git grep -n'
 alias gpull='git pull origin'
 alias gpu='git pull upstream master'
 alias gpush='git push origin'
 alias gpp='gpu && gpush'
-# alias gs='git status'
-# alias run_pg='pg_ctl -D /usr/local/var/postgres start'
 alias v='vim'
 alias ls='ls -alh'
 
 # brew git
 append_path_unless_exist "$(brew --prefix)/share/git-core/contrib/diff-highlight"
-
-# yarn
-# export PATH="$HOME/.yarn/bin:${PATH}"
 
 # rust
 source "$HOME/.cargo/env"
