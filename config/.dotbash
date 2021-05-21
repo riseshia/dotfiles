@@ -2,8 +2,8 @@
 
 if [[ -z $TMUX ]]; then
   export PATH="$HOME/.dotfiles/bin:${PATH}"
-  # custom functions
-  export PATH="$HOME/.bash_functions:${PATH}"
+  # add custom commands' path
+  export PATH="$HOME/.bash_commands:${PATH}"
 fi
 
 if command -v starship > /dev/null; then
