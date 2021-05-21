@@ -13,4 +13,6 @@ define :ruby, as_global: false do
       command "rbenv global #{version}"
     end
   end
+
+  dotfile ".gemrc"
 end
