@@ -6,21 +6,20 @@ if [[ -z $TMUX ]]; then
   export PATH="$HOME/.bash_commands:${PATH}"
 fi
 
-if command -v starship > /dev/null; then
+# Load starship it exists & unless loaded.
+if command -v starship > /dev/null && ! [ -v STARSHIP_START_TIME ]; then
   eval "$(starship init bash)"
 fi
 
-# rbenv unless it loaded.
-if ! test -v RBENV_SHELL; then
+# Load rbenv unless it loaded.
+if ! declare -f rbenv > /dev/null; then
   eval "$(rbenv init - --no-rehash)"
 fi
 
-# nodebrew unless it loaded.
+# Load nodebrew unless it loaded.
 if ! command -v nodebrew > /dev/null; then
   export PATH=$HOME/.nodebrew/current/bin:$PATH
 fi
-
-# eval "$(pyenv init -)"
 
 # Set default editor to vim
 export EDITOR=vim
