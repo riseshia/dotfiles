@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+if ! [[ $# -eq 1 ]]; then
+  "Usage: $0 <filepath>"
+  exit 2
+fi
+
+cargo clippy --message-format=json | jq 'select(.reason == "compiler-message") | select((.message.spans | length) > 0) | select(.message.rendered | contains("'"$1"'"))' | jq -s

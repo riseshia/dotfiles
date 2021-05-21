@@ -1,3 +1,39 @@
 // Schema:https://github.com/neoclide/coc.nvim/blob/master/data/schema.json
 {
+  "diagnostic.enable": true,
+  // diagnostic-languageservers
+  "diagnostic-languageserver.debug": true,
+  "diagnostic-languageserver.trace.server": "verbose",
+  "diagnostic-languageserver.filetypes": {
+    "bash": "shellcheck",
+    "sh": "shellcheck",
+    "rust": "clippy"
+  },
+  "diagnostic-languageserver.linters": {
+    "clippy": {
+      "command": "ds-clippy-wrapper",
+      "args": ["%relativepath"],
+      "rootPatterns": ["Cargo.toml"],
+      "debounce": 100,
+      "isStdout": true,
+      "isStderr": false,
+      "sourceName": "clippy",
+      "offsetLine": 0,
+      "offsetColumn": 0,
+      "parseJson": {
+        "line": "message.spans[0].line_start",
+        "column": "message.spans[0].column_start",
+        "endLine": "message.spans[0].line_end",
+        "endColumn": "message.spans[0].column_end",
+        "security": "message.level",
+        "message": "${message.rendered}"
+      },
+      "securities": {
+        "allow": "hint",
+        "warn": "warning",
+        "deny": "error",
+        "deprecated": "warning"
+      }
+    }
+  }
 }
