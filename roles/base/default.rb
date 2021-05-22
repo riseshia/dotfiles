@@ -7,4 +7,3 @@ directory "#{ENV.fetch('HOME')}/.config" do
 end
 
 include_cookbook "functions"
-include_cookbook "dotfiles"

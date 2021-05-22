@@ -15,6 +15,7 @@ function append_path_unless_exist () {
 if [[ -z $TMUX ]]; then
   # add custom commands' path
   append_path_unless_exist "$HOME/.dotfiles/bash_commands"
+  append_path_unless_exist "$HOME/.dotfiles_src/bin"
 fi
 
 # Load starship it exists & unless loaded.

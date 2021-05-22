@@ -5,12 +5,13 @@ if ! [ $# -eq 1 ]; then
   exit 1
 fi
 
-if ! [[ $(readlink ~/.dotfiles) =~ dotfiles_src ]]; then
+export DOTFILE_SRC_PATH=$(cd $(dirname "$0")/..; pwd -P)
+
+if ! [[ "$DOTFILE_SRC_PATH" =~ dotfiles_src ]]; then
   echo "Dotfiles: You're using Development env."
   DEV_MODE=1
 fi
 
-export DOTFILE_SRC_PATH=$(cd $(dirname "$0")/..; pwd -P)
 COMMAND="$1"
 case $COMMAND in
   update)
@@ -18,7 +19,7 @@ case $COMMAND in
       echo "Dotfiles: Skip update."
     else
       echo "Dotfiles: Update source repository."
-      cd ~/.dotfiles_src && git pull -f origin main
+      cd "$DOTFILE_SRC_PATH" && git pull -f origin main
     fi
     ;;
   upgrade)
