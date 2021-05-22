@@ -12,11 +12,9 @@ function append_path_unless_exist () {
   fi
 }
 
-if [[ -z $TMUX ]]; then
-  # add custom commands' path
-  append_path_unless_exist "$HOME/.dotfiles/bash_commands"
-  append_path_unless_exist "$HOME/.dotfiles_src/bin"
-fi
+# add custom commands' path
+append_path_unless_exist "$HOME/.dotfiles/bash_commands"
+append_path_unless_exist "$HOME/.dotfiles_src/bin"
 
 # Load starship it exists & unless loaded.
 if command -v starship > /dev/null && ! [ -v STARSHIP_START_TIME ]; then
