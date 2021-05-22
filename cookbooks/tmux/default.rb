@@ -1,3 +1,5 @@
 package 'tmux'
 
-link_file '.tmux.conf'
+copy_file '.tmux.conf' do
+  source 'config/.tmux.conf'
+end

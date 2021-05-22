@@ -14,5 +14,7 @@ define :ruby, as_global: false do
     end
   end
 
-  link_file ".gemrc"
+  copy_file ".gemrc" do
+    source "config/.gemrc"
+  end
 end

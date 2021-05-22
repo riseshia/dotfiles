@@ -1,4 +1,8 @@
 package 'git'
 
-link_file '.gitconfig'
-link_file '.gitignore'
+copy_file '.gitconfig' do
+  source 'config/.gitconfig'
+end
+copy_file '.gitignore' do
+  source 'config/.gitignore'
+end

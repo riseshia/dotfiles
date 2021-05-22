@@ -10,7 +10,7 @@ if ! [[ $(readlink ~/.dotfiles) =~ dotfiles_src ]]; then
   DEV_MODE=1
 fi
 
-DOTFILE_SRC_PATH=$(dirname "$0")/..
+export DOTFILE_SRC_PATH=$(cd $(dirname "$0")/..; pwd -P)
 COMMAND="$1"
 case $COMMAND in
   update)

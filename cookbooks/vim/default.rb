@@ -12,9 +12,11 @@ execute "Install minpac for vim" do
   command "git clone #{minpac_repository_url} #{vim_config_dir}/pack/minpac/opt/minpac"
 end
 
-link_file ".vimrc"
-link_file ".vim/coc-settings.json" do
-  source "coc-settings.json"
+copy_file ".vimrc" do
+  source "config/.vimrc"
+end
+copy_file ".vim/coc-settings.json" do
+  source "config/coc-settings.json"
 end
 
 link_directory ".vim/colors" do

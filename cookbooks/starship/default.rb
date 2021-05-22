@@ -1,5 +1,5 @@
 package 'starship'
 
-link_file '.config/starship.toml' do
-  source '.starship.toml'
+copy_file '.config/starship.toml' do
+  source 'config/.starship.toml'
 end
