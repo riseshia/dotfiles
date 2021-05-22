@@ -19,11 +19,11 @@ else
   cd "$DEPLOY_DEST_DIR" && git fetch && git reset --hard origin/main
 fi
 
-if ! command -v dotfiles; then
-  echo "dotfiles manager isn't installed. Let's setup."
-  "$DEPLOY_DEST_DIR/bin/setup_dotfiles"
+if ! [ -h "$DEPLOY_DEST_DIR/bin/mitamae" ]; then
+  echo "mitamae isn't installed. Let's install."
+  "$DEPLOY_DEST_DIR/bin/setup_mitamae"
 else
-  echo "dotfiles manager is already installed. Skip install."
+  echo "mitamae is already installed. Skip install."
 fi
 
 PATH=$PATH:$HOME/.dotfiles/bin dotfiles upgrade
