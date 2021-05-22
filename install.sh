@@ -15,11 +15,9 @@ if [ ! -d "$DEPLOY_DEST_DIR" ]; then
   echo "'$DEPLOY_DEST_DIR' dir isn't exist."
   git clone https://github.com/riseshia/dotfiles.git "$DEPLOY_DEST_DIR"
 else
-  echo "'$DEPLOY_DEST_DIR' dir exist. Skip repository cloning."
+  echo "'$DEPLOY_DEST_DIR' dir exist. Skip repository cloning. Instead, update dotfiles source."
+  cd "$DEPLOY_DEST_DIR" && git fetch && git reset --hard origin/main
 fi
-
-echo "Update dotfiles source."
-cd "$DEPLOY_DEST_DIR" && git fetch && git reset --hard origin/main
 
 if ! command -v dotfiles; then
   echo "dotfiles manager isn't installed. Let's setup."
