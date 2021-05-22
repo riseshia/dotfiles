@@ -10,20 +10,27 @@ if [ "$(uname)" = 'Darwin' ]; then
   fi
 fi
 
+# Prepare dotfile repository
+REPO_CLONE_DIR="$HOME/.dotfiles_src"
 DEPLOY_DEST_DIR="$HOME/.dotfiles"
-if [ ! -d "$DEPLOY_DEST_DIR" ]; then
-  echo "'$DEPLOY_DEST_DIR' dir isn't exist."
-  git clone https://github.com/riseshia/dotfiles.git "$DEPLOY_DEST_DIR"
+
+if [ ! -d "$REPO_CLONE_DIR" ]; then
+  echo "'$REPO_CLONE_DIR' dir isn't exist."
+  git clone https://github.com/riseshia/dotfiles.git "$REPO_CLONE_DIR"
 else
-  echo "'$DEPLOY_DEST_DIR' dir exist. Skip repository cloning. Instead, update dotfiles source."
-  cd "$DEPLOY_DEST_DIR" && git fetch && git reset --hard origin/main
+  echo "'$REPO_CLONE_DIR' dir exist. Skip repository cloning. Instead, update dotfiles source."
+  cd "$REPO_CLONE_DIR" && git fetch && git reset --hard origin/main
 fi
 
-if ! [ -h "$DEPLOY_DEST_DIR/bin/mitamae" ]; then
+if ! [ -h "$REPO_CLONE_DIR/bin/mitamae" ]; then
   echo "mitamae isn't installed. Let's install."
-  "$DEPLOY_DEST_DIR/bin/setup_mitamae"
+  "$REPO_CLONE_DIR/bin/setup_mitamae"
 else
   echo "mitamae is already installed. Skip install."
 fi
 
-PATH=$PATH:$HOME/.dotfiles/bin dotfiles upgrade
+# Deploy dotfiles
+ln -sf "$REPO_CLONE_DIR" "$DEPLOY_DEST_DIR"
+
+# Apply dotfiles
+PATH=$PATH:$DEPLOY_DEST_DIR/bin dotfiles upgrade
