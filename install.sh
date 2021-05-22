@@ -30,7 +30,7 @@ else
 fi
 
 # Deploy dotfiles
-ln -sf "$REPO_CLONE_DIR" "$DEPLOY_DEST_DIR"
+mkdir -p "$DEPLOY_DEST_DIR"
 
 # Apply dotfiles
-PATH=$PATH:$DEPLOY_DEST_DIR/bin dotfiles upgrade
+cd "$REPO_CLONE_DIR" && bin/dotfiles upgrade

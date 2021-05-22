@@ -1,16 +1,29 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 if ! [ $# -eq 1 ]; then
   echo "How to use: dotfiles update|upgrade"
   exit 1
 fi
 
-DOTDOTFILES_PATH=$(dirname "$0")/..
+if ! [[ $(readlink ~/.dotfiles) =~ dotfiles_src ]]; then
+  echo "Dotfiles: You're using Development env."
+  DEV_MODE=1
+fi
 
-command="$1"
-case $command in
-  update) cd $DOTDOTFILES_PATH && git pull -f origin main;;
-  upgrade) cd $DOTDOTFILES_PATH && bin/mitamae local lib/recipe.rb;;
-  *) echo "$command is not exist command. update|upgrade is only available."; exit 1;;
+DOTFILE_SRC_PATH=$(dirname "$0")/..
+COMMAND="$1"
+case $COMMAND in
+  update)
+    if [ -v DEV_MODE ]; then
+      echo "Dotfiles: Skip update."
+    else
+      echo "Dotfiles: Update source repository."
+      cd ~/.dotfiles_src && git pull -f origin main
+    fi
+    ;;
+  upgrade)
+    cd "$DOTFILE_SRC_PATH" && bin/mitamae local lib/recipe.rb
+    ;;
+  *) echo "$COMMAND is not exist command. update|upgrade is only available."; exit 1;;
 esac
 

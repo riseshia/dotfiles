@@ -1,5 +1,5 @@
 package 'starship'
 
-dotfile '.config/starship.toml' do
+link_file '.config/starship.toml' do
   source '.starship.toml'
 end

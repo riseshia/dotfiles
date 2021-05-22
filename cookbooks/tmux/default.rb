@@ -1,3 +1,3 @@
 package 'tmux'
 
-dotfile '.tmux.conf'
+link_file '.tmux.conf'

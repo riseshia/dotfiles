@@ -1,4 +1,4 @@
 package 'git'
 
-dotfile '.gitconfig'
-dotfile '.gitignore'
+link_file '.gitconfig'
+link_file '.gitignore'

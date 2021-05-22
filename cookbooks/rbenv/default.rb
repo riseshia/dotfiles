@@ -14,5 +14,5 @@ define :ruby, as_global: false do
     end
   end
 
-  dotfile ".gemrc"
+  link_file ".gemrc"
 end

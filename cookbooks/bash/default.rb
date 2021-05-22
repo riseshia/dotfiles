@@ -16,7 +16,17 @@ end
 
 execute "add 'source .dotbash' to bash_profile" do
   not_if "grep -q '.dotbash' ~/.bash_profile"
-  command "echo 'source ~/.dotfiles/config/.dotbash' >> ~/.bash_profile"
+  command "echo 'source #{ENV.fetch('HOME')}/.dotfiles/.dotbash' >> ~/.bash_profile"
 end
-dotfile ".alacritty.yml"
-dotfile ".bash_commands"
+link_file ".alacritty.yml"
+
+link_file ".dotfiles/.dotbash" do
+  source ".dotbash"
+end
+
+link_directory ".dotfiles/bash_profile.d" do
+  source "config/bash_profile.d"
+end
+link_directory ".dotfiles/bash_commands" do
+  source "config/bash_commands"
+end
