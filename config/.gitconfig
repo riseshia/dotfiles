@@ -20,3 +20,5 @@
     pushInsteadOf = git://gist.github.com/
 [credential]
     helper = osxkeychain
+[init]
+    defaultBranch = main
