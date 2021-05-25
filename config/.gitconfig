@@ -4,6 +4,7 @@
 [core]
     excludesFile = ~/.gitignore
     editor = vim
+    quotepath = off
 [color]
     ui = true
 [push]
