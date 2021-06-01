@@ -3,18 +3,23 @@ set -e
 
 mitamae_version="1.12.1"
 mitamae_darwin_sha256="8a8b4ca6e8436addc86d121cc031e14ec1dadba145172acca8b98ab71c84be8f"
+mitamae_x86_64_sha256="c0c3b21ec589c19c9163f06ffeee781d8a4e900ec74be5fe7680b06807e832ad"
 
 mitamae_cache="mitamae-${mitamae_version}"
 
 if ! [ -f "bin/${mitamae_cache}" ]; then
-  case "$(uname)" in
+  case "$(uname -a)" in
     # Support only Apple Silicon
-    "Darwin")
+    Darwin*RELEASE_ARM64_*)
       mitamae_bin="mitamae-aarch64-darwin"
       mitamae_sha256="$mitamae_darwin_sha256"
       ;;
+    Darwin*RELEASE_X86_64)
+      mitamae_bin="mitamae-x86_64-darwin"
+      mitamae_sha256="$mitamae_darwin_sha256"
+      ;;
     *)
-      echo "unexpected uname: $(uname)"
+      echo "unexpected uname: $(uname -a)"
       exit 1
       ;;
   esac
