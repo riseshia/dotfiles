@@ -11,11 +11,15 @@ define :link_directory, source: nil do
   target_dir = File.join(ENV['HOME'], params[:name])
   src_dir = File.join(ENV.fetch("DOTFILE_SRC_PATH"), source)
 
-  link target_dir do
+  execute "Link #{params[:name]} to #{src_dir}" do
     # Note: link resource don't support -n options for link. so we need to check it manually.
-    only_if %Q|test -h #{target_dir} && [ $(readlink #{target_dir} != #{src_dir} ] && rm #{target_dir}|
-    to src_dir
+    test_script = %Q[
+      (! test -e #{target_dir}) ||
+      ([ $(readlink #{target_dir}) != #{src_dir} ])
+    ]
+    only_if test_script
+
+    command "ln -nsf #{src_dir} #{target_dir}"
     user node[:user]
-    force true
   end
 end
