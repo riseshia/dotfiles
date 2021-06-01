@@ -9,14 +9,13 @@ mitamae_cache="mitamae-${mitamae_version}"
 
 if ! [ -f "bin/${mitamae_cache}" ]; then
   case "$(uname -a)" in
-    # Support only Apple Silicon
     Darwin*RELEASE_ARM64_*)
       mitamae_bin="mitamae-aarch64-darwin"
       mitamae_sha256="$mitamae_darwin_sha256"
       ;;
     Darwin*RELEASE_X86_64)
       mitamae_bin="mitamae-x86_64-darwin"
-      mitamae_sha256="$mitamae_darwin_sha256"
+      mitamae_sha256="$mitamae_x86_64_sha256"
       ;;
     *)
       echo "unexpected uname: $(uname -a)"
