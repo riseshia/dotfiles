@@ -1,5 +1,3 @@
-#!/usr/bin/env bash
-
 # z config
 [ -f $(brew --prefix)/etc/profile.d/z.sh ] && . $(brew --prefix)/etc/profile.d/z.sh
 
