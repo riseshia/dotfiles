@@ -70,9 +70,6 @@ if command -v fzf > /dev/null; then
   export FZF_DEFAULT_COMMAND='git ls-files'
 fi
 
-# z
-[ -f $(brew --prefix)/etc/profile.d/z.sh ] && . $(brew --prefix)/etc/profile.d/z.sh
-
 # Load misc profiles
 for profile in ~/.dotfiles/bash_profile.d/*.sh ; do
   source "$profile"

@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+# z config
+[ -f $(brew --prefix)/etc/profile.d/z.sh ] && . $(brew --prefix)/etc/profile.d/z.sh
+
+# Override z with fzf
 unalias z 2> /dev/null
 z() {
   if [[ $# -gt 0 ]]; then
