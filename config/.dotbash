@@ -28,7 +28,6 @@ unset MAILCHECK
 # alias
 alias be='bundle exec'
 alias c='clear'
-alias deploy='bundle exec cap production deploy'
 alias q='exit'
 alias gg='git grep -n'
 alias gpull='git pull origin'
