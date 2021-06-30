@@ -74,6 +74,10 @@ syntax enable
 syntax sync fromstart
 colorscheme monokai
 
+" Make inactive panel darker
+autocmd WinEnter,BufWinEnter * setlocal wincolor=
+autocmd WinLeave * setlocal wincolor=NormalIA
+
 " airline config
 let g:airline_section_x = ''
 let g:airline_section_y = ''
