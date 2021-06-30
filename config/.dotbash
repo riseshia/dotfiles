@@ -16,19 +16,6 @@ function append_path_unless_exist () {
 append_path_unless_exist "$HOME/.dotfiles/bash_commands"
 append_path_unless_exist "$HOME/.dotfiles_src/bin"
 
-# Load starship it exists & unless loaded.
-if command -v starship > /dev/null && ! [ -v STARSHIP_START_TIME ]; then
-  eval "$(starship init bash)"
-fi
-
-# Load rbenv unless it loaded.
-if ! declare -f rbenv > /dev/null; then
-  eval "$(rbenv init - --no-rehash)"
-fi
-
-# Load nodebrew unless it loaded.
-append_path_unless_exist "$HOME/.nodebrew/current/bin"
-
 export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 
@@ -51,21 +38,16 @@ alias gpp='gpu && gpush'
 alias v='vim'
 alias ls='ls -alh'
 
-# brew git
-append_path_unless_exist "$(brew --prefix)/share/git-core/contrib/diff-highlight"
-
-# rust
-source "$HOME/.cargo/env"
-
 # Completion
-## git command
-source "$(brew --prefix)/etc/bash_completion.d/git-completion.bash"
-export GIT_COMPLETION_CHECKOUT_NO_GUESS=1
-
 # tab autocompletion with cycle style
 bind TAB:menu-complete
 
+# Load starship it exists & unless loaded.
+if command -v starship > /dev/null && ! [ -v STARSHIP_START_TIME ]; then
+  eval "$(starship init bash)"
+fi
+
 # Load misc profiles
-for profile in ~/.dotfiles/bash_profile.d/*.sh ; do
+for profile in ~/.dotfiles/bash_profile.d/* ; do
   source "$profile"
 done

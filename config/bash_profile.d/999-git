@@ -1,0 +1,4 @@
+append_path_unless_exist "$(brew --prefix)/share/git-core/contrib/diff-highlight"
+
+source "$(brew --prefix)/etc/bash_completion.d/git-completion.bash"
+export GIT_COMPLETION_CHECKOUT_NO_GUESS=1

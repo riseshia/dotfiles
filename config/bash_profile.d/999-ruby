@@ -1,0 +1,6 @@
+# Load rbenv unless it loaded.
+if ! declare -f rbenv > /dev/null; then
+  eval "$(rbenv init - --no-rehash)"
+fi
+
+export DISABLE_SPRING=1
