@@ -60,6 +60,7 @@ source "$HOME/.cargo/env"
 # Completion
 ## git command
 source "$(brew --prefix)/etc/bash_completion.d/git-completion.bash"
+export GIT_COMPLETION_CHECKOUT_NO_GUESS=1
 
 # tab autocompletion with cycle style
 bind TAB:menu-complete
