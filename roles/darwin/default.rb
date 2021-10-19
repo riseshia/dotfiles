@@ -11,7 +11,9 @@ include_cookbook 'jq'
 include_cookbook 'ripgrep'
 include_cookbook 'rust'
 include_cookbook 'z'
+include_cookbook 'envchain'
 include_cookbook 'rbenv'
+
 ruby '3.0.0' do
   as_global true
 end
