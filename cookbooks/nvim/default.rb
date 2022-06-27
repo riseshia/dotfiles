@@ -1,5 +1,5 @@
 package "neovim"
 
-link_directory ".dotfiles/nvim" do
+link_directory ".config/nvim" do
   source "config/nvim"
 end
