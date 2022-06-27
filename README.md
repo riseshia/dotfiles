@@ -7,3 +7,10 @@ Rebirth of https://github.com/riseshia/legacy-dotfiles
 ```
 $ curl -sfSL https://raw.githubusercontent.com/riseshia/dotfiles/master/install.sh | bash
 ```
+
+## Commands
+
+```
+dotfiles update
+dotfiles upgrade
+```
