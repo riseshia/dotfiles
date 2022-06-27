@@ -9,6 +9,8 @@ return require('packer').startup(function()
   use { 'junegunn/fzf', { run = function() vim.fn['fzf#install']() end } }
   use 'junegunn/fzf.vim'
 
+  use 'github/copilot.vim'
+
   -- statusline
   use 'vim-airline/vim-airline'
 
