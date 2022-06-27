@@ -19,4 +19,4 @@ ruby '3.1.2' do
   as_global true
 end
 include_cookbook 'nodebrew'
-nodejs 'v16.1.0'
+nodejs 'v16.15.1'
