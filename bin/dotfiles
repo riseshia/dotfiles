@@ -28,3 +28,7 @@ case $COMMAND in
   *) echo "$COMMAND is not exist command. update|upgrade is only available."; exit 1;;
 esac
 
+if ! [[ "$DOTFILE_SRC_PATH" =~ dotfiles_src ]]; then
+  echo "Dotfiles: You're using Development env."
+  DEV_MODE=1
+fi
