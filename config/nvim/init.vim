@@ -15,6 +15,7 @@ set tabstop=2
 set cursorline
 
 lua require('plugins')
+lua require('treesitter-config')
 
 colorscheme monokai
 

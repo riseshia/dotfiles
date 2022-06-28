@@ -15,9 +15,8 @@ return require('packer').startup(function()
   use 'vim-airline/vim-airline'
 
   -- Syntax Highlight
+  use { 'nvim-treesitter/nvim-treesitter', { run = ':TSUpdate' } }
   use 'google/vim-jsonnet'
   use 'hashivim/vim-terraform'
-  use 'sheerun/vim-polyglot'
-  use 'jparise/vim-graphql'
   use 'kevinoid/vim-jsonc'
 end)
