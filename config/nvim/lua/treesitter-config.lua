@@ -13,8 +13,9 @@ require'nvim-treesitter.configs'.setup {
     "jsonc",
     "ruby",
     "rust",
+    "tsx",
     "typescript",
-    "tsx"
+    "vim",
   },
 
   -- Install parsers synchronously (only applied to `ensure_installed`)
