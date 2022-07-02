@@ -7,6 +7,8 @@ if [ "$(uname)" = 'Darwin' ]; then
   # Ref: https://github.com/Homebrew/install/blob/dee8df98bfb65588007c666034c6e1ad0733b1b6/install.sh#L626-L633
   if ! command -v brew; then
     /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+    echo 'eval "$(/opt/homebrew/bin/brew shellenv)"' >> ~/.bash_profile
+    eval "$(/opt/homebrew/bin/brew shellenv)"
   fi
 fi
 
