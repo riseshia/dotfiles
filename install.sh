@@ -12,6 +12,12 @@ if [ "$(uname)" = 'Darwin' ]; then
   fi
 fi
 
+# check git command exist
+if ! command -v git; then
+  echo "git command isn't installed. Let's install."
+  brew install git
+fi
+
 # Prepare dotfile repository
 REPO_CLONE_DIR="$HOME/.dotfiles_src"
 DEPLOY_DEST_DIR="$HOME/.dotfiles"
