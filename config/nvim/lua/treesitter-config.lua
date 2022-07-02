@@ -10,7 +10,6 @@ require'nvim-treesitter.configs'.setup {
     "graphql",
     "javascript",
     "json5",
-    "jsonc",
     "ruby",
     "rust",
     "tsx",
