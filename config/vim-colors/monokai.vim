@@ -410,6 +410,12 @@ call s:h("notesListNumber",   { "fg": s:purple,      "format": "italic"      } )
 call s:h("notesBold",         {                      "format": "bold"        } )
 call s:h("notesDoneMarker",   { "fg": s:green                                } )
 
+" LSP
+call s:h("DiagnosticError",  { "fg": s:red, "bg": s:lightblack3 })
+call s:h("DiagnosticWarn",  { "fg": s:orange, "bg": s:lightblack3 })
+call s:h("DiagnosticInfo",  { "fg": s:yellow, "bg": s:lightblack3 })
+call s:h("DiagnosticHint",  { "fg": s:white, "bg": s:lightblack3 })
+
 " Terminal Colors
 " ---------------
 if has('nvim')

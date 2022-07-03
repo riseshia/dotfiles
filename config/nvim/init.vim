@@ -14,11 +14,11 @@ set smartindent
 set tabstop=2
 set cursorline
 
+colorscheme monokai
+
 lua require('plugins')
 lua require('treesitter-config')
 lua require('lsp-config')
-
-colorscheme monokai
 
 " Make inactive panel darker
 " autocmd WinEnter,BufWinEnter * setlocal wincolor=
