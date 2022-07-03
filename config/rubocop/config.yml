@@ -61,6 +61,7 @@ AllCops:
     - '**/Vagabondfile'
     - '**/Vagrantfile'
   Exclude:
+    - 'bin/*'
     - 'node_modules/**/*'
     - 'tmp/**/*'
     - 'vendor/**/*'
@@ -1124,7 +1125,7 @@ Layout/MultilineMethodCallIndentation:
   Description: >-
                  Checks indentation of method calls with the dot operator
                  that span more than one line.
-  Enabled: true
+  Enabled: false
   VersionAdded: '0.49'
   EnforcedStyle: aligned
   SupportedStyles:
@@ -2424,7 +2425,7 @@ Metrics/AbcSize:
   # a Float.
   IgnoredMethods: []
   CountRepeatedAttributes: true
-  Max: 17
+  Max: 100
 
 Metrics/BlockLength:
   Description: 'Avoid long blocks with many lines.'
@@ -2468,7 +2469,7 @@ Metrics/CyclomaticComplexity:
   VersionAdded: '0.25'
   VersionChanged: '0.81'
   IgnoredMethods: []
-  Max: 7
+  Max: 10
 
 Metrics/MethodLength:
   Description: 'Avoid methods longer than 10 lines of code.'
@@ -2477,7 +2478,7 @@ Metrics/MethodLength:
   VersionAdded: '0.25'
   VersionChanged: '1.5'
   CountComments: false  # count full line comments?
-  Max: 10
+  Max: 100
   CountAsOne: []
   IgnoredMethods: []
 
@@ -3020,7 +3021,7 @@ Style/BlockDelimiters:
                 always ugly).
                 Prefer {...} over do...end for single-line blocks.
   StyleGuide: '#single-line-blocks'
-  Enabled: true
+  Enabled: false
   VersionAdded: '0.30'
   VersionChanged: '0.35'
   EnforcedStyle: line_count_based
@@ -3419,7 +3420,7 @@ Style/DocumentDynamicEvalDefinition:
 
 Style/Documentation:
   Description: 'Document classes and non-namespace modules.'
-  Enabled: true
+  Enabled: false
   VersionAdded: '0.9'
   AllowedConstants: []
   Exclude:
@@ -4085,7 +4086,7 @@ Style/ModuleFunction:
 Style/MultilineBlockChain:
   Description: 'Avoid multi-line chains of blocks.'
   StyleGuide: '#single-line-blocks'
-  Enabled: true
+  Enabled: false
   VersionAdded: '0.13'
 
 Style/MultilineIfModifier:
@@ -4922,7 +4923,7 @@ Style/StringLiterals:
   Enabled: true
   VersionAdded: '0.9'
   VersionChanged: '0.36'
-  EnforcedStyle: single_quotes
+  EnforcedStyle: double_quotes
   SupportedStyles:
     - single_quotes
     - double_quotes
