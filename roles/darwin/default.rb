@@ -13,10 +13,7 @@ include_cookbook 'ripgrep'
 include_cookbook 'rust'
 include_cookbook 'z'
 include_cookbook 'envchain'
-include_cookbook 'rbenv'
+include_cookbook 'ruby'
 
-ruby '3.1.2' do
-  as_global true
-end
 include_cookbook 'nodebrew'
 nodejs 'v16.15.1'
