@@ -34,7 +34,7 @@ alias gpull='git pull origin'
 alias gpu='git pull upstream master'
 alias gpush='git push origin'
 alias gpp='gpu && gpush'
-alias v='vim'
+alias v='nvim'
 alias nv='nvim'
 alias ls='ls -alh'
 
