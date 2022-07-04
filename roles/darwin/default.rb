@@ -13,9 +13,11 @@ include_cookbook "ripgrep"
 include_cookbook "rust"
 include_cookbook "z"
 include_cookbook "envchain"
-include_cookbook "ruby"
 include_cookbook "lima"
 include_cookbook "awscli"
 
-include_cookbook "nodebrew"
-nodejs "v16.15.1"
+include_cookbook "ruby"
+include_cookbook "nodenv"
+nodejs "16.15.1" do
+  as_global true
+end

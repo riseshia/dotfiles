@@ -1,2 +1,4 @@
 # Load nodebrew unless it loaded.
-append_path_unless_exist "$HOME/.nodebrew/current/bin"
+if ! declare -f nodenv > /dev/null; then
+  eval "$(nodenv init -)"
+fi
