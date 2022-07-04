@@ -19,7 +19,7 @@ case $COMMAND in
       echo "Dotfiles: Skip update."
     else
       echo "Dotfiles: Update source repository."
-      cd "$DOTFILE_SRC_PATH" && git pull -f origin main
+      cd "$DOTFILE_SRC_PATH" && git reset --hard && git pull -f origin main
     fi
     ;;
   upgrade)
