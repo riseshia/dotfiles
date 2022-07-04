@@ -2,65 +2,54 @@
 
 # Ref: https://github.com/sorah/config/blob/2dadf0a06e5e54f69e0e82aebdd9e5d8651a64c6/bin/sorah-aws-assume-role
 
-require 'aws-sdk-s3' # Workaround of load failure
-require 'aws-sdk-sts'
+require "aws-sdk-s3" # Workaround of load failure
+require "aws-sdk-sts"
 
-unless ARGV[0]
-  abort "Usage #$0 [-q] [--mfa] ARN [cmd]"
-end
+abort "Usage #{$0} [-q] [--mfa] ARN [cmd]" unless ARGV[0]
 
-quiet = ARGV.delete('-q')
-mfa = ARGV.delete('--mfa')
+quiet = ARGV.delete("-q")
+mfa = ARGV.delete("--mfa")
 arn = ARGV.shift
-session_name = "#$USER-#{Time.now.to_i}"
+session_name = "#{$USER}-#{Time.now.to_i}"
 
-@sts = Aws::STS::Client.new(region: 'us-east-1')
+@sts = Aws::STS::Client.new(region: "us-east-1")
 def identity
-  @identity ||= @sts.get_caller_identity()
+  @identity ||= @sts.get_caller_identity
 end
 
+arn = "arn:aws:iam::#{identity.account}:role/#{arn}" unless arn.start_with?("arn:")
 
-unless arn.start_with?('arn:')
-  arn = "arn:aws:iam::#{identity.account}:role/#{arn}"
-end
-
-if mfa
-  mfa_serial = "arn:aws:iam::#{identity.account}:mfa/#{identity.arn.split(?/).last}"
-end
+mfa_serial = "arn:aws:iam::#{identity.account}:mfa/#{identity.arn.split('/').last}" if mfa
 
 options = {
   role_arn: arn,
-  role_session_name: session_name,
+  role_session_name: session_name
 }
-options[:duration_seconds] = ENV['EXPIRES_IN'].to_i if ENV['EXPIRES_IN']
+options[:duration_seconds] = ENV["EXPIRES_IN"].to_i if ENV["EXPIRES_IN"]
 
 if mfa_serial
   options[:serial_number] = mfa_serial
-  print '2FA Token: '
+  print "2FA Token: "
   options[:token_code] = $stdin.gets.chomp
 end
 
 puts "=> Assuming #{arn}" unless quiet
-credentials = begin
-  @sts.assume_role(options).credentials
-end
+credentials = @sts.assume_role(options).credentials
 
-puts " * Expires at: #{credentials.expiration} (#{'%.2f' % (credentials.expiration - Time.now)}s)" unless quiet
-if options[:duration_seconds]
-  puts " * (requested #{options[:duration_seconds]}s)" unless quiet
-end
+puts " * Expires at: #{credentials.expiration} (#{format('%.2f', (credentials.expiration - Time.now))}s)" unless quiet
+puts " * (requested #{options[:duration_seconds]}s)" if options[:duration_seconds] && !quiet
 
-ENV['AWS_ACCESS_KEY_ID'] = credentials.access_key_id
-ENV['AWS_SECRET_ACCESS_KEY'] = credentials.secret_access_key
-ENV['AWS_SESSION_TOKEN'] = credentials.session_token
+ENV["AWS_ACCESS_KEY_ID"] = credentials.access_key_id
+ENV["AWS_SECRET_ACCESS_KEY"] = credentials.secret_access_key
+ENV["AWS_SESSION_TOKEN"] = credentials.session_token
 
-ENV['AWS_DEFAULT_REGION'] ||= 'ap-northeast-1'
-ENV['AWS_REGION'] ||= 'ap-northeast-1'
+ENV["AWS_DEFAULT_REGION"] ||= "ap-northeast-1"
+ENV["AWS_REGION"] ||= "ap-northeast-1"
 
-ENV.delete 'EXPIRES_IN'
+ENV.delete "EXPIRES_IN"
 
 if ARGV.empty?
-  exec ENV['SHELL'] || 'bash'
+  exec ENV["SHELL"] || "bash"
 else
   exec ARGV
 end

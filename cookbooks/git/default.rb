@@ -8,23 +8,23 @@ gitconfig = {
   core: {
     excludesFile: "~/.gitignore",
     editor: "vim",
-    quotepath: "off",
+    quotepath: "off"
   },
   color: {
-    ui: "true",
+    ui: "true"
   },
   push: {
-    default: "simple",
+    default: "simple"
   },
   pull: {
-    rebase: "true",
+    rebase: "true"
   },
   submodule: {
-    recurse: "true",
+    recurse: "true"
   },
   init: {
-    defaultBranch: "main",
-  },
+    defaultBranch: "main"
+  }
 }
 
 gitconfig.each do |namespace, kv|

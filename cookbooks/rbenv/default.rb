@@ -1,4 +1,4 @@
-package 'rbenv'
+package "rbenv"
 
 define :ruby, as_global: false do
   version = params[:name]

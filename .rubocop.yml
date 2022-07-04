@@ -1,70 +1,12 @@
 # Common configuration.
 
 AllCops:
-  RubyInterpreters:
-    - ruby
-    - macruby
-    - rake
-    - jruby
-    - rbx
   # Include common Ruby source files.
   Include:
     - '**/*.rb'
-    - '**/*.arb'
-    - '**/*.axlsx'
-    - '**/*.builder'
-    - '**/*.fcgi'
-    - '**/*.gemfile'
-    - '**/*.gemspec'
-    - '**/*.god'
-    - '**/*.jb'
-    - '**/*.jbuilder'
-    - '**/*.mspec'
-    - '**/*.opal'
-    - '**/*.pluginspec'
-    - '**/*.podspec'
-    - '**/*.rabl'
-    - '**/*.rake'
-    - '**/*.rbuild'
-    - '**/*.rbw'
-    - '**/*.rbx'
-    - '**/*.ru'
-    - '**/*.ruby'
-    - '**/*.spec'
-    - '**/*.thor'
-    - '**/*.watchr'
-    - '**/.irbrc'
-    - '**/.pryrc'
-    - '**/.simplecov'
-    - '**/buildfile'
-    - '**/Appraisals'
-    - '**/Berksfile'
-    - '**/Brewfile'
-    - '**/Buildfile'
-    - '**/Capfile'
-    - '**/Cheffile'
-    - '**/Dangerfile'
-    - '**/Deliverfile'
-    - '**/Fastfile'
-    - '**/*Fastfile'
-    - '**/Gemfile'
-    - '**/Guardfile'
-    - '**/Jarfile'
-    - '**/Mavenfile'
-    - '**/Podfile'
-    - '**/Puppetfile'
-    - '**/Rakefile'
-    - '**/rakefile'
-    - '**/Snapfile'
-    - '**/Steepfile'
-    - '**/Thorfile'
-    - '**/Vagabondfile'
-    - '**/Vagrantfile'
   Exclude:
     - 'bin/*'
-    - 'node_modules/**/*'
     - 'tmp/**/*'
-    - 'vendor/**/*'
     - '.git/**/*'
   # Default formatter will be used if no `-f/--format` option is given.
   DefaultFormatter: progress
@@ -3664,7 +3606,7 @@ Style/FrozenStringLiteralComment:
   Description: >-
                  Add the frozen_string_literal comment to the top of files
                  to help transition to frozen string literals by default.
-  Enabled: true
+  Enabled: false
   VersionAdded: '0.36'
   VersionChanged: '0.79'
   EnforcedStyle: always
@@ -3693,7 +3635,7 @@ Style/GlobalVars:
   Description: 'Do not introduce global variables.'
   StyleGuide: '#instance-vars'
   Reference: 'https://www.zenspider.com/ruby/quickref.html'
-  Enabled: true
+  Enabled: false
   VersionAdded: '0.13'
   # Built-in global variables are allowed by default.
   AllowedVariables: []
@@ -4859,7 +4801,7 @@ Style/SoleNestedConditional:
 Style/SpecialGlobalVars:
   Description: 'Avoid Perl-style global variables.'
   StyleGuide: '#no-cryptic-perlisms'
-  Enabled: true
+  Enabled: false
   VersionAdded: '0.13'
   VersionChanged: '0.36'
   SafeAutoCorrect: false

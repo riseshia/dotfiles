@@ -1,1 +1,1 @@
-package 'jq'
+package "jq"
