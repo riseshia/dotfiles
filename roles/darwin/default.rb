@@ -14,6 +14,7 @@ include_cookbook 'rust'
 include_cookbook 'z'
 include_cookbook 'envchain'
 include_cookbook 'ruby'
+include_cookbook 'lima'
 
 include_cookbook 'nodebrew'
 nodejs 'v16.15.1'
