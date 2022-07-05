@@ -13,7 +13,6 @@ include_cookbook "ripgrep"
 include_cookbook "rust"
 include_cookbook "z"
 include_cookbook "envchain"
-include_cookbook "lima"
 include_cookbook "awscli"
 
 include_cookbook "ruby"
