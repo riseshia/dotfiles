@@ -53,6 +53,7 @@ let g:pyindent_continue = '&sw'
 
 " Treat *.jb as ruby
 au BufRead,BufNewFile *.jb set filetype=ruby
+au BufRead,BufNewFile Dangerfile set filetype=ruby
 
 " Disable plugin indent support on ts
 let g:typescript_indent_disable = 1
