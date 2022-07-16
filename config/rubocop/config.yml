@@ -66,6 +66,7 @@ AllCops:
     - 'tmp/**/*'
     - 'vendor/**/*'
     - '.git/**/*'
+    - 'db/schema.rb'
   # Default formatter will be used if no `-f/--format` option is given.
   DefaultFormatter: progress
   # Cop names are displayed in offense messages by default. Change behavior
@@ -693,7 +694,7 @@ Layout/ExtraSpacing:
 
 Layout/FirstArgumentIndentation:
   Description: 'Checks the indentation of the first argument in a method call.'
-  Enabled: true
+  Enabled: false
   VersionAdded: '0.68'
   VersionChanged: '0.77'
   EnforcedStyle: special_for_inner_method_call_in_parentheses
@@ -720,7 +721,7 @@ Layout/FirstArrayElementIndentation:
   Description: >-
                  Checks the indentation of the first element in an array
                  literal.
-  Enabled: true
+  Enabled: false
   VersionAdded: '0.68'
   VersionChanged: '0.77'
   # The value `special_inside_parentheses` means that array literals with
@@ -2429,7 +2430,7 @@ Metrics/AbcSize:
 
 Metrics/BlockLength:
   Description: 'Avoid long blocks with many lines.'
-  Enabled: true
+  Enabled: false
   VersionAdded: '0.44'
   VersionChanged: '1.5'
   CountComments: false  # count full line comments?
@@ -2441,6 +2442,7 @@ Metrics/BlockLength:
     - refine
   Exclude:
     - '**/*.gemspec'
+    - 'spec/**/*_spec.rb'
 
 Metrics/BlockNesting:
   Description: 'Avoid excessive block nesting.'
@@ -2896,7 +2898,7 @@ Security/YAMLLoad:
 
 Style/AccessModifierDeclarations:
   Description: 'Checks style of how access modifiers are used.'
-  Enabled: true
+  Enabled: false
   VersionAdded: '0.57'
   VersionChanged: '0.81'
   EnforcedStyle: group
@@ -3505,7 +3507,7 @@ Style/EmptyLiteral:
 Style/EmptyMethod:
   Description: 'Checks the formatting of empty method definitions.'
   StyleGuide: '#no-single-line-methods'
-  Enabled: true
+  Enabled: false
   VersionAdded: '0.46'
   EnforcedStyle: compact
   SupportedStyles:
@@ -3701,7 +3703,7 @@ Style/GlobalVars:
 Style/GuardClause:
   Description: 'Check for conditionals that can be replaced with guard clauses.'
   StyleGuide: '#no-nested-conditionals'
-  Enabled: true
+  Enabled: false
   VersionAdded: '0.20'
   VersionChanged: '1.31'
   # `MinBodyLength` defines the number of lines of the a body of an `if` or `unless`
@@ -3761,7 +3763,7 @@ Style/HashSyntax:
                  Prefer Ruby 1.9 hash syntax { a: 1, b: 2 } over 1.8 syntax
                  { :a => 1, :b => 2 }.
   StyleGuide: '#hash-literals'
-  Enabled: true
+  Enabled: false
   VersionAdded: '0.9'
   VersionChanged: '1.24'
   EnforcedStyle: ruby19
@@ -3824,7 +3826,7 @@ Style/IfUnlessModifier:
                  Favor modifier if/unless usage when you have a
                  single-line body.
   StyleGuide: '#if-as-a-modifier'
-  Enabled: true
+  Enabled: false
   VersionAdded: '0.9'
   VersionChanged: '0.30'
 
@@ -3992,7 +3994,7 @@ Style/MethodCallWithArgsParentheses:
 Style/MethodCallWithoutArgsParentheses:
   Description: 'Do not use parentheses for method calls with no arguments.'
   StyleGuide: '#method-invocation-parens'
-  Enabled: true
+  Enabled: false
   IgnoredMethods: []
   VersionAdded: '0.47'
   VersionChanged: '0.55'
@@ -4170,7 +4172,7 @@ Style/NegatedIf:
                  Favor unless over if for negative conditions
                  (or control flow or).
   StyleGuide: '#unless-for-negatives'
-  Enabled: true
+  Enabled: false
   VersionAdded: '0.20'
   VersionChanged: '0.48'
   EnforcedStyle: both
@@ -4903,7 +4905,7 @@ Style/StringChars:
 Style/StringConcatenation:
   Description: 'Checks for places where string concatenation can be replaced with string interpolation.'
   StyleGuide: '#string-interpolation'
-  Enabled: true
+  Enabled: false
   Safe: false
   VersionAdded: '0.89'
   VersionChanged: '1.18'
@@ -4995,7 +4997,7 @@ Style/SymbolLiteral:
 
 Style/SymbolProc:
   Description: 'Use symbols as procs instead of blocks when possible.'
-  Enabled: true
+  Enabled: false
   Safe: false
   VersionAdded: '0.26'
   VersionChanged: '1.28'
