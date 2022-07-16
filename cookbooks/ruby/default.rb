@@ -7,3 +7,7 @@ end
 link_directory ".config/rubocop" do
   source "config/rubocop"
 end
+
+link_directory ".config/solargraph" do
+  source "config/solargraph"
+end
