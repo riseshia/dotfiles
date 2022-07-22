@@ -1010,7 +1010,7 @@ Layout/LineLength:
   Enabled: true
   VersionAdded: '0.25'
   VersionChanged: '1.4'
-  Max: 120
+  Max: 150
   # To make it possible to copy or click on URIs in the code, we allow lines
   # containing a URI to be longer than Max.
   AllowHeredoc: true
@@ -2471,7 +2471,7 @@ Metrics/CyclomaticComplexity:
   VersionAdded: '0.25'
   VersionChanged: '0.81'
   IgnoredMethods: []
-  Max: 10
+  Max: 20
 
 Metrics/MethodLength:
   Description: 'Avoid methods longer than 10 lines of code.'
@@ -2511,7 +2511,7 @@ Metrics/PerceivedComplexity:
   VersionAdded: '0.25'
   VersionChanged: '0.81'
   IgnoredMethods: []
-  Max: 8
+  Max: 16
 
 ################## Migration #############################
 
@@ -4152,7 +4152,7 @@ Style/MultipleComparison:
 
 Style/MutableConstant:
   Description: 'Do not assign mutable objects to constants.'
-  Enabled: true
+  Enabled: false
   VersionAdded: '0.34'
   VersionChanged: '1.8'
   SafeAutoCorrect: false
@@ -4922,7 +4922,7 @@ Style/StringHashKeys:
 Style/StringLiterals:
   Description: 'Checks if uses of quotes match the configured preference.'
   StyleGuide: '#consistent-string-literals'
-  Enabled: true
+  Enabled: false
   VersionAdded: '0.9'
   VersionChanged: '0.36'
   EnforcedStyle: double_quotes
