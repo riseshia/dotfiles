@@ -753,7 +753,7 @@ Layout/FirstArrayElementLineBreak:
 
 Layout/FirstHashElementIndentation:
   Description: 'Checks the indentation of the first key in a hash literal.'
-  Enabled: true
+  Enabled: false
   VersionAdded: '0.68'
   VersionChanged: '0.77'
   # The value `special_inside_parentheses` means that hash literals with braces
