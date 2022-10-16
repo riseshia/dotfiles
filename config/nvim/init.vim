@@ -14,11 +14,22 @@ set smartindent
 set tabstop=2
 set cursorline
 
+" Set completeopt to have a better completion experience
+" :help completeopt
+" menuone: popup even when there's only one match
+" noinsert: Do not insert text until a selection is made
+" noselect: Do not select, force user to select one from the menu
+set completeopt=menuone,noinsert,noselect
+
+" Avoid showing extra messages when using completion
+set shortmess+=c
+
 colorscheme monokai
 
 lua require('plugins')
 lua require('treesitter-config')
 lua require('lsp-config')
+lua require('completion')
 
 " Make inactive panel darker
 " autocmd WinEnter,BufWinEnter * setlocal wincolor=
