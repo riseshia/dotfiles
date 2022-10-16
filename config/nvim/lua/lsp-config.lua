@@ -53,7 +53,22 @@ require('lspconfig')['rust_analyzer'].setup{
   on_attach = on_attach,
   flags = lsp_flags,
   settings = {
-    ["rust-analyzer"] = {}
+    ["rust-analyzer"] = {
+      imports = {
+        granularity = {
+          group = "module",
+        },
+        prefix = "self",
+      },
+      cargo = {
+        buildScripts = {
+          enable = true,
+        },
+      },
+      procMacro = {
+        enable = true
+      },
+    }
   }
 }
 require('lspconfig')['solargraph'].setup{
