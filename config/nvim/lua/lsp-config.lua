@@ -1,5 +1,15 @@
-require("nvim-lsp-installer").setup({
-  automatic_installation = true, -- automatically detect which servers to install (based on which servers are set up via lspconfig)
+require("mason").setup()
+require("mason-lspconfig").setup({
+  ensure_installed = {
+    "dockerls",
+    "jsonnet_ls",
+    "rust_analyzer",
+    "solargraph",
+    "sumneko_lua",
+    "terraformls",
+    "tflint",
+    "tsserver",
+  }
 })
 
 -- Mappings.

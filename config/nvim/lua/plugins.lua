@@ -10,7 +10,8 @@ return require('packer').startup(function()
   use 'junegunn/fzf.vim'
 
   use {
-    "williamboman/nvim-lsp-installer",
+    "williamboman/mason.nvim",
+    "williamboman/mason-lspconfig.nvim",
     "neovim/nvim-lspconfig",
   }
 
