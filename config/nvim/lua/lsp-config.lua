@@ -1,6 +1,7 @@
 require('mason').setup()
 require('mason-lspconfig').setup({
   ensure_installed = {
+    'bashls',
     'dockerls',
     'jsonnet_ls',
     'rust_analyzer',
