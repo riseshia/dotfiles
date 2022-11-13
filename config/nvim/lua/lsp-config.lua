@@ -12,6 +12,7 @@ require('mason-lspconfig').setup({
     'tsserver',
   }
 })
+local rt = require('rust-tools')
 
 -- Mappings.
 -- See `:help vim.diagnostic.*` for documentation on any of the below functions
@@ -46,6 +47,8 @@ local on_attach = function(client, bufnr)
   vim.keymap.set('n', '<space>ca', vim.lsp.buf.code_action, bufopts)
   vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
   vim.keymap.set('n', '<space>f', vim.lsp.buf.formatting, bufopts)
+
+  vim.keymap.set('n', '<C-space>', rt.hover_actions.hover_actions, { buffer = bufnr })
 end
 
 local lsp_flags = {
@@ -74,7 +77,6 @@ require('lspconfig')['bashls'].setup{
 local rust_opts = {
   tools = { -- rust-tools options
     autoSetHints = true,
-    hover_with_actions = true,
     inlay_hints = {
       show_parameter_hints = false,
       parameter_hints_prefix = "",
@@ -100,4 +102,4 @@ local rust_opts = {
     }
   },
 }
-require('rust-tools').setup(rust_opts)
+rt.setup(rust_opts)
