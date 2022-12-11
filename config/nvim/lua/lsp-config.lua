@@ -3,13 +3,13 @@ require('mason-lspconfig').setup({
   ensure_installed = {
     'bashls',
     'dockerls',
-    'jsonnet_ls',
-    'rust_analyzer',
-    'solargraph',
+    'jsonnet_ls', -- require golang
+    'rust_analyzer', -- require rust
+    'solargraph', -- require ruby
     'sumneko_lua',
     'terraformls',
     'tflint',
-    'tsserver',
+    'tsserver', -- require nodejs
   }
 })
 local rt = require('rust-tools')
