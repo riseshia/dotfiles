@@ -1,3 +1,7 @@
+if ! command -v brew; then
+  exit 0 # Do nothing for linux
+fi
+
 # z config
 [ -f $(brew --prefix)/etc/profile.d/z.sh ] && . $(brew --prefix)/etc/profile.d/z.sh
 

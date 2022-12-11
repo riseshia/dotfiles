@@ -1,3 +1,7 @@
+if ! command -v brew; then
+  exit 0 # Do nothing for linux
+end
+
 append_path_unless_exist "$(brew --prefix)/share/git-core/contrib/diff-highlight"
 
 source "$(brew --prefix)/etc/bash_completion.d/git-completion.bash"
