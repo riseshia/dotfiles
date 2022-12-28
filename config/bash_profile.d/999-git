@@ -1,6 +1,6 @@
 if ! command -v brew; then
-  exit 0 # Do nothing for linux
-end
+  return # Do nothing for linux
+fi
 
 append_path_unless_exist "$(brew --prefix)/share/git-core/contrib/diff-highlight"
 
