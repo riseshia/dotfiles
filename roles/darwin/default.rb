@@ -17,6 +17,6 @@ include_cookbook "awscli"
 
 include_cookbook "ruby"
 include_cookbook "nodenv"
-nodejs "16.15.1" do
+nodejs "18.15.0" do
   as_global true
 end
