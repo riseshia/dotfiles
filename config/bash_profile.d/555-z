@@ -1,4 +1,4 @@
-if ! command -v brew; then
+if ! command -v brew > /dev/null ; then
   return # Do nothing for linux
 fi
 
