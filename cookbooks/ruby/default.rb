@@ -1,6 +1,6 @@
 include_cookbook "rbenv"
 
-ruby "3.1.2" do
+ruby "3.2.2" do
   as_global true
 end
 
