@@ -1,0 +1,19 @@
+#!/usr/bin/env ruby
+
+new_text = $stdin.read.each_line.map do |line|
+  l = line.strip
+
+  suffix = \
+    if l.end_with?(".")
+      "\n"
+    elsif l.end_with?("-")
+      l = l[..-2] # remove continuation
+      ""
+    else
+      " "
+    end
+
+  l + suffix
+end.join("")
+
+puts new_text
