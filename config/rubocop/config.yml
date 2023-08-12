@@ -5051,7 +5051,7 @@ Style/TrailingCommaInArguments:
   # parenthesized method calls where each argument is on its own line.
   # If `consistent_comma`, the cop requires a comma after the last argument,
   # for all parenthesized method calls with arguments.
-  EnforcedStyleForMultiline: no_comma
+  EnforcedStyleForMultiline: comma
   SupportedStylesForMultiline:
     - comma
     - consistent_comma
@@ -5066,7 +5066,7 @@ Style/TrailingCommaInArrayLiteral:
   # but only when each item is on its own line.
   # If `consistent_comma`, the cop requires a comma after the last item of all
   # non-empty, multiline array literals.
-  EnforcedStyleForMultiline: no_comma
+  EnforcedStyleForMultiline: comma
   SupportedStylesForMultiline:
     - comma
     - consistent_comma
@@ -5085,7 +5085,7 @@ Style/TrailingCommaInHashLiteral:
   # but only when each item is on its own line.
   # If `consistent_comma`, the cop requires a comma after the last item of all
   # non-empty, multiline hash literals.
-  EnforcedStyleForMultiline: no_comma
+  EnforcedStyleForMultiline: comma
   SupportedStylesForMultiline:
     - comma
     - consistent_comma
