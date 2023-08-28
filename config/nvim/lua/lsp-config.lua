@@ -6,7 +6,7 @@ require('mason-lspconfig').setup({
     'jsonnet_ls', -- require golang
     'rust_analyzer', -- require rust
     'solargraph', -- require ruby
-    'sumneko_lua',
+    'lua_ls',
     'terraformls',
     'tflint',
     'tsserver', -- require nodejs
