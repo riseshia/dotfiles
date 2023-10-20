@@ -36,4 +36,7 @@ return require('packer').startup(function()
   use 'google/vim-jsonnet'
   use 'hashivim/vim-terraform'
   use 'kevinoid/vim-jsonc'
+  use 'othree/html5.vim'
+  use 'pangloss/vim-javascript'
+  use 'evanleck/vim-svelte'
 end)
