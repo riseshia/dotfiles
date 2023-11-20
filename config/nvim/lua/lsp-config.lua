@@ -51,27 +51,19 @@ local on_attach = function(client, bufnr)
   vim.keymap.set('n', '<C-space>', rt.hover_actions.hover_actions, { buffer = bufnr })
 end
 
-local lsp_flags = {
-  -- This is the default in Nvim 0.7+
-  debounce_text_changes = 150,
-}
-
 -- Server config for each language server.
 
 -- npm install -g typescript typescript-language-server
 require('lspconfig')['tsserver'].setup{
   on_attach = on_attach,
-  flags = lsp_flags,
 }
 
 require('lspconfig')['solargraph'].setup{
   on_attach = on_attach,
-  flags = lsp_flags,
 }
 
 require('lspconfig')['bashls'].setup{
   on_attach = on_attach,
-  flags = lsp_flags,
 }
 
 local rust_opts = {
