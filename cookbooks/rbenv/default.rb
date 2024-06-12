@@ -1,20 +1,13 @@
-package "rbenv"
+clone_github_repo "rbenv" do
+  repository "rbenv/rbenv"
+  clone_path "#{ENV['HOME']}/.rbenv"
+end
 
-define :ruby, as_global: false do
-  version = params[:name]
-  execute "Install Ruby #{version} via ruby-build" do
-    not_if "rbenv versions | grep -q '#{version}'"
-    command "rbenv install #{version}"
-  end
+clone_github_repo "ruby-build" do
+  repository "rbenv/ruby-build"
+  clone_path "#{ENV['HOME']}/.rbenv/plugins/ruby-build"
+end
 
-  if params[:as_global]
-    execute "Set #{version} as global Ruby" do
-      not_if "rbenv global | grep -q '#{version}'"
-      command "rbenv global #{version}"
-    end
-  end
-
-  copy_file ".gemrc" do
-    source "config/.gemrc"
-  end
+copy_file ".gemrc" do
+  source "config/.gemrc"
 end

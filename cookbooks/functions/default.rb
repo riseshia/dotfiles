@@ -23,3 +23,16 @@ define :link_directory, source: nil do
     user node[:user]
   end
 end
+
+define :clone_github_repo, repository: nil, clone_path: nil do
+  url = "git@github.com:/#{params[:repository]}.git"
+  clone_path = params[:clone_path]
+  clone_base_dir = clone_path.split("/")[0..-2].join("/")
+
+  directory clone_base_dir do
+    owner node[:user]
+  end
+  execute "git clone #{url} #{clone_path}" do
+    not_if "test -d #{clone_path}"
+  end
+end
