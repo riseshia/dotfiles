@@ -39,6 +39,7 @@ end
 
 define :github_package, version: nil, repository: nil, archive: nil, install_path: nil do
   install_path = params[:install_path]
+  install_path_parent = install_path.split("/")[0..-2].join("/")
   archive = params[:archive]
   url = "https://github.com/#{params[:repository]}/releases/download/#{params[:version]}/#{archive}"
 
@@ -55,15 +56,21 @@ define :github_package, version: nil, repository: nil, archive: nil, install_pat
     raise "unexpected ext archive: #{archive}"
   end
 
+  directory install_path_parent do
+    owner node[:user]
+  end
   execute "curl -fSL -o /tmp/#{archive} #{url}" do
     not_if "test -d #{install_path}"
+    user node[:user]
   end
   execute "#{extract} /tmp/#{archive}" do
     not_if "test -d #{install_path}"
     cwd "/tmp"
+    user node[:user]
   end
   execute "mv /tmp/#{extract_dir} #{install_path}" do
     not_if "test -d #{install_path}"
+    user node[:user]
   end
 end
 

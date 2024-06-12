@@ -1,11 +1,11 @@
 include_role "base"
 
 include_cookbook "git"
-include_cookbook "github"
 include_cookbook "bash"
 include_cookbook "starship"
 include_cookbook "tmux"
 include_cookbook "nvim"
+package "gh"
 package "fzf"
 include_cookbook "jq"
 include_cookbook "rust"
