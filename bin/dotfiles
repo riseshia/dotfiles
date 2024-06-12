@@ -23,7 +23,10 @@ case $COMMAND in
     fi
     ;;
   upgrade)
-    cd "$DOTFILE_SRC_PATH" && bin/mitamae local lib/recipe.rb
+    case "$(uname)" in
+      "Darwin")  cd "$DOTFILE_SRC_PATH" && bin/mitamae local lib/recipe.rb ;;
+      *) cd "$DOTFILE_SRC_PATH" && sudo -E bin/mitamae local lib/recipe.rb ;;
+    esac
     ;;
   *) echo "$COMMAND is not exist command. update|upgrade is only available."; exit 1;;
 esac

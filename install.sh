@@ -15,7 +15,10 @@ fi
 # check git command exist
 if ! command -v git; then
   echo "git command isn't installed. Let's install."
-  brew install git
+  case "$(uname)" in
+    "Darwin")  brew install git ;;
+    *)  sudo apt install -y git ;;
+  esac
 fi
 
 # Prepare dotfile repository
@@ -43,4 +46,6 @@ fi
 mkdir -p "$DEPLOY_DEST_DIR"
 
 # Apply dotfiles
-cd "$REPO_CLONE_DIR" && bin/dotfiles upgrade
+pushd "$REPO_CLONE_DIR"
+bin/dotfiles upgrade
+popd

@@ -2,7 +2,7 @@ define :copy_file, source: nil do
   source = params[:source] || params[:name]
   remote_file File.join(ENV["HOME"], params[:name]) do
     source File.join(ENV.fetch("DOTFILE_SRC_PATH"), source)
-    user node[:user]
+    owner node[:user]
   end
 end
 
