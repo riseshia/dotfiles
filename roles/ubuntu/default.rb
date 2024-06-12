@@ -8,7 +8,7 @@ include_cookbook "tmux"
 # include_cookbook "fzf"
 include_cookbook "jq"
 # include_cookbook "github"
-# include_cookbook "rust"
+include_cookbook "rust"
 include_cookbook "z"
 # include_cookbook "awscli"
 
