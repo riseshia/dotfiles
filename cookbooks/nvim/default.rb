@@ -1,4 +1,11 @@
-package "neovim"
+archive = node[:os] == "darwin" ? "nvim-macos-arm64.tar.gz" : "nvim-linux64.tar.gz"
+
+github_package "nvim" do
+  repository "neovim/neovim"
+  version "v0.10.0"
+  archive archive
+  install_path "/opt/nvim"
+end
 
 link_directory ".config/nvim" do
   source "config/nvim"
