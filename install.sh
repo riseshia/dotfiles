@@ -32,7 +32,9 @@ fi
 
 if ! [ -h "$REPO_CLONE_DIR/bin/mitamae" ]; then
   echo "mitamae isn't installed. Let's install."
-  "$REPO_CLONE_DIR/bin/setup_mitamae"
+  pushd "${REPO_CLONE_DIR}"
+  bin/setup_mitamae
+  popd
 else
   echo "mitamae is already installed. Skip install."
 fi
