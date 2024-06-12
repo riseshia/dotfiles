@@ -38,7 +38,6 @@ define :clone_github_repo, repository: nil, clone_path: nil do
 end
 
 define :github_package, version: nil, repository: nil, archive: nil, install_path: nil do
-  cmd = params[:name]
   install_path = params[:install_path]
   archive = params[:archive]
   url = "https://github.com/#{params[:repository]}/releases/download/#{params[:version]}/#{archive}"
@@ -65,5 +64,38 @@ define :github_package, version: nil, repository: nil, archive: nil, install_pat
   end
   execute "mv /tmp/#{extract_dir} #{install_path}" do
     not_if "test -d #{install_path}"
+  end
+end
+
+define :github_binary, version: nil, repository: nil, archive: nil, binary_path: nil do
+  cmd = params[:name]
+  bin_dir = "#{ENV['HOME']}/.local/bin"
+  bin_path = "#{bin_dir}/#{cmd}"
+  archive = params[:archive]
+  url = "https://github.com/#{params[:repository]}/releases/download/#{params[:version]}/#{archive}"
+
+  if archive.end_with?(".zip")
+    package "unzip" do
+      not_if "which unzip"
+    end
+    extract = "unzip -o"
+  elsif archive.end_with?(".tar.gz")
+    extract = "tar xvzf"
+  else
+    raise "unexpected ext archive: #{archive}"
+  end
+
+  directory bin_dir do
+    owner node[:user]
+  end
+  execute "curl -fSL -o /tmp/#{archive} #{url}" do
+    not_if "test -f #{bin_path}"
+  end
+  execute "#{extract} /tmp/#{archive}" do
+    not_if "test -f #{bin_path}"
+    cwd "/tmp"
+  end
+  execute "mv /tmp/#{params[:binary_path] || cmd} #{bin_path} && chmod +x #{bin_path}" do
+    not_if "test -f #{bin_path}"
   end
 end

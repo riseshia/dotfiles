@@ -5,7 +5,13 @@ include_cookbook "bash"
 include_cookbook "starship"
 include_cookbook "tmux"
 include_cookbook "nvim"
-# include_cookbook "fzf"
+
+github_binary "fzf" do
+  repository "junegunn/fzf"
+  version "0.53.0"
+  archive "fzf-#{fzf_version}-linux_amd64.tar.gz"
+end
+
 include_cookbook "jq"
 # include_cookbook "github"
 include_cookbook "rust"
