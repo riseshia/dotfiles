@@ -68,8 +68,8 @@ require('lspconfig')['bashls'].setup{
 
 local rust_opts = {
   tools = { -- rust-tools options
-    autoSetHints = true,
     inlay_hints = {
+      auto = true,
       show_parameter_hints = false,
       parameter_hints_prefix = "",
       other_hints_prefix = "",
@@ -111,4 +111,14 @@ if not configs.typeprof then
     },
   }
 end
+
+local format_sync_grp = vim.api.nvim_create_augroup("Format", {})
+vim.api.nvim_create_autocmd("BufWritePre", {
+  pattern = "*.rs",
+  callback = function()
+    vim.lsp.buf.format({ timeout_ms = 200 })
+  end,
+  group = format_sync_grp,
+})
+
 lspconfig.typeprof.setup {}
