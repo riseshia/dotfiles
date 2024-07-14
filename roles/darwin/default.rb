@@ -13,7 +13,7 @@ include_cookbook "z"
 include_cookbook "envchain"
 include_cookbook "awscli"
 
-include_cookbook "ruby"
+include_cookbook "rbenv"
 include_cookbook "nodenv"
 nodejs "18.15.0" do
   as_global true
