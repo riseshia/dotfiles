@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+
+# Install binary from github release to bin directory
+# Usage: install-github-release url
+
+[[ -z "$1" ]] && echo "Usage: install-github-release <url>" && exit 1
+
+package_url="$1"
+bin_dir="${HOME}/.local/bin"
+tmp_dir=$(mktemp -d)
+
+if [[ ! $package_url =~ \.tar\.gz$ ]]; then
+  echo ".tar.gz only supported."
+  exit 1
+fi
+
+echo "Downloading package from URL..."
+curl -sL -o "${tmp_dir}/package.tar.gz" "${package_url}"
+
+echo "Extracting package..."
+tar -xzf "${tmp_dir}/package.tar.gz" -C "${tmp_dir}"
+
+echo "Searching for binaries..."
+bin_file=$(find "${tmp_dir}" -type f -executable | head -n 1)
+
+if [ -z "${bin_file}" ]; then
+  echo "No binary found."
+  exit 1
+fi
+
+echo "Copying binary to ${bin_dir}..."
+mkdir -p "${bin_dir}"
+cp "${bin_file}" "${bin_dir}"
+
+chmod +x "${bin_dir}/$(basename ${bin_file})"
+
+echo "Binary $(basename ${bin_file}) installed to ${bin_dir}"
+
+# 임시 폴더 삭제
+rm -rf "${tmp_dir}"
