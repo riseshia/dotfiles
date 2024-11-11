@@ -17,6 +17,13 @@ github_binary "fzf" do
   archive "fzf-0.53.0-linux_amd64.tar.gz"
 end
 
+github_binary "delta" do
+  repository "dandavison/delta"
+  version "0.18.2"
+  archive "delta-0.18.2-x86_64-unknown-linux-gnu.tar.gz"
+  binary_path "delta-0.18.2-x86_64-unknown-linux-gnu/delta"
+end
+
 github_package "gh" do
   repository "cli/cli"
   version "v2.50.0"
