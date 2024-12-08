@@ -24,6 +24,12 @@ github_binary "delta" do
   binary_path "delta-0.18.2-x86_64-unknown-linux-gnu/delta"
 end
 
+github_binary "alp" do
+  repository "tkuchiki/alp"
+  version "v1.0.21"
+  archive "alp_linux_amd64.tar.gz"
+end
+
 github_package "gh" do
   repository "cli/cli"
   version "v2.50.0"
