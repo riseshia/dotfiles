@@ -104,15 +104,15 @@ rt.setup(rust_opts)
 local lspconfig = require 'lspconfig'
 local configs = require 'lspconfig.configs'
 
-if not configs.typeprof then
-  configs.typeprof = {
-    default_config = {
-      cmd = { 'typeprof', '--lsp' },
-      root_dir = lspconfig.util.root_pattern('.git'),
-      filetypes = { 'ruby' },
-    },
-  }
-end
+-- if not configs.typeprof then
+--   configs.typeprof = {
+--     default_config = {
+--       cmd = { 'typeprof', '--lsp' },
+--       root_dir = lspconfig.util.root_pattern('.git'),
+--       filetypes = { 'ruby' },
+--     },
+--   }
+-- end
 
 local format_sync_grp = vim.api.nvim_create_augroup("Format", {})
 vim.api.nvim_create_autocmd("BufWritePre", {
