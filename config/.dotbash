@@ -51,5 +51,3 @@ fi
 for profile in ~/.dotfiles/bash_profile.d/* ; do
   source "$profile"
 done
-
-append_path_unless_exist "$HOME/.config/typeprof2/bin" # To override ruby default typeprof bin path
