@@ -1,3 +1,6 @@
+package "libyaml"
+package "openssl"
+
 clone_github_repo "rbenv" do
   repository "rbenv/rbenv"
   clone_path "#{ENV['HOME']}/.rbenv"
