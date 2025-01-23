@@ -113,6 +113,7 @@ local configs = require 'lspconfig.configs'
 --     },
 --   }
 -- end
+-- lspconfig.typeprof.setup {}
 
 local format_sync_grp = vim.api.nvim_create_augroup("Format", {})
 vim.api.nvim_create_autocmd("BufWritePre", {
@@ -123,4 +124,3 @@ vim.api.nvim_create_autocmd("BufWritePre", {
   group = format_sync_grp,
 })
 
-lspconfig.typeprof.setup {}
