@@ -1,15 +1,15 @@
 require('mason').setup()
 require('mason-lspconfig').setup({
   ensure_installed = {
-    'bashls',
-    'dockerls',
-    'jsonnet_ls', -- require golang
+    'bashls', -- npm install -g bash-language-server
+    'dockerls', -- npm install -g dockerfile-language-server-nodejs
+    -- 'jsonnet_ls', -- require golang
     'rust_analyzer', -- require rust
     'solargraph', -- require ruby
     'lua_ls',
-    'terraformls',
+    -- 'terraformls',
     'tflint',
-    'tsserver', -- require nodejs
+    'ts_ls', -- npm install -g typescript typescript-language-server
   }
 })
 local rt = require('rust-tools')
@@ -53,8 +53,7 @@ end
 
 -- Server config for each language server.
 
--- npm install -g typescript typescript-language-server
-require('lspconfig')['tsserver'].setup{
+require('lspconfig')['ts_ls'].setup{
   on_attach = on_attach,
 }
 
