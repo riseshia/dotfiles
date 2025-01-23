@@ -1,6 +1,8 @@
 # Load rbenv unless it loaded.
+append_path_unless_exist "$HOME/.rbenv/bin"
+
 if command -v rbenv > /dev/null; then
-  eval "$(rbenv init - --no-rehash)"
+  eval "$(rbenv init - --no-rehash bash)"
 fi
 
 export DISABLE_SPRING=1
