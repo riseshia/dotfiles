@@ -3,7 +3,7 @@ require('mason-lspconfig').setup({
   ensure_installed = {
     'bashls', -- npm install -g bash-language-server
     'dockerls', -- npm install -g dockerfile-language-server-nodejs
-    -- 'jsonnet_ls', -- require golang
+    'jsonnet_ls', -- go install github.com/grafana/jsonnet-language-server@latest
     'rust_analyzer', -- require rust
     'solargraph', -- require ruby
     'lua_ls',
@@ -65,6 +65,10 @@ require('lspconfig')['solargraph'].setup{
 }
 
 require('lspconfig')['bashls'].setup{
+  on_attach = on_attach,
+}
+
+require'lspconfig'.jsonnet_ls.setup{
   on_attach = on_attach,
 }
 
