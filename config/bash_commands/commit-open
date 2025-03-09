@@ -5,11 +5,4 @@ if [[ $# -ne 1 ]]; then
   exit 2
 fi
 
-target_remote="upstream"
-if ! git remote | grep "$target_remote"; then
-  target_remote="origin"
-fi
-
-repository_path=$(git remote get-url "$target_remote" | sed -E 's/git@(.+):(.+)\/(.+)\.git/https:\/\/\1\/\2\/\3/')
-
-open "$repository_path/commit/$1"
+gh browse "$1"
