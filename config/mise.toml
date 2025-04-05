@@ -11,6 +11,8 @@ delta = "latest"
 gh = "latest"
 fzf = "latest"
 neovim = "latest"
+ecspresso = "latest"
+"aqua:fujiwara/lambroll" = "latest"
 
 [settings]
 
