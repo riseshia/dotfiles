@@ -36,6 +36,14 @@ copy_file ".config/mise/config.toml" do
   source "config/mise.toml"
 end
 
+copy_file ".default-gems" do
+  source "config/.default-gems"
+end
+
+copy_file ".default-npm-packages" do
+  source "config/.default-npm-packages"
+end
+
 link_directory ".dotfiles/bash_profile.d" do
   source "config/bash_profile.d"
 end
