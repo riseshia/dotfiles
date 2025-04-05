@@ -1,0 +1,18 @@
+[tools]
+node = "22"
+python = "3.13"
+ruby = "3.4"
+awscli = "latest"
+jq = "latest"
+tfenv = "latest"
+starship = "latest"
+aqua = "latest"
+delta = "latest"
+gh = "latest"
+fzf = "latest"
+neovim = "latest"
+
+[settings]
+
+[settings.python]
+compile = true

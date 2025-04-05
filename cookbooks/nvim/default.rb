@@ -1,18 +1,3 @@
-
-if node[:os] == "darwin"
-  package "neovim"
-else
-  github_package "nvim" do
-    repository "neovim/neovim"
-    version "v0.10.0"
-    archive "nvim-linux64.tar.gz"
-    install_path "#{ENV['HOME']}/.local/nvim/v0.10.0"
-  end
-  link "#{ENV['HOME']}/.local/bin/nvim" do
-    to "#{ENV['HOME']}/.local/nvim/v0.10.0/bin/nvim"
-  end
-end
-
 link_directory ".config/nvim" do
   source "config/nvim"
 end
