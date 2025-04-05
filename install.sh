@@ -12,6 +12,10 @@ if [ "$(uname)" = 'Darwin' ]; then
   fi
 fi
 
+if ! command -v mise; then
+  /bin/bash -c "$(curl https://mise.run | sh)"
+fi
+
 # check git command exist
 if ! command -v git; then
   echo "git command isn't installed. Let's install."

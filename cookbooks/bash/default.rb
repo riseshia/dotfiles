@@ -19,6 +19,11 @@ execute "add 'source .dotbash' to bash_profile" do
   command "echo 'source #{ENV.fetch('HOME')}/.dotfiles/.dotbash' >> ~/.bash_profile"
 end
 
+execute "add 'mise activate' to bash_profile" do
+  not_if "grep -q 'mise activate' ~/.bash_profile"
+  command "echo 'eval \"$(#{ENV.fetch('HOME')}/.local/bin/mise activate bash)\"' >> ~/.bash_profile"
+end
+
 # copy_file ".alacritty.yml" do
 #   source "config/.alacritty.yml"
 # end
