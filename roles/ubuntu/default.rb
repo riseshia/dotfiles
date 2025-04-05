@@ -8,8 +8,6 @@ include_cookbook "nvim"
 include_cookbook "jq"
 include_cookbook "rust"
 include_cookbook "z"
-include_cookbook "rbenv"
-include_cookbook "nodenv"
 
 github_binary "fzf" do
   repository "junegunn/fzf"

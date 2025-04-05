@@ -32,6 +32,10 @@ copy_file ".dotfiles/.dotbash" do
   source "config/.dotbash"
 end
 
+copy_file ".config/mise/config.toml" do
+  source "config/mise.toml"
+end
+
 link_directory ".dotfiles/bash_profile.d" do
   source "config/bash_profile.d"
 end

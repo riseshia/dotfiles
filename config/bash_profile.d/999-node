@@ -1,6 +1,6 @@
 # Load nodenv unless it loaded.
-append_path_unless_exist "$HOME/.nodenv/bin"
-
-if command -v nodenv > /dev/null; then
-  eval "$(nodenv init -)"
-fi
+# append_path_unless_exist "$HOME/.nodenv/bin"
+#
+# if command -v nodenv > /dev/null; then
+#   eval "$(nodenv init -)"
+# fi

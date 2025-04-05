@@ -60,7 +60,7 @@ require('lspconfig')['ts_ls'].setup{
 require('lspconfig')['solargraph'].setup{
   on_attach = on_attach,
   cmd = {
-    "rbenv", "exec", "solargraph", "stdio"
+    "solargraph", "stdio"
   }
 }
 
