@@ -15,6 +15,3 @@ ecspresso = "latest"
 "aqua:fujiwara/lambroll" = "latest"
 
 [settings]
-
-[settings.python]
-compile = true
