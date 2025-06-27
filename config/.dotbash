@@ -40,7 +40,9 @@ alias ls='ls -alh'
 
 # Completion
 # tab autocompletion with cycle style
-bind TAB:menu-complete
+if tty -s 2>/dev/null; then
+  bind TAB:menu-complete
+fi
 
 # Load starship it exists & unless loaded.
 if command -v starship > /dev/null && ! [ -v STARSHIP_START_TIME ]; then
