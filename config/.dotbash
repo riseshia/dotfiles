@@ -20,7 +20,7 @@ export LC_ALL=en_US.UTF-8
 export LANG=en_US.UTF-8
 
 # Set default editor to vim
-export EDITOR=vim
+export EDITOR=nvim
 
 # Don't check mail when opening terminal.
 unset MAILCHECK
