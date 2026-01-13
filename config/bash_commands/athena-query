@@ -1,0 +1,97 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+# ==== 設定 ====
+DEFAULT_DB="default"
+DEFAULT_WORKGROUP="primary"
+POLL_INTERVAL=1
+
+# ==== 使い方 ====
+usage() {
+  cat <<EOF
+Usage: $(basename "$0") [OPTIONS] <query>
+
+Options:
+  -d, --database <db>      Database name (default: $DEFAULT_DB)
+  -w, --workgroup <wg>     Workgroup name (default: $DEFAULT_WORKGROUP)
+  -o, --output <format>    Output format: json, tsv, csv (default: csv)
+  -h, --help               Show this help
+
+Examples:
+  $(basename "$0") "SELECT * FROM logs LIMIT 10"
+  $(basename "$0") -d my_database -o tsv "SELECT * FROM users"
+  $(basename "$0") -w my_workgroup "SELECT 1"
+EOF
+  exit 0
+}
+
+# ==== 引数パース ====
+DB="$DEFAULT_DB"
+WORKGROUP="$DEFAULT_WORKGROUP"
+OUTPUT_FORMAT="csv"
+
+while [[ $# -gt 0 ]]; do
+  case "$1" in
+    -d|--database) DB="$2"; shift 2 ;;
+    -w|--workgroup) WORKGROUP="$2"; shift 2 ;;
+    -o|--output) OUTPUT_FORMAT="$2"; shift 2 ;;
+    -h|--help) usage ;;
+    -*) echo "Unknown option: $1" >&2; exit 1 ;;
+    *) QUERY="$1"; shift ;;
+  esac
+done
+
+if [[ -z "${QUERY:-}" ]]; then
+  echo "Error: Query is required" >&2
+  usage
+fi
+
+# ==== クエリ実行 ====
+QUERY_ID=$(aws athena start-query-execution \
+  --query-string "$QUERY" \
+  --query-execution-context Database="$DB" \
+  --work-group "$WORKGROUP" \
+  --query 'QueryExecutionId' --output text)
+
+echo "Query ID: $QUERY_ID" >&2
+
+# ==== ポーリング ====
+while true; do
+  STATUS=$(aws athena get-query-execution --query-execution-id "$QUERY_ID" \
+    --query 'QueryExecution.Status.State' --output text)
+  
+  case "$STATUS" in
+    SUCCEEDED)
+      break
+      ;;
+    FAILED|CANCELLED)
+      REASON=$(aws athena get-query-execution --query-execution-id "$QUERY_ID" \
+        --query 'QueryExecution.Status.StateChangeReason' --output text)
+      echo "Query $STATUS: $REASON" >&2
+      exit 1
+      ;;
+    *)
+      echo "Status: $STATUS" >&2
+      sleep "$POLL_INTERVAL"
+      ;;
+  esac
+done
+
+# ==== 結果取得 ====
+RESULT=$(aws athena get-query-results --query-execution-id "$QUERY_ID" --output json)
+
+case "$OUTPUT_FORMAT" in
+  json)
+    echo "$RESULT"
+    ;;
+  tsv)
+    echo "$RESULT" | jq -r '.ResultSet.Rows[] | .Data | map(.VarCharValue // "") | @tsv'
+    ;;
+  csv)
+    echo "$RESULT" | jq -r '.ResultSet.Rows[] | .Data | map(.VarCharValue // "") | @csv'
+    ;;
+  *)
+    echo "Unknown output format: $OUTPUT_FORMAT" >&2
+    exit 1
+    ;;
+esac
