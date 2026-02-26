@@ -1,5 +1,5 @@
 ---
-description: plan 実装
+description: Execute plan
 userInvocable: true
 arguments: filename
 ---
@@ -8,19 +8,19 @@ arguments: filename
 
 ## Workflow
 
-1. 指定された `{filename}` を読み、計画の全体像を把握する
-2. 計画に TDD ステップが定義されていればその順序に従う。なければ計画の構造から実装順序を判断する
-3. 各ステップを順に実装する
-   - ステップ開始前に何をやるか簡潔に宣言する
-   - テストがあるなら先にテストを書く (Red)
-   - テストを通す最小限のコードを書く (Green)
-   - 必要に応じてリファクタする (Refactor)
-   - 各ステップ完了後に `bun run typecheck && bun test`（またはプロジェクトの検証コマンド）で確認する
-4. 全ステップ完了後、計画の検証セクションに従って最終確認する
-5. 実装完了後、計画ファイルを削除する
+1. Read the specified `{filename}` and grasp the overall picture of the plan
+2. If the plan defines TDD steps, follow that order. Otherwise, determine the implementation order from the plan's structure
+3. Implement each step in sequence
+   - Briefly declare what you will do before starting each step
+   - If there are tests, write the test first (Red)
+   - Write the minimal code to make the test pass (Green)
+   - Refactor as needed (Refactor)
+   - After completing each step, verify with `bun run typecheck && bun test` (or the project's verification command)
+4. After all steps are complete, perform a final check according to the plan's verification section
+5. After implementation is complete, delete the plan file
 
-## 制約
+## Constraints
 
-- 計画に書かれていないことはやらない。スコープ外の改善・リファクタは行わない。
-- 計画と矛盾する実装が必要になった場合は、実装を止めてユーザーに確認する。
-- 既存テストを壊さない。壊れた場合は原因を特定して修正する。
+- Do not do anything not described in the plan. Do not make out-of-scope improvements or refactors.
+- If an implementation contradicts the plan, stop and confirm with the user.
+- Do not break existing tests. If tests break, identify the cause and fix it.

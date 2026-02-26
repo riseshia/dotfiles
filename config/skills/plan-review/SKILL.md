@@ -1,5 +1,5 @@
 ---
-description: plan レビュー（フィードバック反映 + 質問）
+description: Plan review (apply feedback + ask questions)
 userInvocable: true
 arguments: filename
 ---
@@ -8,27 +8,27 @@ arguments: filename
 
 ## Workflow
 
-1. 指定された `{filename}` を読み、計画の全体像を把握する
-2. **フィードバック反映**: ファイル内の `XXX:` プレフィックス付きコメントをすべて特定し、計画を改善する
-   - 設計への疑問・反対 → 設計を修正
-   - 代替案の提案 → 検討して採用/却下を判断
-   - 追加要件・制約 → 計画に反映
-   - 不足観点の補足 → 追記
-   - 反映済みの `XXX:` コメントを削除する。判断が難しいものは `TODO:` として残す
-3. **批判的分析**: 計画を以下の観点で分析し、問題点を洗い出す
-   - **曖昧な記述**: 実装時に解釈が分かれそうな箇所
-   - **考慮漏れ**: エッジケース、エラーハンドリング、既存コードとの整合性など
-   - **暗黙の前提**: 明文化されていない仮定や依存関係
-   - **設計の選択肢**: 複数のアプローチがありえるのに一つに決め打ちしている箇所
-   - **スコープの不明確さ**: やる/やらないの境界が曖昧な箇所
-4. 各問題点を `AI-ASK: {質問内容}` の形式で計画ファイルの該当箇所に直接追記する
-   - 質問は具体的かつ簡潔に書く
-   - 該当セクションの直後に挿入する（関連する文脈のすぐ近くに置く）
-5. 反映した内容と追記した質問の一覧をユーザーに提示する
-   - `XXX:` もなく質問もない場合は「計画に不明点はありません。実装可能です」と伝えて終了する
+1. Read the specified `{filename}` and grasp the overall picture of the plan
+2. **Apply feedback**: Identify all comments prefixed with `XXX:` in the file and improve the plan accordingly
+   - Questions or objections about the design → revise the design
+   - Alternative proposals → evaluate and decide to adopt or reject
+   - Additional requirements or constraints → incorporate into the plan
+   - Missing perspectives → append
+   - Remove `XXX:` comments that have been addressed. Leave difficult-to-resolve ones as `TODO:`
+3. **Critical analysis**: Analyze the plan from the following perspectives and identify issues
+   - **Ambiguous descriptions**: Areas where interpretation could diverge during implementation
+   - **Overlooked considerations**: Edge cases, error handling, consistency with existing code, etc.
+   - **Implicit assumptions**: Undocumented assumptions or dependencies
+   - **Design alternatives**: Areas where multiple approaches exist but only one is chosen without justification
+   - **Unclear scope**: Areas where the boundary of what is in/out of scope is vague
+4. Insert each issue directly into the plan file at the relevant location in the format `AI-ASK: {question}`
+   - Write questions specifically and concisely
+   - Insert immediately after the relevant section (place close to the related context)
+5. Present the user with a summary of changes made and questions added
+   - If there are no `XXX:` comments and no questions, respond with "No unclear points in the plan. Ready for implementation." and finish
 
-## 制約
+## Constraints
 
-- **実装は絶対に開始しない。** 計画の改善と質問の追記のみ。
-- コードの編集・作成は行わない（プランファイルの更新のみ）。
-- 元のファイルのフォーマット・構造を維持する。
+- **Never start implementation.** Only improve the plan and add questions.
+- Do not edit or create code (only update the plan file).
+- Preserve the original file's format and structure.
