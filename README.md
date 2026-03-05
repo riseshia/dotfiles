@@ -8,6 +8,12 @@ Rebirth of https://github.com/riseshia/legacy-dotfiles
 $ curl -sfSL https://raw.githubusercontent.com/riseshia/dotfiles/master/install.sh | bash
 ```
 
+## Claude Code Plugins
+
+```
+/plugin marketplace add riseshia/dotfiles
+```
+
 ## Commands
 
 ```

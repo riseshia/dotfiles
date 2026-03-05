@@ -1,0 +1,23 @@
+{
+  "name": "riseshia-dotfiles",
+  "owner": { "name": "riseshia" },
+  "metadata": {
+    "description": "Personal Claude Code plugins"
+  },
+  "plugins": [
+    {
+      "name": "dev",
+      "source": "./plugins/dev",
+      "description": "Git commit, PR, planning, and task management skills",
+      "version": "0.1.0",
+      "license": "MIT"
+    },
+    {
+      "name": "misc",
+      "source": "./plugins/misc",
+      "description": "Coding guidelines and translation skills",
+      "version": "0.1.0",
+      "license": "MIT"
+    }
+  ]
+}

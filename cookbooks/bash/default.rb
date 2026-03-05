@@ -50,6 +50,3 @@ end
 link_directory ".dotfiles/bash_commands" do
   source "config/bash_commands"
 end
-link_directory ".claude/skills" do
-  source "config/skills"
-end
