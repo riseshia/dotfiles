@@ -15,3 +15,6 @@ ecspresso = "latest"
 "aqua:fujiwara/lambroll" = "latest"
 
 [settings]
+
+[settings.ruby]
+compile = true
