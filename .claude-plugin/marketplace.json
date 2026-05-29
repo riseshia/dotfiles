@@ -6,8 +6,8 @@
   },
   "plugins": [
     {
-      "name": "dev",
-      "source": "./plugins/dev",
+      "name": "shia-guides",
+      "source": "./plugins/shia-guides",
       "description": "Git commit, PR, planning, and task management skills",
       "version": "0.1.0",
       "license": "CC0-1.0"
