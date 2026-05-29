@@ -10,14 +10,14 @@
       "source": "./plugins/dev",
       "description": "Git commit, PR, planning, and task management skills",
       "version": "0.1.0",
-      "license": "MIT"
+      "license": "CC0-1.0"
     },
     {
       "name": "misc",
       "source": "./plugins/misc",
       "description": "Coding guidelines and translation skills",
       "version": "0.1.0",
-      "license": "MIT"
+      "license": "CC0-1.0"
     }
   ]
 }

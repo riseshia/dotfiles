@@ -1,5 +1,6 @@
 {
   "name": "misc",
   "version": "0.1.0",
-  "description": "Coding guidelines and translation skills"
+  "description": "Coding guidelines and translation skills",
+  "license": "CC0-1.0"
 }

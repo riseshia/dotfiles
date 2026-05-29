@@ -1,5 +1,6 @@
 {
   "name": "dev",
   "version": "0.1.0",
-  "description": "Git commit, PR, planning, and task management skills"
+  "description": "Git commit, PR, planning, and task management skills",
+  "license": "CC0-1.0"
 }
