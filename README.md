@@ -14,9 +14,9 @@ $ curl -sfSL https://raw.githubusercontent.com/riseshia/dotfiles/master/install.
 /plugin marketplace add riseshia/dotfiles
 ```
 
-## Commands
+## Usage
 
 ```
-dotfiles update
-dotfiles upgrade
+dotfiles update    # Update source repository
+dotfiles upgrade   # Apply setup.sh
 ```

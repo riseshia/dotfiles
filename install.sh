@@ -27,8 +27,6 @@ fi
 
 # Prepare dotfile repository
 REPO_CLONE_DIR="$HOME/.dotfiles_src"
-DEPLOY_DEST_DIR="$HOME/.dotfiles"
-
 if [ ! -d "$REPO_CLONE_DIR" ]; then
   echo "'$REPO_CLONE_DIR' dir isn't exist."
   git clone https://github.com/riseshia/dotfiles.git "$REPO_CLONE_DIR"
@@ -37,19 +35,7 @@ else
   cd "$REPO_CLONE_DIR" && git fetch && git reset --hard origin/main
 fi
 
-if ! [ -h "$REPO_CLONE_DIR/bin/mitamae" ]; then
-  echo "mitamae isn't installed. Let's install."
-  pushd "${REPO_CLONE_DIR}"
-  bin/setup_mitamae
-  popd
-else
-  echo "mitamae is already installed. Skip install."
-fi
+mkdir -p "$HOME/.dotfiles"
 
-# Deploy dotfiles
-mkdir -p "$DEPLOY_DEST_DIR"
-
-# Apply dotfiles
-pushd "$REPO_CLONE_DIR"
-bin/dotfiles upgrade
-popd
+cd "$REPO_CLONE_DIR"
+bash setup.sh

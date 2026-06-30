@@ -5,7 +5,7 @@ if ! [ $# -eq 1 ]; then
   exit 1
 fi
 
-export DOTFILE_SRC_PATH=$(cd $(dirname "$0")/..; pwd -P)
+DOTFILE_SRC_PATH="$(cd "$(dirname "$0")/.." && pwd -P)"
 
 if ! [[ "$DOTFILE_SRC_PATH" =~ dotfiles_src ]]; then
   echo "Dotfiles: You're using Development env."
@@ -23,15 +23,7 @@ case $COMMAND in
     fi
     ;;
   upgrade)
-    case "$(uname)" in
-      "Darwin")  cd "$DOTFILE_SRC_PATH" && bin/mitamae local lib/recipe.rb ;;
-      *) cd "$DOTFILE_SRC_PATH" && sudo -E bin/mitamae local lib/recipe.rb ;;
-    esac
+    cd "$DOTFILE_SRC_PATH" && bash setup.sh
     ;;
   *) echo "$COMMAND is not exist command. update|upgrade is only available."; exit 1;;
 esac
-
-if ! [[ "$DOTFILE_SRC_PATH" =~ dotfiles_src ]]; then
-  echo "Dotfiles: You're using Development env."
-  DEV_MODE=1
-fi
