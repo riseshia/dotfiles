@@ -1,0 +1,49 @@
+# dev-workflow transition table (composable state machine).
+#
+# Directives:
+#   @initial  <state>      the start state
+#   @terminal <state>      a terminal state (no outgoing transitions)
+#   @gate     <state>      a human-gate state: leaving it (any event except
+#                          `exit`) requires a prior `workflow.sh approve`
+#   @worker   <state>      a work-state run in a fresh process: `workflow.sh work`
+#                          executes workers/<state>.txt via `claude -p`. The
+#                          orchestrator must delegate, not do the work inline.
+#
+# Transitions (one per line):
+#   <from> <event> <to> [counter=NAME max=N] [gate=1]
+#     counter/max : bounded loop guard. The event is allowed only while the
+#                   named attempt counter < max; firing it increments the counter.
+#                   Counters with the same NAME are shared across transitions.
+#     gate=1      : firing this event requires prior `workflow.sh approve`
+#                   (human sign-off). Resets after firing.
+#
+# `exit` is always available from any non-terminal state and goes to `exited`.
+# Every non-terminal state should have a prompt at nodes/<state>.md
+# (the `-` in a state name maps to `nodes/<state>.md`, e.g. plan-approve -> nodes/plan-approve.md).
+#
+# Edit this table to recompose the workflow; the workflow-retro skill may rewrite it.
+
+@initial  plan
+@terminal done
+@terminal exited
+@gate     plan-approve
+@worker   plan
+@worker   implement
+@worker   validate
+@worker   minor-fix
+@worker   recheck
+@worker   open-pr
+
+plan          submit    plan-approve
+plan-approve  revise    plan
+plan-approve  resume    implement
+implement     submit    validate
+validate      rework    implement     counter=rework max=5
+validate      minor     minor-fix
+validate      recheck   recheck
+minor-fix     rework    implement     counter=rework max=5
+minor-fix     recheck   recheck
+recheck       continue  implement     counter=continue max=1
+recheck       pr        open-pr
+open-pr       submit    followup
+followup      submit    done
