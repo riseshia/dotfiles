@@ -21,6 +21,7 @@ WORKERS_DIR="$SCRIPT_DIR/workers"
 WF_DIR=".workflow"
 STATE_FILE="$WF_DIR/state"
 TASK_FILE="$WF_DIR/task.md"
+HISTORY_FILE="$WF_DIR/history.log"
 
 EXIT_STATE="exited"
 
@@ -75,6 +76,13 @@ set_kv() {
   fi
   echo "$key=$val" >> "$tmp"
   mv "$tmp" "$STATE_FILE"
+}
+
+# Append a timestamped line to the run history — the durable evidence trail
+# workflow-retro reads (transition path, loop counts, wall-clock per state).
+log_event() {
+  [ -d "$WF_DIR" ] || return 0
+  printf '%s %s\n' "$(date -u +%Y-%m-%dT%H:%M:%SZ)" "$*" >> "$HISTORY_FILE"
 }
 
 # Parse "key=val" flags from a transition's trailing tokens into globals.
@@ -132,6 +140,7 @@ cmd_start() {
   [ -f "$STATE_FILE" ] && die "workflow already in progress (state=$(get state)). run '$0 abort' to reset."
   mkdir -p "$WF_DIR"
   : > "$STATE_FILE"
+  : > "$HISTORY_FILE"
   set_kv state "$INITIAL"
   set_kv approved no
   set_kv plan_file ""
@@ -139,6 +148,7 @@ cmd_start() {
   set_kv pr_url ""
   printf '%s\n' "$task" > "$TASK_FILE"
   ensure_gitignored
+  log_event "start $INITIAL"
   cmd_show
 }
 
@@ -201,6 +211,7 @@ cmd_work() {
   [ -f "$pf" ] || die "worker prompt missing: $pf"
   bin="${WORKFLOW_CLAUDE_BIN:-claude}"
   command -v "$bin" >/dev/null 2>&1 || die "'$bin' not found on PATH. install the Claude Code CLI, or set WORKFLOW_CLAUDE_BIN."
+  log_event "work $cur"
   echo "[workflow] state=$cur -> running worker in a fresh process: $bin -p (workers/$cur.txt) ${WORKFLOW_CLAUDE_FLAGS:-}" >&2
   # The worker runs in its own process/context; only its final stdout returns here.
   # Strip the Claude Code session markers so it starts as a fresh top-level
@@ -222,6 +233,7 @@ cmd_fire() {
 
   if [ "$event" = "exit" ]; then
     set_kv state "$EXIT_STATE"
+    log_event "fire $cur exit $EXIT_STATE"
     echo "-> $cur --exit--> $EXIT_STATE"
     cmd_show
     return
@@ -253,6 +265,7 @@ cmd_fire() {
 
   set_kv state "$F_TO"
   [ "$gated" = "yes" ] && set_kv approved no   # consume the approval
+  log_event "fire $cur $event $F_TO"
   echo "-> $cur --$event--> $F_TO"
   cmd_show
 }
@@ -260,6 +273,7 @@ cmd_fire() {
 cmd_approve() {
   require_state
   set_kv approved yes
+  log_event "approve $(get state)"
   echo "-> approved. the gate is unlocked (consumed on the next gated fire)."
 }
 

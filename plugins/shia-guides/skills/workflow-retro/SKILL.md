@@ -1,43 +1,49 @@
 ---
 name: workflow-retro
-description: Run a session-level retrospective after a dev-workflow run (or any working session) and propose concrete, composable adjustments to the workflow itself — the `pipeline` file and `nodes/*.md` prompts of the shia-guides:workflow skill. Use when a task is finished and you want to capture what worked, what caused friction, and improve the workflow before the next run.
+description: Run a session-level retrospective after a shia-guides:workflow run and propose concrete, composable improvements to the workflow's three surfaces — the `pipeline` transition table, `nodes/*.md` orchestrator routers, and `workers/*.txt` worker prompts. Grounds findings in the run's `.workflow/history.log` (timestamped transition/worker trace), state counters, and the shipped diff. Use when a run is finished (before `abort`) and you want to turn what happened into a better workflow.
 user-invocable: true
-version: 0.1.0
+version: 0.2.0
 license: CC0-1.0
 ---
 
 # Workflow Retro
 
-A session-level retrospective for the `shia-guides:workflow` skill. It reflects on how the run went and turns friction into **concrete edits to the composable pipeline** (`pipeline` + `nodes/*.md`), so the workflow gets better each time.
+A session-level retrospective for the `shia-guides:workflow` skill. It reflects on how a run went and turns friction into **concrete edits to one of three surfaces**:
 
-Run this at the end of a session — typically when the workflow reaches `done`, or any time the user wants to tune the process.
+- `pipeline` — the state machine (states, events, guards, `@gate`, `@worker`).
+- `nodes/<state>.md` — the **orchestrator's** routing for a state (which event to fire from a verdict).
+- `workers/<state>.txt` — the prompt a `claude -p` **worker** actually runs. Most prompt-quality friction lives here.
 
-## Inputs
+Run it **before `workflow.sh abort`**, while `.workflow/` still exists. `<workflow-skill-dir>` is the sibling `workflow` skill dir (`../workflow` relative to this skill).
 
-Gather evidence before judging. Prefer facts from this session over recollection:
+## What you can and cannot see
 
-1. Workflow state, if present: `bash <workflow-skill-dir>/workflow.sh show` and `.workflow/plan.md`, `.workflow/task.md`.
-2. What actually happened this session: which states ran, where the human had to intervene beyond the plan/plan-approve dialogue, where verification failed and why, where the sub-agent diverged from the plan, and any rework/continue loops.
-3. The current pipeline definition and node prompts (`pipeline`, `nodes/*.md`).
+By design, work-states run in isolated `claude -p` processes, so the orchestrator only ever saw each worker's short **verdict**, never its internal reasoning, diffs, or tool calls. Ground the retro in what is actually observable:
 
-`<workflow-skill-dir>` is the sibling `workflow` skill directory (`../workflow` relative to this skill).
+- **`.workflow/history.log`** — the durable, timestamped trace: `start`, every `work <state>`, every `fire <from> <event> <to>`, every `approve`. This is the primary evidence: the exact path taken, **loop counts** (`grep 'rework'` / `'continue'`), and **wall-clock per state** (timestamp deltas — the "how long did it take" signal).
+- **`bash <workflow-skill-dir>/workflow.sh show`** — final state, `attempt_*` counters, branch, pr_url.
+- **`.workflow/plan.md` / `task.md`** — what was planned; **`.workflow/feedback.md`** if a loop was mid-flight (the last rework/continue reason).
+- **This session's transcript** (if the retro runs in the same session) — the verdicts you relayed, the human dialogue at `plan` / `plan-approve`, any `implement` escalation.
+- **The shipped change** — `git diff` / the PR: what landed vs the plan.
+- **Cannot see**: a worker's internal reasoning. If a worker's behavior is the suspect, infer from its verdict + the diff, or re-run that worker with logging — do not invent what it "must have done".
 
 ## Steps
 
-1. **Reconstruct the timeline.** Briefly: task → states traversed → human touchpoints → outcome (PR URL / verification result). Keep it factual.
-2. **Identify friction**, each tied to evidence (a state, a file, a moment in the session):
-   - Where did the agent stall, loop, or need correction?
-   - Did a node prompt under- or over-specify, causing rework?
-   - Was the gate in the right place (too early / too late / missing)?
-   - Did `implement` get enough context, or did the sub-agent guess?
-   - Was anything done out of scope, or missed?
-3. **Propose changes** — concrete and minimal. For each, name the target and the edit:
-   - `pipeline` (transition table): add/remove/reorder a state, retarget an event, change a guard (`counter`/`max`), or move the gate (`@gate`) / worker (`@worker`).
-   - `nodes/<state>.md`: tighten the orchestrator's routing for a state (quote the line to change).
-   - `workers/<state>.txt`: tighten the prompt the `claude -p` worker actually runs (this is usually where under/over-specification that caused rework lives).
-   - Note anything that is a one-off (project-specific) and should NOT be baked into the skill.
-4. **Present** the retro to the user: timeline (3-5 lines), top friction points, and the proposed edits as a short list. Recommend, don't just enumerate.
-5. **Apply on approval.** Only after the user agrees, edit `pipeline` / `nodes/*.md`. Keep edits surgical. If a proposed state is added, also create its `nodes/<state>.md`. Re-validate: `bash <workflow-skill-dir>/workflow.sh help` (it loads the table and errors on a broken one), and confirm every `from` state has a matching node file.
+1. **Reconstruct the timeline** from `history.log`: states traversed, loop counts, time per state, human touchpoints, outcome (PR/verification). Factual.
+2. **Identify friction**, each tied to evidence, using this architecture's failure modes:
+   - **Loop thrash** — high `rework`/`continue` count. Which worker prompt is mis-calibrated? (e.g. `workers/implement.txt` missing a constraint, or `workers/validate.txt`'s severity bar wrong so it kicks back too readily.)
+   - **Misrouting** — a `validate` verdict (CLEAN/MINOR/SIGNIFICANT) or the minor↔rework boundary was wrong → the boundary wording in `workers/validate.txt` + `nodes/validate.md`.
+   - **Gate friction** — `plan-approve` too heavy or rubber-stamped; `plan` dialogue asked things the code answers, or asked too little (so it surfaced later as an `implement` escalation).
+   - **Worker failure** — `claude -p` permission/flag problems, or a worker that couldn't do its job → `WORKFLOW_CLAUDE_FLAGS` or the worker prompt.
+   - **Scope** — out-of-scope work slipped through → constraints in `workers/implement.txt`.
+   - **Wasted time** — a slow or redundant state visible in the `history.log` durations (e.g. `recheck` re-running a full suite on the clean path).
+3. **Propose changes** — concrete, minimal, on the right surface:
+   - `workers/<state>.txt` — the worker prompt (most prompt-quality fixes land here; quote the line).
+   - `nodes/<state>.md` — the orchestrator's routing/decision for a state.
+   - `pipeline` — states/events/guards (`counter`/`max`)/`@gate`/`@worker`.
+   - Mark project-specific one-offs that should NOT be baked into the skill.
+4. **Present**: timeline (3-5 lines, incl. durations + loop counts), top friction, proposed edits as a short list — recommend, don't just enumerate.
+5. **Apply on approval.** Keep edits surgical. A new `@worker` state needs both `nodes/<state>.md` and `workers/<state>.txt`. Re-validate: `bash <workflow-skill-dir>/workflow.sh help` (loads the table; errors if broken), and confirm every `from` state has a `nodes/<state>.md` and every `@worker` has a `workers/<state>.txt`. These are committed skill files — after applying, suggest committing the change.
 
 ## Output format
 
@@ -45,15 +51,16 @@ Gather evidence before judging. Prefer facts from this session over recollection
 ## Retrospective
 
 ### What happened
-- <timeline, 3-5 lines>
+- <timeline from history.log: path, loop counts, time per state, outcome — 3-5 lines>
 
 ### Friction
-1. <issue> — <evidence: state/file/moment>
+1. <issue> — <evidence: a history.log line / counter / verdict / diff>
 2. ...
 
 ### Proposed changes
-- `pipeline`: <edit> — <why>
+- `workers/<state>.txt`: <edit> — <why>
 - `nodes/<state>.md`: <edit> — <why>
+- `pipeline`: <edit> — <why>
 - (out of scope for the skill: <one-off>)
 
 ### Recommendation
@@ -62,7 +69,7 @@ Gather evidence before judging. Prefer facts from this session over recollection
 
 ## Constraints
 
-- Ground every friction point in something that actually happened this session. No generic advice.
-- Keep proposed edits minimal and composable — change the pipeline/nodes, not the `workflow.sh` control logic, unless a real defect is found there.
-- Do not apply edits without user approval.
+- Ground every friction point in `history.log` / counters / a relayed verdict / the diff — not vibes, and not assumptions about worker internals you could not see.
+- Keep edits minimal and composable — change `pipeline` / `nodes` / `workers`, not the `workflow.sh` control logic, unless a real defect is found there.
+- Do not apply edits without user approval. Applied edits change the installed skill for every future run — commit them deliberately.
 - Distinguish workflow-level improvements (bake into the skill) from project-specific one-offs (do not).

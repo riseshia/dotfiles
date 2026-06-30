@@ -3,7 +3,7 @@ name: workflow
 description: Run a development task as an event-driven state machine (plan → plan-approve → implement → validate → minor-fix/recheck → open-pr → followup → done). A thin orchestrator fires named transitions via a CLI that enforces the plan-approve human gate and bounded rework/continue loops, reads a per-state prompt for each node, delegates heavy work-states to fresh workers (Agent tool or claude -p) over a file-based handoff, and ships via a Draft PR. Use when the user wants to run a non-trivial task end-to-end with minimal supervision.
 user-invocable: true
 arguments: task
-version: 0.6.0
+version: 0.7.0
 license: CC0-1.0
 ---
 
@@ -13,7 +13,7 @@ Run a development task as an **event-driven finite state machine**. Each state i
 
 Design: deterministic engineering for the control flow, LLM judgment for the work.
 
-- **State lives in files** (`.workflow/`: `state`, `task.md`, `plan.md`, and `feedback.md` — the reason for a `rework`/`continue` loop, written by the routing state and consumed by `implement`), so a run survives sub-agents and session resumes.
+- **State lives in files** (`.workflow/`: `state`, `task.md`, `plan.md`, `feedback.md` — the reason for a `rework`/`continue` loop, written by the routing state and consumed by `implement` — and `history.log`, the timestamped transition/worker trace that `workflow-retro` reads), so a run survives sub-agents and session resumes.
 - **The machine is composable**: states, events, guards, and gates live in the `pipeline` transition table, not in code. Each state has a **separate prompt** (`nodes/<state>.md`) the agent reads on entry.
 - **Transitions go through the CLI**, which validates the event, blocks gated events until approved, and enforces attempt-counter guards.
 - **The orchestrator stays thin.** Work-states (anything that reads/writes lots of repo content — diffs, tests, git) run in a **worker** with its own context; the orchestrator only drives transitions, holds the human dialogue, and reads each worker's short report. See **Workers** below.
