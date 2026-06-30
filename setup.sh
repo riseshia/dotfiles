@@ -9,7 +9,7 @@ case "$(uname)" in
 esac
 
 # Directories
-mkdir -p ~/bin ~/.config ~/.dotfiles ~/.config/nvim ~/.config/mise ~/.local/bin
+mkdir -p ~/bin ~/.config ~/.dotfiles ~/.config/mise ~/.local/bin
 
 # Packages
 if [ "$arch" = "mac" ]; then
@@ -27,19 +27,18 @@ else
 fi
 
 # Symlinks: files
-ln -sf "$DOTDIR/config/.dotbash" ~/.dotfiles/.dotbash
-ln -sf "$DOTDIR/config/.tmux.conf" ~/.tmux.conf
-ln -sf "$DOTDIR/config/.gitignore" ~/.gitignore
-ln -sf "$DOTDIR/config/.starship.toml" ~/.config/starship.toml
-ln -sf "$DOTDIR/config/mise.toml" ~/.config/mise/config.toml
-ln -sf "$DOTDIR/config/.default-gems" ~/.default-gems
-ln -sf "$DOTDIR/config/.default-npm-packages" ~/.default-npm-packages
+ln -sf "$DOTDIR/bash/dotbash" ~/.dotfiles/.dotbash
+ln -sf "$DOTDIR/tmux/tmux.conf" ~/.tmux.conf
+ln -sf "$DOTDIR/misc/gitignore" ~/.gitignore
+ln -sf "$DOTDIR/misc/starship.toml" ~/.config/starship.toml
+ln -sf "$DOTDIR/misc/mise.toml" ~/.config/mise/config.toml
+ln -sf "$DOTDIR/misc/default-gems" ~/.default-gems
+ln -sf "$DOTDIR/misc/default-npm-packages" ~/.default-npm-packages
 
 # Symlinks: directories
-ln -snf "$DOTDIR/config/bash_profile.d" ~/.dotfiles/bash_profile.d
-ln -snf "$DOTDIR/config/bash_commands" ~/.dotfiles/bash_commands
-ln -snf "$DOTDIR/config/nvim" ~/.config/nvim
-ln -snf "$DOTDIR/config/vim-colors" ~/.config/nvim/colors
+ln -snf "$DOTDIR/bash/profile.d" ~/.dotfiles/bash_profile.d
+ln -snf "$DOTDIR/bash/commands" ~/.dotfiles/bash_commands
+ln -snf "$DOTDIR/nvim" ~/.config/nvim
 
 # Bash profile
 if ! grep -q '.dotbash' ~/.bash_profile 2>/dev/null; then
@@ -51,7 +50,7 @@ fi
 
 # Git
 git config --global core.excludesFile ~/.gitignore
-git config --global core.editor vim
+git config --global core.editor nvim
 git config --global core.quotepath off
 git config --global color.ui true
 git config --global push.default simple
