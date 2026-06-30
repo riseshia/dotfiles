@@ -17,6 +17,6 @@ $ curl -sfSL https://raw.githubusercontent.com/riseshia/dotfiles/master/install.
 ## Usage
 
 ```
-dotfiles update    # Update source repository
-dotfiles upgrade   # Apply setup.sh
+git pull        # Update source (symlinks reflect changes immediately)
+./setup.sh      # Re-run after adding new packages or symlinks
 ```
