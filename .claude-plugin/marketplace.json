@@ -8,8 +8,8 @@
     {
       "name": "shia-guides",
       "source": "./plugins/shia-guides",
-      "description": "Git commit, PR, planning, and task management skills",
-      "version": "0.1.0",
+      "description": "Git commit, PR, planning, task management, code review, and state-machine workflow skills",
+      "version": "0.4.0",
       "license": "CC0-1.0"
     },
     {
