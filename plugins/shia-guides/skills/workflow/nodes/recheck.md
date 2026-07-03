@@ -10,6 +10,6 @@ Steps:
    ```
 2. Route on the returned `RESULT`:
    - `READY` -> `bash <skill-dir>/workflow.sh fire pr`.
-   - `NOT-READY` -> write the reason to `.workflow/feedback.md`, then `bash <skill-dir>/workflow.sh fire continue`. Last-chance loop (max 1): a problem that escaped `validate` reappeared. If `continue` is exhausted, do not ship — `bash <skill-dir>/workflow.sh fire exit`.
+   - `NOT-READY` -> overwrite `.workflow/feedback.md` with the reason (markdown bullets), then `bash <skill-dir>/workflow.sh fire continue "<one-line reason>"`. Last-chance loop (bounded by the `continue` guard): a problem that escaped `validate` reappeared. If `continue` is exhausted, do not ship — `bash <skill-dir>/workflow.sh fire exit`.
 
 The only ship path is a Draft PR — the human reviews the actual change there.

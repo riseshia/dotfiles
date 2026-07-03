@@ -10,4 +10,4 @@ Steps:
    ```
 2. Route on the returned `RESULT`:
    - `FIXED` -> delete `.workflow/feedback.md`, then `bash <skill-dir>/workflow.sh fire recheck`.
-   - `EXCEEDED` -> overwrite `.workflow/feedback.md` with the escalation reason, then `bash <skill-dir>/workflow.sh fire rework` (shared guard, max 5).
+   - `EXCEEDED` -> overwrite `.workflow/feedback.md` with the escalation reason (markdown bullets), then `bash <skill-dir>/workflow.sh fire rework "<one-line reason>"` (shared `rework` guard).

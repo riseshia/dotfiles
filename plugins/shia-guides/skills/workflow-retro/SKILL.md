@@ -2,7 +2,7 @@
 name: workflow-retro
 description: Run a session-level retrospective after a shia-guides:workflow run and propose concrete, composable improvements to the workflow's three surfaces — the `pipeline` transition table, `nodes/*.md` orchestrator routers, and `workers/*.txt` worker prompts. Grounds findings in the run's `.workflow/history.log` (timestamped transition/worker trace), state counters, and the shipped diff. Use when a run is finished (before `abort`) and you want to turn what happened into a better workflow.
 user-invocable: true
-version: 0.2.0
+version: 0.3.0
 license: CC0-1.0
 ---
 
@@ -20,9 +20,9 @@ Run it **before `workflow.sh abort`**, while `.workflow/` still exists. `<workfl
 
 By design, work-states run in isolated `claude -p` processes, so the orchestrator only ever saw each worker's short **verdict**, never its internal reasoning, diffs, or tool calls. Ground the retro in what is actually observable:
 
-- **`.workflow/history.log`** — the durable, timestamped trace: `start`, every `work <state>`, every `fire <from> <event> <to>`, every `approve`. This is the primary evidence: the exact path taken, **loop counts** (`grep 'rework'` / `'continue'`), and **wall-clock per state** (timestamp deltas — the "how long did it take" signal).
+- **`.workflow/history.log`** — the durable, timestamped trace: `start` (with a `(dirty working tree)` marker when applicable), every `work <state>`, every `fire <from> <event> <to>` — loop-back fires carry the reason as a `-- <reason>` suffix — every `approve`, and every **`reject <state> <event> (why)`** line for a fire the CLI refused (gate not approved, guard exhausted, no such transition). This is the primary evidence: the exact path taken, **loop counts** (`grep 'rework'` / `'continue'`), **why each loop-back happened** (the `--` suffixes), **where the orchestrator groped** (repeated `reject` lines), and **wall-clock per state** (timestamp deltas — the "how long did it take" signal).
 - **`bash <workflow-skill-dir>/workflow.sh show`** — final state, `attempt_*` counters, branch, pr_url.
-- **`.workflow/plan.md` / `task.md`** — what was planned; **`.workflow/feedback.md`** if a loop was mid-flight (the last rework/continue reason).
+- **`.workflow/plan.md` / `task.md`** — what was planned; **`.workflow/feedback.md`** if a loop was mid-flight (the full text of the pending kickback; past ones survive as the `-- <reason>` suffixes in `history.log`).
 - **This session's transcript** (if the retro runs in the same session) — the verdicts you relayed, the human dialogue at `plan` / `plan-approve`, any `implement` escalation.
 - **The shipped change** — `git diff` / the PR: what landed vs the plan.
 - **Cannot see**: a worker's internal reasoning. If a worker's behavior is the suspect, infer from its verdict + the diff, or re-run that worker with logging — do not invent what it "must have done".
@@ -31,7 +31,8 @@ By design, work-states run in isolated `claude -p` processes, so the orchestrato
 
 1. **Reconstruct the timeline** from `history.log`: states traversed, loop counts, time per state, human touchpoints, outcome (PR/verification). Factual.
 2. **Identify friction**, each tied to evidence, using this architecture's failure modes:
-   - **Loop thrash** — high `rework`/`continue` count. Which worker prompt is mis-calibrated? (e.g. `workers/implement.txt` missing a constraint, or `workers/validate.txt`'s severity bar wrong so it kicks back too readily.)
+   - **Loop thrash** — high `rework`/`continue` count. Read the `-- <reason>` suffixes on those fires: does the same kind of kickback repeat? Which worker prompt is mis-calibrated? (e.g. `workers/implement.txt` missing a constraint, or `workers/validate.txt`'s severity bar wrong so it kicks back too readily.)
+   - **Orchestrator groping** — repeated `reject` lines in `history.log`: the orchestrator tried events the machine refused. Usually a routing gap in `nodes/<state>.md` (a verdict case with no matching instruction) or a misleading line in `SKILL.md`.
    - **Misrouting** — a `validate` verdict (CLEAN/MINOR/SIGNIFICANT) or the minor↔rework boundary was wrong → the boundary wording in `workers/validate.txt` + `nodes/validate.md`.
    - **Gate friction** — `plan-approve` too heavy or rubber-stamped; `plan` dialogue asked things the code answers, or asked too little (so it surfaced later as an `implement` escalation).
    - **Worker failure** — `claude -p` permission/flag problems, or a worker that couldn't do its job → `WORKFLOW_CLAUDE_FLAGS` or the worker prompt.
@@ -43,7 +44,7 @@ By design, work-states run in isolated `claude -p` processes, so the orchestrato
    - `pipeline` — states/events/guards (`counter`/`max`)/`@gate`/`@worker`.
    - Mark project-specific one-offs that should NOT be baked into the skill.
 4. **Present**: timeline (3-5 lines, incl. durations + loop counts), top friction, proposed edits as a short list — recommend, don't just enumerate.
-5. **Apply on approval.** Keep edits surgical. A new `@worker` state needs both `nodes/<state>.md` and `workers/<state>.txt`. Re-validate: `bash <workflow-skill-dir>/workflow.sh help` (loads the table; errors if broken), and confirm every `from` state has a `nodes/<state>.md` and every `@worker` has a `workers/<state>.txt`. These are committed skill files — after applying, suggest committing the change.
+5. **Apply on approval.** Keep edits surgical. A new `@worker` state needs both `nodes/<state>.md` and `workers/<state>.txt`. Re-validate with `bash <workflow-skill-dir>/workflow.sh lint` — it checks the pipeline ↔ nodes/ ↔ workers/ consistency (missing files, duplicate transitions, conflicting counter maxes, dead ends) and must pass before you are done. These are committed skill files — after applying, suggest committing the change.
 
 ## Output format
 
@@ -70,6 +71,6 @@ By design, work-states run in isolated `claude -p` processes, so the orchestrato
 ## Constraints
 
 - Ground every friction point in `history.log` / counters / a relayed verdict / the diff — not vibes, and not assumptions about worker internals you could not see.
-- Keep edits minimal and composable — change `pipeline` / `nodes` / `workers`, not the `workflow.sh` control logic, unless a real defect is found there.
+- Keep edits minimal and composable — change `pipeline` / `nodes` / `workers`, not the `workflow.sh` control logic, unless a real defect is found there. When a `pipeline` edit makes the workflow `SKILL.md` prose stale (diagram, states table, worker list), update that prose in the same pass — doc drift never heals itself.
 - Do not apply edits without user approval. Applied edits change the installed skill for every future run — commit them deliberately.
 - Distinguish workflow-level improvements (bake into the skill) from project-specific one-offs (do not).

@@ -17,3 +17,5 @@ When the user responds, run `bash <skill-dir>/workflow.sh approve` to record the
 - **Approved as-is** -> `bash <skill-dir>/workflow.sh fire resume` (-> `implement`).
 
 Without a prior `approve`, the CLI rejects both `revise` and `resume`. The approval is consumed on firing, so re-entering the gate requires re-approval. Only if the user pre-authorized skipping review ("just go") may you `approve` + `resume` immediately; say so in one line.
+
+Resume safety: if `workflow.sh show` already reports `approved: yes` but you have not presented this plan to the user in the current session (e.g. a previous session died between `approve` and `fire`), treat the approval as stale — do not fire; re-present and wait for the user again.

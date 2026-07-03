@@ -10,5 +10,5 @@ Steps:
    ```
 2. Route on the returned `VERDICT`:
    - `CLEAN` -> `bash <skill-dir>/workflow.sh fire recheck`.
-   - `MINOR` -> write the listed items to `.workflow/feedback.md`, then `bash <skill-dir>/workflow.sh fire minor`.
-   - `SIGNIFICANT` -> write the reason + required changes to `.workflow/feedback.md`, then `bash <skill-dir>/workflow.sh fire rework` (shared guard, max 5; if exhausted the CLI rejects it — ask the user: ship what works, or `fire exit`).
+   - `MINOR` -> overwrite `.workflow/feedback.md` with the listed items (markdown bullets, one per line), then `bash <skill-dir>/workflow.sh fire minor "<one-line verdict summary>"`.
+   - `SIGNIFICANT` -> overwrite `.workflow/feedback.md` with the reason + required changes (markdown bullets), then `bash <skill-dir>/workflow.sh fire rework "<one-line verdict summary>"` (shared `rework` guard; if exhausted the CLI rejects it — ask the user: ship what works, or `fire exit`).

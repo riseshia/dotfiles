@@ -14,4 +14,4 @@ Constraints:
 - Do not break existing tests. If they break, find the cause and fix it.
 - DO NOT create commits or a PR.
 
-Output a report: files changed and what changed; verification results (pass/fail with key output); and anything that diverged from the plan or blocked you (label it BLOCKED if you could not proceed).
+Output a report of at most 10 lines: files changed (one line each: path + what changed, in a clause); verification result (pass/fail plus failing test/check names only — no raw logs); and anything that diverged from the plan or blocked you (label it BLOCKED if you could not proceed).

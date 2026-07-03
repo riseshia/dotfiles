@@ -135,9 +135,20 @@ ensure_gitignored() {
 }
 
 cmd_start() {
-  local task="${1:-}"
+  local task="${1:-}" branch dirty=""
   [ -n "$task" ] || die "usage: $0 start \"<task description>\""
   [ -f "$STATE_FILE" ] && die "workflow already in progress (state=$(get state)). run '$0 abort' to reset."
+  if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    [ -n "$(git status --porcelain 2>/dev/null)" ] && dirty=yes
+    if [ -n "$dirty" ]; then
+      echo "warning: working tree is dirty. unrelated changes may end up in the PR commits — consider stashing or committing them first." >&2
+    fi
+    branch=$(git branch --show-current 2>/dev/null || true)
+    case "$branch" in
+      main | master | staging)
+        echo "warning: currently on '$branch'. implement must create a feature branch before touching code." >&2 ;;
+    esac
+  fi
   mkdir -p "$WF_DIR"
   : > "$STATE_FILE"
   : > "$HISTORY_FILE"
@@ -148,7 +159,7 @@ cmd_start() {
   set_kv pr_url ""
   printf '%s\n' "$task" > "$TASK_FILE"
   ensure_gitignored
-  log_event "start $INITIAL"
+  log_event "start $INITIAL${dirty:+ (dirty working tree)}"
   cmd_show
 }
 
@@ -212,34 +223,39 @@ cmd_work() {
   bin="${WORKFLOW_CLAUDE_BIN:-claude}"
   command -v "$bin" >/dev/null 2>&1 || die "'$bin' not found on PATH. install the Claude Code CLI, or set WORKFLOW_CLAUDE_BIN."
   log_event "work $cur"
-  echo "[workflow] state=$cur -> running worker in a fresh process: $bin -p (workers/$cur.txt) ${WORKFLOW_CLAUDE_FLAGS:-}" >&2
+  local flags="${WORKFLOW_CLAUDE_FLAGS:---permission-mode auto}"
+  echo "[workflow] state=$cur -> running worker in a fresh process: $bin -p (workers/$cur.txt) $flags" >&2
   # The worker runs in its own process/context; only its final stdout returns here.
   # Strip the Claude Code session markers so it starts as a fresh top-level
   # invocation instead of being detected as a nested session.
-  # WORKFLOW_CLAUDE_FLAGS lets you set permissions/tools, e.g.:
-  #   export WORKFLOW_CLAUDE_FLAGS='--permission-mode acceptEdits --allowedTools "Read Edit Write Bash Grep Glob"'
+  # WORKFLOW_CLAUDE_FLAGS overrides the default flags. Values are split on
+  # whitespace only — embedded quotes are NOT unwrapped, so multi-word values
+  # for a single flag will break.
   # shellcheck disable=SC2086
   env -u CLAUDECODE -u CLAUDE_CODE_ENTRYPOINT -u CLAUDE_CODE_SESSION_ID \
       -u CLAUDE_CODE_CHILD_SESSION -u CLAUDE_CODE_EXECPATH \
-      "$bin" -p "$(cat "$pf")" ${WORKFLOW_CLAUDE_FLAGS:-} < /dev/null
+      "$bin" -p "$(cat "$pf")" $flags < /dev/null
 }
 
 cmd_fire() {
   require_state
-  local event="${1:-}" cur cnt
-  [ -n "$event" ] || die "usage: $0 fire <event>"
+  local event="${1:-}" cur cnt reason
+  [ -n "$event" ] || die "usage: $0 fire <event> [reason]"
+  shift || true
+  reason="$*"
   cur=$(get state)
   is_terminal "$cur" && die "state '$cur' is terminal. nothing to fire."
 
   if [ "$event" = "exit" ]; then
     set_kv state "$EXIT_STATE"
-    log_event "fire $cur exit $EXIT_STATE"
+    log_event "fire $cur exit $EXIT_STATE${reason:+ -- $reason}"
     echo "-> $cur --exit--> $EXIT_STATE"
     cmd_show
     return
   fi
 
   if ! find_transition "$cur" "$event"; then
+    log_event "reject $cur $event (no such transition)"
     echo "error: no '$event' transition from '$cur'." >&2
     echo "valid events from '$cur':" >&2
     print_events "$cur" >&2
@@ -251,6 +267,7 @@ cmd_fire() {
   is_gate_state "$cur" && gated=yes
   [ "$F_GATE" = "1" ] && gated=yes
   if [ "$gated" = "yes" ] && [ "$(get approved)" != "yes" ]; then
+    log_event "reject $cur $event (gate not approved)"
     die "state '$cur' is a human gate. get user sign-off, then '$0 approve' before '$0 fire $event'."
   fi
 
@@ -258,6 +275,7 @@ cmd_fire() {
   if [ -n "$F_COUNTER" ]; then
     cnt=$(get "attempt_$F_COUNTER"); cnt=${cnt:-0}
     if [ "$cnt" -ge "$F_MAX" ]; then
+      log_event "reject $cur $event (guard $F_COUNTER exhausted $cnt/$F_MAX)"
       die "guard '$F_COUNTER' exhausted ($cnt/$F_MAX). '$event' not allowed. choose another event or 'exit'."
     fi
     set_kv "attempt_$F_COUNTER" "$((cnt + 1))"
@@ -265,13 +283,18 @@ cmd_fire() {
 
   set_kv state "$F_TO"
   [ "$gated" = "yes" ] && set_kv approved no   # consume the approval
-  log_event "fire $cur $event $F_TO"
+  log_event "fire $cur $event $F_TO${reason:+ -- $reason}"
   echo "-> $cur --$event--> $F_TO"
   cmd_show
 }
 
 cmd_approve() {
   require_state
+  local cur
+  cur=$(get state)
+  if ! is_gate_state "$cur" && ! events_for "$cur" | grep -q 'gate=1'; then
+    die "state '$cur' has no gate. nothing to approve."
+  fi
   set_kv approved yes
   log_event "approve $(get state)"
   echo "-> approved. the gate is unlocked (consumed on the next gated fire)."
@@ -292,18 +315,99 @@ cmd_abort() {
   echo "-> workflow state removed."
 }
 
+# Static consistency check across the three surfaces: pipeline <-> nodes/ <-> workers/.
+# Run after editing the pipeline (e.g. via workflow-retro) to catch drift early.
+cmd_lint() {
+  local errors=0 warnings=0
+  lint_err()  { echo "lint error: $*" >&2; errors=$((errors + 1)); }
+  lint_warn() { echo "lint warning: $*" >&2; warnings=$((warnings + 1)); }
+
+  local entry from ev to tok pair name max known state
+  local seen_pairs="" froms="" tstates="" counter_defs=""
+  for entry in "${TR[@]}"; do
+    # shellcheck disable=SC2086
+    set -- $entry
+    if [ $# -lt 3 ]; then
+      lint_err "malformed transition line: '$entry'"
+      continue
+    fi
+    from="$1"; ev="$2"; to="$3"; shift 3
+    pair="$from:$ev"
+    case " $seen_pairs " in *" $pair "*) lint_err "duplicate transition '$from $ev'" ;; esac
+    seen_pairs="$seen_pairs $pair"
+    froms="$froms $from"
+    tstates="$tstates $from $to"
+    is_terminal "$from" && lint_err "terminal state '$from' has an outgoing transition ('$ev')"
+    name=""; max=""
+    for tok in "$@"; do
+      case "$tok" in
+        counter=*) name="${tok#counter=}" ;;
+        max=*)     max="${tok#max=}" ;;
+        gate=*)    : ;;
+        *)         lint_err "unknown flag '$tok' on transition '$from $ev'" ;;
+      esac
+    done
+    if [ -n "$name" ]; then
+      [ -n "$max" ] || lint_err "transition '$from $ev' has counter=$name but no max="
+      # shellcheck disable=SC2086
+      known=$(printf '%s\n' $counter_defs | sed -n "s/^$name=//p" | head -1)
+      if [ -n "$known" ] && [ -n "$max" ] && [ "$known" != "$max" ]; then
+        lint_err "counter '$name' has conflicting max values ($known vs $max)"
+      fi
+      counter_defs="$counter_defs $name=$max"
+    elif [ -n "$max" ]; then
+      lint_err "transition '$from $ev' has max= but no counter="
+    fi
+  done
+
+  # every non-terminal state needs a node prompt; states inside the graph must not dead-end
+  # shellcheck disable=SC2086
+  for state in $(printf '%s\n' $tstates $INITIAL $GATES $WORKERS | sort -u); do
+    is_terminal "$state" && continue
+    [ -f "$SCRIPT_DIR/nodes/$state.md" ] || lint_err "missing nodes/$state.md for state '$state'"
+  done
+  # shellcheck disable=SC2086
+  for state in $(printf '%s\n' $tstates | sort -u); do
+    is_terminal "$state" && continue
+    case " $froms " in *" $state "*) ;; *) lint_err "dead end: non-terminal state '$state' has no outgoing transitions" ;; esac
+  done
+
+  case " $froms " in *" $INITIAL "*) ;; *) lint_err "@initial state '$INITIAL' has no outgoing transitions" ;; esac
+  is_terminal "$EXIT_STATE" || lint_warn "exit target '$EXIT_STATE' is not declared @terminal in the pipeline"
+
+  for state in $WORKERS; do
+    [ -f "$WORKERS_DIR/$state.txt" ] || lint_err "missing workers/$state.txt for @worker state '$state'"
+    case " $tstates " in *" $state "*) ;; *) lint_warn "@worker state '$state' never appears in a transition" ;; esac
+  done
+  for state in $GATES; do
+    case " $froms " in *" $state "*) ;; *) lint_warn "@gate state '$state' is never a from-state (gate has no effect)" ;; esac
+  done
+  for state in $TERMINALS; do
+    [ "$state" = "$EXIT_STATE" ] && continue   # reached via the implicit `exit` event
+    case " $tstates " in *" $state "*) ;; *) lint_warn "@terminal state '$state' is never reached by a transition" ;; esac
+  done
+
+  if [ "$errors" -gt 0 ]; then
+    echo "lint: $errors error(s), $warnings warning(s)." >&2
+    exit 1
+  fi
+  # shellcheck disable=SC2086
+  echo "lint: OK ($(printf '%s\n' $tstates $INITIAL $GATES $WORKERS | sort -u | wc -l) states, ${#TR[@]} transitions, $warnings warning(s))"
+}
+
 usage() {
   cat <<EOF
 dev-workflow state machine (transition table: $PIPELINE_FILE)
 
 usage:
   $0 start "<task>"     start a new workflow at the @initial state
-  $0 show               print current state, metadata, and fireable events
+  $0 show               print current state, metadata, and fireable events (alias: status)
   $0 work               run the current worker-state in a fresh 'claude -p' process
-  $0 fire <event>       apply a transition (enforces gates + guards)
+  $0 fire <event> [reason]  apply a transition (enforces gates + guards); the reason lands in history.log
   $0 approve            grant human sign-off to leave the current gate state
   $0 set <key> <value>  record metadata (branch|plan_file|pr_url)
-  $0 abort              remove all workflow state
+  $0 lint               check pipeline <-> nodes/ <-> workers/ consistency
+  $0 abort              remove all workflow state (alias: reset)
 
 initial : $INITIAL
 terminal:$TERMINALS
@@ -325,9 +429,10 @@ main() {
     start) cmd_start "${1:-}" ;;
     show | status) cmd_show ;;
     work) cmd_work ;;
-    fire) cmd_fire "${1:-}" ;;
+    fire) cmd_fire "$@" ;;
     approve) cmd_approve ;;
     set) cmd_set "$@" ;;
+    lint) cmd_lint ;;
     abort | reset) cmd_abort ;;
     -h | --help | help) usage ;;
     *) die "unknown command '$cmd'. run '$0 help'." ;;

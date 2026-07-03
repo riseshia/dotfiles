@@ -3,13 +3,13 @@ name: workflow
 description: Run a development task as an event-driven state machine (plan → plan-approve → implement → validate → minor-fix/recheck → open-pr → followup → done). A thin orchestrator fires named transitions via a CLI that enforces the plan-approve human gate and bounded rework/continue loops, reads a per-state prompt for each node, delegates heavy work-states to fresh workers (Agent tool or claude -p) over a file-based handoff, and ships via a Draft PR. Use when the user wants to run a non-trivial task end-to-end with minimal supervision.
 user-invocable: true
 arguments: task
-version: 0.7.0
+version: 0.8.0
 license: CC0-1.0
 ---
 
 # Workflow
 
-Run a development task as an **event-driven finite state machine**. Each state is a **node with its own prompt file** in `nodes/`. The agent does the work for the current state, then **fires a named event** (`workflow.sh fire <event>`); the CLI applies the matching transition, enforcing the **plan-approve human gate** and **bounded loops** (rework ×5, continue ×1). The agent runs autonomously and stops for the human at one gate state: **plan-approve**. Review of the change happens on the Draft PR.
+Run a development task as an **event-driven finite state machine**. Each state is a **node with its own prompt file** in `nodes/`. The agent does the work for the current state, then **fires a named event** (`workflow.sh fire <event>`); the CLI applies the matching transition, enforcing the **plan-approve human gate** and **bounded loops** (attempt counters defined in the `pipeline` table). The agent runs autonomously and stops for the human at one gate state: **plan-approve**. Review of the change happens on the Draft PR.
 
 Design: deterministic engineering for the control flow, LLM judgment for the work.
 
@@ -52,19 +52,20 @@ A rejected `fire` (gate not approved, guard exhausted, or invalid event) is a si
 
 ## Workers
 
-States marked `@worker` (plan, implement, validate, minor-fix, recheck, open-pr) do their heavy lifting in a **fresh `claude -p` process**, not in the orchestrator. This is enforced structurally: the worker prompt lives in `workers/<state>.txt`, and the only blessed way to run it is
+States marked `@worker` in the `pipeline` table do their heavy lifting in a **fresh `claude -p` process**, not in the orchestrator. This is enforced structurally: the worker prompt lives in `workers/<state>.txt`, and the only blessed way to run it is
 
 ```
 bash <skill-dir>/workflow.sh work
 ```
 
-which `exec`s `claude -p "$(cat workers/<state>.txt)"`. The orchestrator never reads the raw diff/test/git output — only the worker's final stdout (a short verdict). Its context stays clean across a long run.
+which runs `claude -p "$(cat workers/<state>.txt)"` in a fresh subprocess. The orchestrator never reads the raw diff/test/git output — only the worker's final stdout (a short verdict). Its context stays clean across a long run.
 
 - The node prompt for a worker state is a **thin router**: run `workflow.sh work`, read the verdict, then `fire`. **Do not do the work inline** — the orchestrator cannot truly be prevented from it (it keeps its own tools), so treat `workflow.sh work` as mandatory and inline work as a bug.
+- If `workflow.sh work` exits non-zero, or its output lacks the verdict/result label the node expects, re-run it once; if it fails again, surface the error to the user or `fire exit` — never guess a verdict.
 - Handoff is **file-based** (`.workflow/plan.md`, `.workflow/feedback.md`, the working tree), so a worker — or a resumed session — picks up the contract from disk. Workers only *read* `feedback.md`; the orchestrator is its sole writer/deleter (a few lines, from the verdict it already holds).
-- Permissions/tools for the headless worker are passed through env (the org disallows `bypassPermissions`):
+- The headless worker starts with `--permission-mode auto` by default (the org disallows `bypassPermissions`). Override through env:
   - `WORKFLOW_CLAUDE_BIN` — claude binary (default `claude`)
-  - `WORKFLOW_CLAUDE_FLAGS` — e.g. `--permission-mode acceptEdits --allowedTools "Read Edit Write Bash Grep Glob"`
+  - `WORKFLOW_CLAUDE_FLAGS` — replaces the default flags. Split on whitespace only; embedded quotes are not unwrapped, so avoid multi-word values for a single flag (e.g. `--allowedTools` lists won't survive).
 - Non-worker states (`plan-approve`, `followup`) and the human dialogue in `plan` stay in the orchestrator — they are light and user-facing.
 
 Hard guarantee is not possible from the skill alone (the orchestrator retains its tools); for stricter enforcement, run the orchestrator session itself with reduced tools so heavy work *must* go through `workflow.sh work`.
@@ -76,9 +77,9 @@ Hard guarantee is not possible from the skill alone (the orchestrator retains it
 | `plan` | orchestrator dialogue + worker (investigate/draft) | `nodes/plan.md` | `submit` |
 | `plan-approve` | orchestrator (light, human gate) | `nodes/plan-approve.md` | `revise` / `resume`. **Human gate state** — `approve` required to leave. |
 | `implement` | worker | `nodes/implement.md` | `submit` |
-| `validate` | worker | `nodes/validate.md` | `recheck` / `minor` / `rework` (×5) |
-| `minor-fix` | worker | `nodes/minor-fix.md` | `recheck` / `rework` (×5) |
-| `recheck` | worker | `nodes/recheck.md` | `pr` / `continue` (×1) |
+| `validate` | worker | `nodes/validate.md` | `recheck` / `minor` / `rework` |
+| `minor-fix` | worker | `nodes/minor-fix.md` | `recheck` / `rework` |
+| `recheck` | worker | `nodes/recheck.md` | `pr` / `continue` |
 | `open-pr` | worker (via `shia-guides:draft-pr`) | `nodes/open-pr.md` | `submit` |
 | `followup` | orchestrator (final report) | `nodes/followup.md` | `submit` |
 | `done` | — | — | terminal |
@@ -90,12 +91,15 @@ Hard guarantee is not possible from the skill alone (the orchestrator retains it
 
 ```
 workflow.sh start "<task>"   start at the @initial state; appends .workflow/ to .gitignore
-workflow.sh show             current state, metadata, attempt counters, fireable events
+workflow.sh show             current state, metadata, attempt counters, fireable events (alias: status)
 workflow.sh work             run the current @worker state in a fresh `claude -p` process
-workflow.sh fire <event>     apply a transition (enforces gates + guards); `exit` -> exited
+workflow.sh fire <event> [reason]  apply a transition (enforces gates + guards); `exit` -> exited.
+                             The reason lands in history.log — always pass a one-line reason
+                             on loop-back events (rework / minor / continue) so retro can see why.
 workflow.sh approve          grant human sign-off to leave the current gate state
 workflow.sh set <k> <v>      record metadata: branch | plan_file | pr_url
-workflow.sh abort            remove all workflow state
+workflow.sh lint             check pipeline <-> nodes/ <-> workers/ consistency
+workflow.sh abort            remove all workflow state (alias: reset)
 ```
 
 ## Composability
@@ -118,12 +122,12 @@ The machine is data, not code — the `pipeline` transition table:
 - `gate=1`: per-edge gate (same approval mechanism, but on a single transition rather than the whole state).
 - `exit` is implicit from any non-terminal state.
 
-To recompose: edit `pipeline` (add/remove/reorder states, retarget events, change guards, move the gate/workers); ensure every `from` state has a `nodes/<state>.md`, and every `@worker` state also has a `workers/<state>.txt`. `workflow.sh` reloads the table on every call. The `workflow-retro` skill can propose and apply such edits.
+To recompose: edit `pipeline` (add/remove/reorder states, retarget events, change guards, move the gate/workers); ensure every `from` state has a `nodes/<state>.md`, and every `@worker` state also has a `workers/<state>.txt` — `workflow.sh lint` verifies all of this, run it after every pipeline edit. `workflow.sh` reloads the table on every call. The `workflow-retro` skill can propose and apply such edits.
 
 ## Constraints
 
 - Never hand-edit `.workflow/state`. State changes go through the CLI only.
 - The plan-approve gate is mandatory unless the user explicitly pre-authorizes skipping it.
-- Stay within the approved plan. If implementation must diverge materially, route through `rework` or pause.
+- Stay within the approved plan. If implementation must diverge materially, stop and escalate per the implement node's BLOCKED path (`rework` exists only from `validate`/`minor-fix`).
 - Do not classify a state as passing while verification is failing.
 - Keep `.workflow/` out of commits.
