@@ -9,7 +9,7 @@ case "$(uname)" in
 esac
 
 # Directories
-mkdir -p ~/bin ~/.config ~/.dotfiles ~/.config/mise ~/.local/bin
+mkdir -p ~/bin ~/.config ~/.dotfiles ~/.config/mise ~/.local/bin ~/.claude
 
 # Packages
 if [ "$arch" = "mac" ]; then
@@ -34,6 +34,7 @@ ln -sf "$DOTDIR/misc/starship.toml" ~/.config/starship.toml
 ln -sf "$DOTDIR/misc/mise.toml" ~/.config/mise/config.toml
 ln -sf "$DOTDIR/misc/default-gems" ~/.default-gems
 ln -sf "$DOTDIR/misc/default-npm-packages" ~/.default-npm-packages
+ln -sf "$DOTDIR/claude/CLAUDE.md" ~/.claude/CLAUDE.md
 
 # Symlinks: directories
 ln -snf "$DOTDIR/bash/profile.d" ~/.dotfiles/bash_profile.d

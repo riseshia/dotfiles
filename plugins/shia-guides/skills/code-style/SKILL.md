@@ -27,6 +27,24 @@ Before writing or modifying code:
   - Do write: non-obvious decisions and trade-offs, context that won't be recoverable from the code later, and explanations for code that isn't simple to grasp at a glance.
   - Don't write: comments restating what the code already makes obvious, or notes that are only relevant while the work is in progress (e.g. "changed this", "TODO for this PR", referencing the task at hand).
 
+## Code Comments
+
+Comments must not repeat what the code already expresses. Use comments for explaining **why** something is done, or to provide context not obvious from the code itself.
+
+**When to comment:**
+
+- To explain why a particular approach or workaround was chosen
+- To clarify intent when the code could be misread or misunderstood
+- To provide context from external systems, specs, or requirements
+- To document assumptions, edge cases, or limitations
+
+**When not to comment:**
+
+- Do not narrate what the code is doing — the code already says that
+- Do not duplicate function or variable names in plain English
+- Do not leave stale comments that contradict the code
+- Do not reference removed or obsolete code paths
+
 ## Language references
 
 | Language / context | Detect by | Reference to read |
