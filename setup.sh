@@ -77,6 +77,26 @@ if [ ! -d "$Z_DIR" ]; then
   git clone https://github.com/rupa/z.git "$Z_DIR"
 fi
 
+# Claude Code plugins & MCP servers
+if command -v claude >/dev/null 2>&1; then
+  if ! claude plugin marketplace list | grep -q riseshia-dotfiles; then
+    claude plugin marketplace add riseshia/dotfiles
+  fi
+  claude plugin install shia-guides@riseshia-dotfiles
+  claude plugin install misc@riseshia-dotfiles
+
+  # playwright-cli is npm-distributed (no longer a Claude plugin marketplace).
+  # It installs skills into ./.claude/skills of the cwd, so run from $HOME
+  # to land them in the user-level ~/.claude/skills.
+  if command -v playwright-cli >/dev/null 2>&1; then
+    (cd "$HOME" && playwright-cli install --skills)
+  fi
+
+  claude mcp get aws-knowledge-mcp-server >/dev/null 2>&1 || \
+    claude mcp add -s user aws-knowledge-mcp-server -t http \
+      https://knowledge-mcp.global.api.aws
+fi
+
 # Linux-only
 if [ "$arch" = "linux" ]; then
   if [ ! -f ~/.local/bin/alp ]; then
