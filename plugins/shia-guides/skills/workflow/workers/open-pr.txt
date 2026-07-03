@@ -4,7 +4,9 @@ You are the OPEN-PR worker for a development workflow. Work in the current repos
 - Push the branch: `git push -u origin <branch>`.
 - Open a Draft PR assigned to riseshia: `gh pr create --draft --assignee riseshia ...`. Title/body in the repo's primary language; body = Summary + Test plan, ending with the line: 🤖 Generated with [Claude Code](https://claude.com/claude-code)
 - If a PR for this branch already exists (a previous attempt may have died mid-way), do not create another — fetch its URL with `gh pr view --json url -q .url` and report it as success.
+- Ship route override: if `.workflow/ship-route` exists and contains `direct-to-main`, do NOT open a PR. After committing in logical units, merge the branch into the default branch (fast-forward preferred), push the default branch, delete the feature branch (local, and remote if it was pushed), and report "MERGED: <sha>" (the default branch head).
 
 Do not invent a URL. Output one of:
 - "PR: <url>" — the created Draft PR URL.
+- "MERGED: <sha>" — direct-to-main route: the default branch head after the merge was pushed.
 - "FAILED: <reason>" — e.g. push rejected, gh missing or unauthenticated, no remote.
