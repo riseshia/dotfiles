@@ -4,7 +4,7 @@ Role: a worker (`workers/implement.txt`, run via `claude -p`) implements the pla
 
 Steps:
 
-1. Ensure a feature branch exists (never implement on `main`/`master`/`staging`). Name it per the draft-pr convention (`feature/…`, `fix/…`, `refactor/…`, `docs/…`, `chore/…`) and record it: `bash <skill-dir>/workflow.sh set branch <name>`. On re-entry (rework/continue), reuse the existing branch (`workflow.sh show` -> `branch`).
+1. **Before running the worker, verify the branch — do not skip this.** Run `git branch --show-current`. If it reports `main`/`master`/`staging` (or `workflow.sh show` reports an empty `branch`), create a feature branch now — `git checkout -b <name>` per the draft-pr convention (`feature/…`, `fix/…`, `refactor/…`, `docs/…`, `chore/…`) — and record it: `bash <skill-dir>/workflow.sh set branch <name>`. **Never run `workflow.sh work` while on a protected branch**: the worker implements on whatever branch is checked out, so an unchecked `main` means the change lands on `main`. On re-entry (rework/continue), reuse the existing branch (`workflow.sh show` -> `branch`).
 2. Run the worker:
    ```
    bash <skill-dir>/workflow.sh work
