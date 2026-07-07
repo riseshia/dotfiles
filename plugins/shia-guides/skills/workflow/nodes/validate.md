@@ -12,3 +12,5 @@ Steps:
    - `CLEAN` -> `bash <skill-dir>/workflow.sh fire recheck`.
    - `MINOR` -> overwrite `.workflow/feedback.md` with the listed items (markdown bullets, one per line), then `bash <skill-dir>/workflow.sh fire minor "<one-line verdict summary>"`.
    - `SIGNIFICANT` -> overwrite `.workflow/feedback.md` with the reason + required changes (markdown bullets), then `bash <skill-dir>/workflow.sh fire rework "<one-line verdict summary>"` (shared `rework` guard; if exhausted the CLI rejects it — ask the user: ship what works, or `fire exit`).
+
+When a loop-back's feedback redefines the plan's **contract** (approach/scope/interface) rather than just fixing a defect, update `.workflow/plan.md` to match as you write `.workflow/feedback.md` — otherwise the next `validate` compares the change against a stale plan and re-flags it as divergence.
