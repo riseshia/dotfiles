@@ -16,10 +16,10 @@ Core insight: **deterministic engineering for precision-critical steps beats pro
 
 ---
 
-## Step 1: Run `preprocess.sh`
+## Step 1: Run `preprocess`
 
 ```
-bash <skill-dir>/preprocess.sh [diff-target]
+<skill-dir>/preprocess [diff-target]
 ```
 
 - No argument: diffs against merge-base of main/master
@@ -27,7 +27,7 @@ bash <skill-dir>/preprocess.sh [diff-target]
 - `--include-tests`: include test files (excluded by default)
 
 Read the output. Key fields:
-- `diff_base`: the git ref to pass to `file-context.sh`
+- `diff_base`: the git ref to pass to `file-context`
 - `[REVIEW]` section: one line per reviewable file — `path  status  changed_lines  plan_needed  checklists`
 
 If `reviewable_count: 0`, report "No reviewable files changed." and stop.
@@ -39,7 +39,7 @@ If `reviewable_count: 0`, report "No reviewable files changed." and stop.
 For each file in `[REVIEW]`, run:
 
 ```
-bash <skill-dir>/file-context.sh <diff_base> <filepath> <checklists...>
+<skill-dir>/file-context <diff_base> <filepath> <checklists...>
 ```
 
 This outputs the complete review input: other changed files, unified diff, and composed checklists — all structured as XML-like blocks. Read the output and review it.

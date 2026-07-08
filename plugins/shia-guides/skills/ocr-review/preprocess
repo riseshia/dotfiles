@@ -1,0 +1,312 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+#
+# OCR Review - Deterministic pre-processing
+#
+# 差分取得・ファイルフィルタ・プロジェクト検出・チェックリストルーティングを担い、
+# LLM 消費用の構造化マニフェストを出力する。
+#
+# Usage: preprocess [options] [diff-target]
+#   diff-target: "staged" / "HEAD" / branch / commit SHA / range (a..b)
+#                省略時は main/master のマージベース
+#   --include-tests   テストファイルもレビュー対象に含める
+#   --help            このヘルプを表示
+
+require_relative "ocr_lib"
+
+HELP = <<~TEXT
+  OCR Review - Deterministic pre-processing
+
+  差分取得・ファイルフィルタ・プロジェクト検出・チェックリストルーティングを担い、
+  LLM 消費用の構造化マニフェストを出力する。
+
+  Usage: preprocess [options] [diff-target]
+    diff-target: "staged" / "HEAD" / branch / commit SHA / range (a..b)
+                 省略時は main/master のマージベース
+    --include-tests   テストファイルもレビュー対象に含める
+    --help            このヘルプを表示
+TEXT
+
+# --- 引数パース ---
+
+include_tests = false
+diff_target = nil
+
+ARGV.each do |arg|
+  case arg
+  when "--include-tests"
+    include_tests = true
+  when "--help", "-h"
+    puts HELP
+    exit 0
+  else
+    diff_target = arg
+  end
+end
+
+# --- diff base 解決（失敗は静かに倒さず明示エラー） ---
+
+if diff_target.nil? || diff_target.empty?
+  branch = OcrLib.default_branch
+  abort "ocr-review: could not resolve default branch (origin/HEAD, main, master)" if branch.nil?
+  diff_base = OcrLib.merge_base!(branch)
+  target_label = "merge-base(#{branch})..HEAD"
+elsif diff_target == "staged"
+  diff_base = "--staged"
+  target_label = "staged changes"
+elsif diff_target == "HEAD" || diff_target == "head"
+  diff_base = "HEAD"
+  target_label = "working tree vs HEAD"
+elsif diff_target.include?("..")
+  # range はそのまま利用（`-` 始まりは拒否）
+  OcrLib.assert_safe_ref!(diff_target)
+  diff_base = diff_target
+  target_label = diff_target
+else
+  # 単一 ref: `-` 始まり拒否 → 実在確認 → merge-base
+  OcrLib.assert_safe_ref!(diff_target)
+  abort "ocr-review: unknown ref: #{diff_target}" unless OcrLib.ref_exists?(diff_target)
+  diff_base = OcrLib.merge_base!(diff_target)
+  target_label = "merge-base(#{diff_target})..HEAD"
+end
+
+base_args = OcrLib.diff_base_args(diff_base)
+
+# --- raw データ収集 ---
+
+entries = OcrLib.parse_name_status(base_args)
+stat_map, binary_paths = OcrLib.parse_numstat(base_args)
+binary_set = {}
+binary_paths.each { |p| binary_set[p] = true }
+
+if entries.empty?
+  puts "=== OCR REVIEW MANIFEST ==="
+  puts "target: #{target_label}"
+  puts "diff_base: #{diff_base}"
+  puts "reviewable_count: 0"
+  puts "No changes found."
+  puts "=== END MANIFEST ==="
+  exit 0
+end
+
+# --- プロジェクト検出（repo ルート基準） ---
+
+root = OcrLib.repo_root
+projects = []
+
+def repo_file?(root, rel)
+  File.file?(File.join(root, rel))
+end
+
+gemfile = File.join(root, "Gemfile")
+projects << "ruby" if repo_file?(root, "Gemfile")
+rails = repo_file?(root, "config/application.rb")
+if !rails && File.file?(gemfile)
+  # `gem "rails"` 行に限定して sentry-rails / sprockets-rails 誤検出を排除
+  rails = File.read(gemfile).each_line.any? { |l| l =~ /^\s*gem\s+['"]rails['"]/ }
+end
+projects << "rails" if rails
+projects << "rust" if repo_file?(root, "Cargo.toml")
+projects << "go" if repo_file?(root, "go.mod")
+if repo_file?(root, "package.json")
+  projects << "node"
+  pkg = File.read(File.join(root, "package.json"))
+  projects << "react" if pkg.include?('"react"')
+end
+projects << "python" if repo_file?(root, "requirements.txt") || repo_file?(root, "pyproject.toml")
+project_ctx = projects.empty? ? "none" : projects.join(" ")
+
+# --- フィルタ ---
+
+# 任意階層でディレクトリ名が一致すれば除外（monorepo 対応）
+EXCLUDED_DIRS = %w[
+  .idea .vscode .svn .git vendor node_modules target
+  .happypack .cachefile _packages rpm pkgs oh_modules
+  __pycache__ .mypy_cache .pytest_cache .tox
+  dist .next .nuxt .turbo coverage
+].freeze
+
+def excluded_dir?(path)
+  path.split("/").any? { |seg| EXCLUDED_DIRS.include?(seg) }
+end
+
+def generated?(path)
+  base = File.basename(path)
+  case base
+  when "package-lock.json", "yarn.lock", "pnpm-lock.yaml",
+       "Gemfile.lock", "Cargo.lock", "poetry.lock", "Pipfile.lock",
+       "composer.lock", "go.sum"
+    return true
+  end
+  return true if base =~ /\.min\.js\z/ || base =~ /\.min\.css\z/
+  return true if base =~ /\.bundle\.js\z/ || base =~ /\.chunk\.js\z/
+  return true if base =~ /\.map\z/ || base =~ /\.snap\z/
+  return true if base =~ /\.generated\./
+  false
+end
+
+def test_file?(path)
+  base = File.basename(path)
+  segs = path.split("/")
+  return true if segs.include?("__tests__")
+  return true if path.include?("/src/test/") || path.start_with?("src/test/")
+  return true if base.start_with?("test_helper")
+  # Rust の標準統合テスト（tests/*.rs、接尾辞なし）
+  return true if segs.include?("tests") && File.extname(path) == ".rs"
+  case base
+  when /_test\.go\z/, /_spec\.rb\z/, /_test\.py\z/, /\Atest_.*\.py\z/,
+       /_test\.rs\z/, /_test\.rb\z/, /_test\.exs\z/,
+       /\.test\.(?:js|jsx|ts|tsx)\z/, /\.spec\.(?:js|jsx|ts|tsx)\z/,
+       /Test\.java\z/, /Tests\.java\z/
+    return true
+  end
+  false
+end
+
+# --- チェックリストルーティング ---
+
+def map_checklists(path, projects)
+  base = File.basename(path)
+  ext = File.extname(path).sub(/\A\./, "")
+  cl = ["general"]
+
+  # basename ベース（拡張子で判別できない manifest 系）
+  case base
+  when "Gemfile", "go.mod", "Cargo.toml", "pyproject.toml"
+    cl << "manifests"
+    return cl.join(" ")
+  end
+
+  case ext
+  when "rb"
+    cl << "ruby"
+    cl << "rails" if projects.include?("rails")
+    # NOTE: *_spec.rb は既定で is_test_file により [SKIPPED] され Step 2 に到達しない。
+    #       rspec チェックリストは --include-tests 指定時のみ到達する（仕様は現状維持）。
+    cl << "rspec" if base =~ /_spec\.rb\z/
+  when "rs"
+    cl << "rust"
+  when "ts", "tsx", "js", "jsx"
+    cl << "typescript"
+  when "sql"
+    cl << "sql"
+  when "yml", "yaml"
+    cl << "config"
+  when "json"
+    cl << (base == "package.json" ? "manifests" : "config")
+  when "toml"
+    cl << "config"
+  when "xml"
+    cl << "sql" if path =~ /[Mm]apper/ || path =~ /[Dd]ao/
+  when "properties", "gradle"
+    cl << "config"
+  end
+  cl.join(" ")
+end
+
+# --- ファイルリスト処理 ---
+
+review = []       # {path:, status:, changed:, checklists:}
+skipped = []      # "path\treason"
+changed_files = [] # 表示用 "letter\tpath" / "R\told -> new"
+
+entries.each do |e|
+  status = e[:status]
+
+  if status == "D"
+    changed_files << "D\t#{e[:path]}"
+    skipped << "#{e[:path]}\tdeleted"
+    next
+  end
+
+  if status.start_with?("R")
+    filepath = e[:path]
+    changed_files << "R\t#{e[:old]} -> #{filepath}"
+    fstatus = "renamed"
+  elsif status == "A"
+    filepath = e[:path]
+    changed_files << "A\t#{filepath}"
+    fstatus = "added"
+  elsif status == "M"
+    filepath = e[:path]
+    changed_files << "M\t#{filepath}"
+    fstatus = "modified"
+  else
+    filepath = e[:path]
+    changed_files << "#{status}\t#{filepath}"
+    fstatus = status
+  end
+
+  # 除外判定（安いものから）
+  if binary_set[filepath]
+    skipped << "#{filepath}\tbinary"
+    next
+  end
+  if excluded_dir?(filepath)
+    skipped << "#{filepath}\texcluded-dir"
+    next
+  end
+  if generated?(filepath)
+    skipped << "#{filepath}\tgenerated"
+    next
+  end
+  if !include_tests && test_file?(filepath)
+    skipped << "#{filepath}\ttest-file"
+    next
+  end
+
+  changed = stat_map[filepath] || 0
+
+  # 変更 0 行の純 rename / mode 変更のみはレビュー枠を消費しないためスキップ
+  # （追加ファイルは空ファイルでも意図的な追加なので対象に残す）
+  if changed.zero? && (fstatus == "renamed" || fstatus == "modified")
+    skipped << "#{filepath}\tno-content-change"
+    next
+  end
+
+  review << {
+    path: filepath,
+    status: fstatus,
+    changed: changed,
+    checklists: map_checklists(filepath, projects)
+  }
+end
+
+# --- マニフェスト出力 ---
+
+rc = review.length
+sc = skipped.length
+
+puts "=== OCR REVIEW MANIFEST ==="
+puts "target: #{target_label}"
+puts "diff_base: #{diff_base}"
+puts "project_context: #{project_ctx}"
+puts "reviewable_count: #{rc}"
+puts "skipped_count: #{sc}"
+puts "include_tests: #{include_tests}"
+puts ""
+
+if sc > 0
+  puts "[SKIPPED]"
+  puts skipped
+  puts ""
+end
+
+puts "[CHANGED FILES]"
+puts changed_files
+puts ""
+
+if rc.zero?
+  puts "No reviewable files found."
+  puts "=== END MANIFEST ==="
+  exit 0
+end
+
+puts "[REVIEW]"
+review.each do |r|
+  plan_needed = r[:changed] > 50 ? "yes" : "no"
+  puts "#{r[:path]}\t#{r[:status]}\t#{r[:changed]}\t#{plan_needed}\t#{r[:checklists]}"
+end
+puts ""
+
+puts "=== END MANIFEST ==="

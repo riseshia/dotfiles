@@ -1,0 +1,71 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+#
+# OCR Review - Per-file review context builder
+#
+# 単一ファイルのレビュー入力（他の変更ファイル一覧・統合 diff・合成チェックリスト）を
+# XML 風ブロックで組み立てる。LLM が直接消費する。
+#
+# Usage: file-context <diff-base> <filepath> <checklist1> [checklist2 ...]
+#   diff-base:  commit SHA / "--staged" / "HEAD" / range (a..b)
+#   filepath:   レビュー対象ファイル
+#   checklists: 合成するチェックリスト名（例 general ruby rails）
+
+require_relative "ocr_lib"
+
+if ARGV.length < 3
+  warn "Usage: file-context <diff-base> <filepath> <checklist1> [checklist2 ...]"
+  exit 1
+end
+
+diff_base = ARGV[0]
+filepath = ARGV[1]
+checklists = ARGV[2..-1]
+
+base_args = OcrLib.diff_base_args(diff_base)
+
+# name-status を一度だけ取得し、他ファイル一覧と rename ペアの解決に使う
+entries = OcrLib.parse_name_status(base_args)
+
+# --- 他の変更ファイル（フィルタ前の全変更、現在ファイルは除外） ---
+puts "<other_changed_files>"
+entries.each do |e|
+  next if e[:path] == filepath
+  if e[:status].start_with?("R") || e[:status].start_with?("C")
+    puts "#{e[:status]}\t#{e[:old]} -> #{e[:path]}"
+  else
+    puts "#{e[:status]}\t#{e[:path]}"
+  end
+end
+puts "</other_changed_files>"
+puts ""
+
+# --- 現在ファイルの識別 ---
+puts "<current_file_path>#{filepath}</current_file_path>"
+puts ""
+
+# --- このファイルの統合 diff ---
+# rename の場合は旧パスも pathspec に渡し、--find-renames のペアリングを保つ
+# （全行が新規 `+` として表示されるバグの回避）
+pathspec = [filepath]
+entry = entries.find { |e| e[:path] == filepath }
+pathspec << entry[:old] if entry && entry[:old] && !entry[:old].empty?
+
+puts "<current_file_diff>"
+out, _st = OcrLib.git_diff("-U3", *base_args, "--", *pathspec)
+print out
+puts "</current_file_diff>"
+puts ""
+
+# --- 合成チェックリスト（該当ルールを全てマージ） ---
+puts "<review_checklist>"
+checklists.each do |cl|
+  cl_file = File.join(__dir__, "checklists", "#{cl}.md")
+  if File.file?(cl_file)
+    print File.read(cl_file)
+    puts ""
+  else
+    puts "<!-- checklist not found: #{cl} -->"
+  end
+end
+puts "</review_checklist>"
