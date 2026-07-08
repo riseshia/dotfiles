@@ -1,9 +1,9 @@
 ---
 name: workflow
-description: Run a development task as an event-driven state machine (plan → plan-approve → implement → validate → minor-fix/recheck → open-pr → followup → done). A thin orchestrator fires named transitions via a CLI that enforces the plan-approve human gate and bounded rework/continue loops, reads a per-state prompt for each node, delegates heavy work-states to fresh workers (Agent tool or claude -p) over a file-based handoff, and ships via a Draft PR. Use when the user wants to run a non-trivial task end-to-end with minimal supervision.
+description: Run a development task as an event-driven state machine (plan → plan-approve → implement → validate → minor-fix/recheck → open-pr → followup → retrospect → done). A thin orchestrator fires named transitions via a CLI that enforces the plan-approve human gate and bounded rework/continue loops, reads a per-state prompt for each node, delegates heavy work-states to fresh workers (Agent tool or claude -p) over a file-based handoff, and ships via a Draft PR. Use when the user wants to run a non-trivial task end-to-end with minimal supervision.
 user-invocable: true
 arguments: task
-version: 0.8.0
+version: 0.9.0
 license: CC0-1.0
 ---
 
@@ -26,7 +26,8 @@ Design: deterministic engineering for the control flow, LLM judgment for the wor
                                                   │                           ▼  ▼
                               implement <──continue ×1── recheck <────────────────
                                                           │
-                                                          └── pr ──> open-pr ──submit──> followup ──submit──> done
+                                                          └── pr ──> open-pr ──submit──> followup ──retro──> retrospect ──submit──> done
+                                                                                             └── skip ─────────────────────────────> done
    (any non-terminal) ──exit──> exited
 ```
 
@@ -81,7 +82,8 @@ Hard guarantee is not possible from the skill alone (the orchestrator retains it
 | `minor-fix` | worker | `nodes/minor-fix.md` | `recheck` / `rework` |
 | `recheck` | worker | `nodes/recheck.md` | `pr` / `continue` |
 | `open-pr` | worker (via `shia-guides:draft-pr`) | `nodes/open-pr.md` | `submit` |
-| `followup` | orchestrator (final report) | `nodes/followup.md` | `submit` |
+| `followup` | orchestrator (final report) | `nodes/followup.md` | `retro` / `skip` |
+| `retrospect` | orchestrator (via `shia-guides:workflow-retro`) | `nodes/retrospect.md` | `submit` |
 | `done` | — | — | terminal |
 | `exited` | — | — | terminal (`fire exit`) |
 

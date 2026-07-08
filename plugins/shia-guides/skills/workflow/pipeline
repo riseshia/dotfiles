@@ -46,4 +46,6 @@ minor-fix     recheck   recheck
 recheck       continue  implement     counter=continue max=1
 recheck       pr        open-pr
 open-pr       submit    followup
-followup      submit    done
+followup      retro     retrospect
+followup      skip      done
+retrospect    submit    done
