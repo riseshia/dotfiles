@@ -1,7 +1,7 @@
 [tools]
-node = "22"
+node = "26"
 python = "3.13"
-ruby = "3.4"
+ruby = "4.0"
 awscli = "latest"
 jq = "latest"
 tfenv = "latest"
