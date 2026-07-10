@@ -95,6 +95,11 @@ if command -v claude >/dev/null 2>&1; then
   claude mcp get aws-knowledge-mcp-server >/dev/null 2>&1 || \
     claude mcp add -s user aws-knowledge-mcp-server -t http \
       https://knowledge-mcp.global.api.aws
+
+  # Registers the skill-reminder hook in ~/.claude/settings.json.
+  if command -v ruby >/dev/null 2>&1; then
+    ruby "$DOTDIR/claude/update-settings.rb"
+  fi
 fi
 
 # Linux-only
