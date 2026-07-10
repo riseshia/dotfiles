@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{TITLE}}</title>
+<style>
+  /* Dark/light both — auto-switch via prefers-color-scheme */
+  :root {
+    --bg: #0f1117;
+    --card: #1a1d27;
+    --card2: #21252f;
+    --line: #2e333f;
+    --text: #e6e8ee;
+    --muted: #9aa2b1;
+    --accent: #6aa3ff;
+    --green: #4ec9a0;
+    --amber: #f0b866;
+    --red: #f07171;
+    --code-bg: #12141b;
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --bg: #f6f7f9;
+      --card: #ffffff;
+      --card2: #f1f3f6;
+      --line: #e2e5ea;
+      --text: #1d2129;
+      --muted: #5b6472;
+      --accent: #2c6bed;
+      --green: #159d78;
+      --amber: #b7791f;
+      --red: #d9534f;
+      --code-bg: #f0f2f5;
+    }
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    /* Include CJK / Korean fonts in the fallback stack */
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Sans",
+                 "Noto Sans KR", "Apple SD Gothic Neo", sans-serif;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+  }
+  .wrap { max-width: 820px; margin: 0 auto; padding: 48px 24px 96px; }
+  h1 { font-size: 1.9rem; line-height: 1.35; margin: 0 0 8px; letter-spacing: -0.02em; }
+  .sub { color: var(--muted); font-size: 1.02rem; margin: 0 0 40px; }
+  h2 {
+    font-size: 1.3rem; margin: 44px 0 14px; letter-spacing: -0.01em;
+    display: flex; align-items: center; gap: 10px;
+  }
+  h2 .num {
+    flex: none; width: 28px; height: 28px; border-radius: 8px;
+    background: var(--accent); color: #fff; font-size: 0.9rem;
+    display: grid; place-items: center; font-weight: 700;
+  }
+  p { margin: 12px 0; }
+  strong { color: var(--text); font-weight: 700; }
+  .accent { color: var(--accent); }
+  code {
+    background: var(--code-bg); padding: 2px 6px; border-radius: 5px;
+    font-family: "SFMono-Regular", "JetBrains Mono", Menlo, Consolas, monospace;
+    font-size: 0.88em; color: var(--text);
+  }
+  pre {
+    background: var(--code-bg); border: 1px solid var(--line);
+    border-radius: 10px; padding: 16px 18px; overflow-x: auto;
+    font-size: 0.86rem; line-height: 1.6;
+  }
+  pre code { background: none; padding: 0; }
+  .card {
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 14px; padding: 22px 24px; margin: 18px 0;
+  }
+  /* Note / warning callout — .warn turns it red */
+  .callout {
+    border-left: 3px solid var(--accent);
+    background: var(--card2); border-radius: 0 10px 10px 0;
+    padding: 14px 18px; margin: 18px 0; color: var(--text);
+  }
+  .callout.warn { border-color: var(--red); }
+  .callout.warn strong { color: var(--red); }
+  .callout .label {
+    font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.06em;
+    color: var(--muted); display: block; margin-bottom: 4px; font-weight: 700;
+  }
+  .quote {
+    font-size: 1.05rem; font-style: italic; color: var(--text);
+    background: var(--card2); border-radius: 10px; padding: 16px 20px;
+    margin: 16px 0; border: 1px dashed var(--line);
+  }
+  /* Step list — .ok=green / .wait=amber to color-code state */
+  .steps { counter-reset: s; margin: 20px 0; padding: 0; list-style: none; }
+  .steps > li {
+    position: relative; padding: 16px 18px 16px 58px; margin: 12px 0;
+    background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+  }
+  .steps > li::before {
+    counter-increment: s; content: counter(s);
+    position: absolute; left: 16px; top: 16px;
+    width: 28px; height: 28px; border-radius: 50%;
+    background: var(--accent); color: #fff; font-weight: 700;
+    display: grid; place-items: center; font-size: 0.9rem;
+  }
+  .steps > li.ok::before { background: var(--green); }
+  .steps > li.wait::before { background: var(--amber); }
+  .steps > li b { display: block; margin-bottom: 2px; }
+  hr { border: none; border-top: 1px solid var(--line); margin: 40px 0; }
+  /* Summary box for the top or bottom */
+  .tldr {
+    background: linear-gradient(135deg, rgba(106,163,255,0.12), rgba(78,201,160,0.10));
+    border: 1px solid var(--line); border-radius: 14px; padding: 20px 24px;
+    margin: 32px 0; font-size: 1.05rem;
+  }
+  /* mermaid diagram frame — centered with padding */
+  .mermaid {
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 14px; padding: 20px; margin: 20px 0; text-align: center;
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <h1>{{TITLE}}</h1>
+  <p class="sub">{{SUBTITLE}}</p>
+
+  <!-- A summary up top helps the reader grasp the whole picture -->
+  <div class="tldr"><strong>TL;DR —</strong> {{TLDR}}</div>
+
+  <h2><span class="num">1</span> {{SECTION_TITLE}}</h2>
+  <div class="card">
+    <p>{{PARAGRAPH}}</p>
+    <div class="quote">{{QUOTE}}</div>
+  </div>
+
+  <div class="callout">
+    <span class="label">note / key point</span>
+    {{CALLOUT_BODY}}
+  </div>
+
+  <div class="callout warn">
+    <span class="label">warning</span>
+    <strong>{{WARN_TITLE}}</strong> {{WARN_BODY}}
+  </div>
+
+  <ol class="steps">
+    <li><b>{{STEP_TITLE}}</b> {{STEP_BODY}}</li>
+    <li class="ok"><b>{{STEP_TITLE}}</b> {{STEP_BODY}}</li>
+    <li class="wait"><b>{{STEP_TITLE}}</b> {{STEP_BODY}}</li>
+  </ol>
+
+  <!-- Use a mermaid block only when a diagram is needed -->
+  <pre class="mermaid">
+flowchart LR
+  A[Client] -->|request| B(Proxy)
+  B --> C{Cache?}
+  C -->|hit| D[Return]
+  C -->|miss| E[Origin]
+  </pre>
+
+</div>
+
+<!-- Load mermaid only when needed; theme follows the OS color scheme -->
+<script type="module">
+  import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs';
+  const dark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+  mermaid.initialize({ startOnLoad: true, theme: dark ? 'dark' : 'default' });
+</script>
+</body>
+</html>
