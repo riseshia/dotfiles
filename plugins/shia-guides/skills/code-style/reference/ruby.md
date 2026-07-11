@@ -49,6 +49,7 @@ Coding conventions and best practices for Ruby projects.
 
 ## Testing — RSpec
 
+- Test code expresses **What**: describe/context/it names state the expected behavior, not the implementation — specs double as behavior documentation
 - Describe/context/it hierarchy; spec file placement mirroring source tree
 - Factory patterns for test data; understand `let` (lazy) vs `let!` (eager) semantics
 - Cover error paths and edge cases: nil inputs, empty collections, boundary values

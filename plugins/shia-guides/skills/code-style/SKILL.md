@@ -23,7 +23,8 @@ Before writing or modifying code:
 - Consistency: follow the existing style of the codebase you're working in, or the conventions of the language if no style exists.
 - Readability: prioritize code that is easy to read and understand, even if it's not the most concise or performant solution.
 - Grepability: write code that is easy to search for and navigate, using clear naming and structure.
-- Comments: write comments that explain *why*, not *what*.
+- Information layers: code expresses **How**, tests express **What**, the commit log records **Why**, and code comments record **Why not**. Put each piece of information where it belongs.
+- Comments: write comments that explain *why* and *why not*, not *what*.
   - Do write: non-obvious decisions and trade-offs, context that won't be recoverable from the code later, and explanations for code that isn't simple to grasp at a glance.
   - Don't write: comments restating what the code already makes obvious, or notes that are only relevant while the work is in progress (e.g. "changed this", "TODO for this PR", referencing the task at hand).
 
@@ -34,6 +35,7 @@ Comments must not repeat what the code already expresses. Use comments for expla
 **When to comment:**
 
 - To explain why a particular approach or workaround was chosen
+- To record why an obvious-looking alternative was *not* taken (the why not)
 - To clarify intent when the code could be misread or misunderstood
 - To provide context from external systems, specs, or requirements
 - To document assumptions, edge cases, or limitations
@@ -44,6 +46,15 @@ Comments must not repeat what the code already expresses. Use comments for expla
 - Do not duplicate function or variable names in plain English
 - Do not leave stale comments that contradict the code
 - Do not reference removed or obsolete code paths
+
+## Documentation
+
+Code is the source of truth.
+
+- Do not maintain design docs that duplicate what the code expresses — keeping documents consistent with each other is harder than keeping code consistent.
+- Write code clean enough that no document is needed to explain the How.
+- Document only what code cannot express — the Why and the Why not — and version-control those documents alongside the code.
+- Plan or design docs used to produce a change are throwaway inputs, not maintained artifacts; the durable Why belongs in commit messages and PR descriptions.
 
 ## Language references
 
