@@ -57,7 +57,7 @@ Prefer test-driven development: write a failing test first (Red), implement mini
 
 ## Security
 
-- **Password hashing**: `has_secure_password` or dedicated service
+- **Password hashing**: `has_secure_password` (bcrypt) by default; a dedicated service when another algorithm (e.g. argon2, per ruby.md) is required
 - **Parameter filtering**: `filter_parameters` configuration for sensitive request params
 - **Audit logging**: Identify which actions require audit trail entries
 

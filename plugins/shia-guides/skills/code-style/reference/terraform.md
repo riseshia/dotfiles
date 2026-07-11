@@ -10,10 +10,10 @@ Coding conventions and best practices for Terraform projects.
 
 ## Resource Naming
 
-- Use snake_case for all resource names and variables, with exceptions:
-  - Resource name in Terraform should match the actual resource name in the provider (e.g., when `name = "FooBar"`, use `resource "..." "FooBar"`)
+- Use snake_case for all HCL resource block labels and variables, with exceptions:
+  - Resource block label should match the actual resource name in the provider (e.g., when `name = "FooBar"`, use `resource "..." "FooBar"`)
 - IAM role and policy names use PascalCase (e.g., `Ec2Bastion`, `EcsApp`)
-- Use hyphenated lowercase for resource identifiers (e.g., `ec2-default`, `dns-cache`)
+- Use hyphenated lowercase for provider-facing resource names — the `name` argument and `Name` tag values (e.g., `ec2-default`, `dns-cache`)
 
 ## File Organization
 
@@ -55,7 +55,6 @@ Standard file structure per Terraform directory:
 - Trust policies use separate `data.aws_iam_policy_document` with `_trust` suffix
 - Split policies into multiple documents when they get large
 - Use specific resource ARNs; avoid wildcards where possible
-- Role names use PascalCase (e.g., `NetKea`, `NwEc2Default`)
 - Include descriptive `description` field referencing the Terraform path
 
 ### IAM Instance Profiles (`aws_iam_instance_profile`)

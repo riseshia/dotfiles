@@ -45,15 +45,14 @@ type ApiResponse =
 
 ### Hooks
 
-- `useState` for local state, React Context for shared/global state
-- SWR (`useSWR`, `useSWRInfinite`) for server data fetching — no Redux/Zustand
+- `useState` for local state, React Context for shared/global state — no Redux/Zustand
 - `react-hook-form` (`useForm`) for form state management
 - Extract reusable logic into custom hooks (`use*` prefix)
 - Always specify dependency arrays correctly in `useEffect`, `useMemo`, `useCallback`
 
 ## Data Fetching & Async
 
-- SWR for data fetching with automatic caching and revalidation
+- SWR (`useSWR`, `useSWRInfinite`) for server data fetching, with automatic caching and revalidation
 - `async`/`await` over raw Promise chains
 - Guard duplicate submissions with an `isRequesting` state flag in form handlers
 - Type API responses explicitly — name response types with descriptive suffixes (e.g., `GetConferenceResponse`)

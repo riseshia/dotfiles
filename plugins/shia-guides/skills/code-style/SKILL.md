@@ -24,9 +24,7 @@ Before writing or modifying code:
 - Readability: prioritize code that is easy to read and understand, even if it's not the most concise or performant solution.
 - Grepability: write code that is easy to search for and navigate, using clear naming and structure.
 - Information layers: code expresses **How**, tests express **What**, the commit log records **Why**, and code comments record **Why not**. Put each piece of information where it belongs.
-- Comments: write comments that explain *why* and *why not*, not *what*.
-  - Do write: non-obvious decisions and trade-offs, context that won't be recoverable from the code later, and explanations for code that isn't simple to grasp at a glance.
-  - Don't write: comments restating what the code already makes obvious, or notes that are only relevant while the work is in progress (e.g. "changed this", "TODO for this PR", referencing the task at hand).
+- Comments: write comments that explain *why* and *why not*, not *what* — see Code Comments below.
 
 ## Code Comments
 
@@ -46,6 +44,7 @@ Comments must not repeat what the code already expresses. Use comments for expla
 - Do not duplicate function or variable names in plain English
 - Do not leave stale comments that contradict the code
 - Do not reference removed or obsolete code paths
+- Do not leave notes that are only relevant while the work is in progress (e.g. "changed this", "TODO for this PR", referencing the task at hand)
 
 ## Documentation
 
@@ -53,8 +52,8 @@ Code is the source of truth.
 
 - Do not maintain design docs that duplicate what the code expresses — keeping documents consistent with each other is harder than keeping code consistent.
 - Write code clean enough that no document is needed to explain the How.
-- Document only what code cannot express — the Why and the Why not — and version-control those documents alongside the code.
-- Plan or design docs used to produce a change are throwaway inputs, not maintained artifacts; the durable Why belongs in commit messages and PR descriptions.
+- The durable Why lives in commit messages and PR descriptions; the Why not in code comments. Keep a separate document only for decisions too large for those (ADR-style), version-controlled alongside the code.
+- Plan or design docs used to produce a change are throwaway inputs, not maintained artifacts.
 
 ## Language references
 

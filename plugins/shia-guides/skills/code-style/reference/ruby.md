@@ -14,9 +14,9 @@ Coding conventions and best practices for Ruby projects.
 
 ## Architecture & Design
 
-- **Service objects**: Command/service pattern for encapsulating business logic outside models
+- **Service objects**: Command/service pattern for encapsulating complex business logic, independent of framework
 - **Module structure**: Namespace hierarchy; `include` for instance behavior, `extend` for class behavior
-- **Data structures**: Struct or Data classes for value objects instead of raw hashes, choose Data class when it need to be immutable, prefer keyword arguments for clarity.
+- **Data structures**: Struct or Data classes for value objects instead of raw hashes; choose Data class when it needs to be immutable.
 
 ## Methods
 
