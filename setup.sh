@@ -23,7 +23,7 @@ if [ "$arch" = "mac" ]; then
     chsh -s "$BREW_BASH"
   fi
 else
-  sudo apt install -y bash shellcheck git tmux
+  sudo apt install -y bash shellcheck git tmux unzip
 fi
 
 # Symlinks: files
@@ -104,6 +104,13 @@ fi
 
 # Linux-only
 if [ "$arch" = "linux" ]; then
+  # win32yank: UTF-8-safe clipboard for tmux on WSL (clip.exe mangles Korean)
+  if grep -qi microsoft /proc/version && [ ! -f ~/.local/bin/win32yank.exe ]; then
+    curl -fSL -o /tmp/win32yank.zip https://github.com/equalsraf/win32yank/releases/download/v0.1.1/win32yank-x64.zip
+    unzip -o /tmp/win32yank.zip win32yank.exe -d /tmp
+    install -m 755 /tmp/win32yank.exe ~/.local/bin/win32yank.exe
+  fi
+
   if [ ! -f ~/.local/bin/alp ]; then
     curl -fSL -o /tmp/alp_linux_amd64.tar.gz https://github.com/tkuchiki/alp/releases/download/v1.0.21/alp_linux_amd64.tar.gz
     tar xzf /tmp/alp_linux_amd64.tar.gz -C /tmp
