@@ -13,6 +13,7 @@ fzf = "latest"
 neovim = "latest"
 ecspresso = "latest"
 "aqua:fujiwara/lambroll" = "latest"
+"npm:playwright-cli" = "latest"
 
 [settings]
 

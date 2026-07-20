@@ -77,6 +77,16 @@ if [ ! -d "$Z_DIR" ]; then
   git clone https://github.com/rupa/z.git "$Z_DIR"
 fi
 
+# mise: ランタイム／ツールマネージャ（config は上でシンボリックリンク済み）
+if [ ! -x "$HOME/.local/bin/mise" ]; then
+  curl https://mise.run | sh
+fi
+# playwright-cli など mise 管理のツールをここで実体化する
+# （このシェルでは activate されていないためフルパスで呼ぶ）
+"$HOME/.local/bin/mise" install
+# 以降の command -v 判定が mise 管理ツールを見つけられるよう shim を PATH に載せる
+eval "$("$HOME/.local/bin/mise" activate bash --shims)"
+
 # Claude Code plugins & MCP servers
 if command -v claude >/dev/null 2>&1; then
   if ! claude plugin marketplace list | grep -q riseshia-dotfiles; then
