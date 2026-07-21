@@ -14,9 +14,14 @@ require 'json'
 
 TARGET = File.expand_path('~/.claude/settings.json')
 HOOK_SCRIPT = File.expand_path('skill-reminder.rb', __dir__)
+AWS_ADMIN_GUARD_SCRIPT = File.expand_path('aws-admin-guard.rb', __dir__)
 
 def hook_command
   { 'type' => 'command', 'command' => "ruby #{HOOK_SCRIPT}" }
+end
+
+def aws_admin_guard_command
+  { 'type' => 'command', 'command' => "ruby #{AWS_ADMIN_GUARD_SCRIPT}" }
 end
 
 def desired_settings
@@ -30,6 +35,11 @@ def desired_settings
           '_id' => 'skill-reminder',
           'matcher' => 'Write|Edit|MultiEdit|Update',
           'hooks' => [hook_command],
+        },
+        {
+          '_id' => 'aws-admin-guard',
+          'matcher' => 'Bash',
+          'hooks' => [aws_admin_guard_command],
         },
       ],
     },
