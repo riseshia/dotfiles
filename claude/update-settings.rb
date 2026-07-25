@@ -16,6 +16,7 @@ TARGET = File.expand_path('~/.claude/settings.json')
 HOOK_SCRIPT = File.expand_path('skill-reminder.rb', __dir__)
 AWS_ADMIN_GUARD_SCRIPT = File.expand_path('aws-admin-guard.rb', __dir__)
 FIND_ROOT_GUARD_SCRIPT = File.expand_path('find-root-guard.rb', __dir__)
+ENVCHAIN_GUARD_SCRIPT = File.expand_path('envchain-guard.rb', __dir__)
 
 def hook_command
   { 'type' => 'command', 'command' => "ruby #{HOOK_SCRIPT}" }
@@ -27,6 +28,10 @@ end
 
 def find_root_guard_command
   { 'type' => 'command', 'command' => "ruby #{FIND_ROOT_GUARD_SCRIPT}" }
+end
+
+def envchain_guard_command
+  { 'type' => 'command', 'command' => "ruby #{ENVCHAIN_GUARD_SCRIPT}" }
 end
 
 def desired_settings
@@ -50,6 +55,11 @@ def desired_settings
           '_id' => 'find-root-guard',
           'matcher' => 'Bash',
           'hooks' => [find_root_guard_command],
+        },
+        {
+          '_id' => 'envchain-guard',
+          'matcher' => 'Bash',
+          'hooks' => [envchain_guard_command],
         },
       ],
     },
