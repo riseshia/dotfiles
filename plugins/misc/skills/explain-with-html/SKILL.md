@@ -9,6 +9,10 @@ argument-hint: "[topic]"
 Explain a topic as a **single, readable, self-contained HTML file** the user opens in a browser.
 Use it when structure, diagrams, and emphasis convey understanding better than plain prose does.
 
+This is deliberately a **local file, not an Artifact**: the output is a document the user keeps and
+opens on their own machine. Use the Artifact tool instead (loading `artifact-design` first) when they
+want a shareable hosted link — it renders mermaid natively, so diagrams survive the switch.
+
 ## 1. Fix the topic
 
 - **If an argument is given**, use it as the topic.

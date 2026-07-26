@@ -92,6 +92,8 @@ window.each_with_index do |ex, i|
   hints << "exchange #{i}: apology" if asst =~ APOLOGY
 end
 
+# The local-friction categories below restate claude/CLAUDE.md's Communication rules
+# (match length / answer only what's asked / pin ambiguity). Keep both in sync.
 prompt = <<~PROMPT
   You are an external, skeptical judge of "friction" in a Claude Code conversation.
   Below are the most recent #{window.size} turns ([n|U]=user, [n|A]=assistant).

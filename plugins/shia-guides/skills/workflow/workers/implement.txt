@@ -10,7 +10,7 @@ Implement the plan in .workflow/plan.md:
 
 Constraints:
 - Do nothing outside the plan. No out-of-scope improvements or refactors.
-- If an implementation contradicts the plan, or you are blocked by something the plan does not cover, STOP and report it — do not guess.
+- If an implementation contradicts the plan, or you are blocked by something the plan does not cover, first finish the remaining steps that do not depend on the blocker, then STOP and report it — do not guess.
 - Do not break existing tests. If they break, find the cause and fix it.
 - DO NOT create commits or a PR.
 

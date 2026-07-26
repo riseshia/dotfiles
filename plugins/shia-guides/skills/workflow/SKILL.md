@@ -1,9 +1,9 @@
 ---
 name: workflow
-description: Run a development task as an event-driven state machine (plan → plan-approve → implement → validate → minor-fix/recheck → open-pr → followup → retrospect → done). A thin orchestrator fires named transitions via a CLI that enforces the plan-approve human gate and bounded rework/continue loops, reads a per-state prompt for each node, delegates heavy work-states to fresh workers (Agent tool or claude -p) over a file-based handoff, and ships via a Draft PR. Use when the user wants to run a non-trivial task end-to-end with minimal supervision.
+description: Run a development task as an event-driven state machine (plan → plan-approve → implement → validate → minor-fix/recheck → open-pr → followup → retrospect → done). A thin orchestrator fires named transitions via a CLI that enforces the plan-approve human gate and bounded rework/continue loops, reads a per-state prompt for each node, delegates heavy work-states to fresh `claude -p` workers over a file-based handoff, and ships via a Draft PR. Use when the user wants to run a non-trivial task end-to-end with minimal supervision.
 user-invocable: true
 arguments: task
-version: 0.9.0
+version: 0.9.1
 license: CC0-1.0
 ---
 

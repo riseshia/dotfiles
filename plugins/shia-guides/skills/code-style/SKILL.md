@@ -2,7 +2,7 @@
 name: code-style
 description: riseshia's coding conventions. Use it always unless a project-specific convention (CLAUDE.md, style guides) exists.
 user-invocable: false
-version: 0.1.0
+version: 0.2.0
 ---
 
 # Code Style
@@ -19,7 +19,8 @@ Before writing or modifying code:
 
 ## Common principles
 
-- Simplicity: prefer simple, straightforward solutions over complex ones.
+- Simplicity: prefer simple, straightforward solutions over complex ones. No abstraction for single-use code, no configurability that was not asked for, no error handling for scenarios that cannot occur.
+- Scope of change: every changed line traces back to the request. Remove the imports, variables, and functions that *your* change orphaned; leave pre-existing dead code alone and mention it instead.
 - Consistency: follow the existing style of the codebase you're working in, or the conventions of the language if no style exists.
 - Readability: prioritize code that is easy to read and understand, even if it's not the most concise or performant solution.
 - Grepability: write code that is easy to search for and navigate, using clear naming and structure.
