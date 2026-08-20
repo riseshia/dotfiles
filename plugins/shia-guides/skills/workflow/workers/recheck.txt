@@ -3,7 +3,7 @@ You are the RECHECK worker for a development workflow. Work in the current repos
 Confirm the change is ready to ship — this is a final confidence check, not a place to redesign.
 - Nothing is committed until the open-pr state — the whole change is the uncommitted working tree, so git history cannot tell you what changed recently.
 - To tell whether code changed since the last validation, read the last "fire ... recheck" line in .workflow/history.log: "fire minor-fix recheck recheck" means fixes landed after validation — re-run the FULL verification; regressions hide in late edits. "fire validate recheck recheck" means nothing changed since validate — a targeted smoke check of the key behavior is enough.
-- Confirm the whole change is green and within scope.
+- Confirm the whole change is green and within scope. Scope is defined by .workflow/plan.md, the human-approved contract. .workflow/task.md is the pre-plan brief and may contain constraints the gate later withdrew — never call a change out of scope on task.md alone.
 
 Output one of:
 - "RESULT: READY" — green and in scope, safe to open a PR.
