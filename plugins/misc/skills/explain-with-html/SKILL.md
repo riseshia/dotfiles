@@ -1,6 +1,6 @@
 ---
 name: explain-with-html
-description: Explain a topic as a single, readable, self-contained HTML file that the user opens in a browser. Use when the user runs /explain-with-html, or asks to have something explained "as HTML", "in a browser", or with a visual/diagram-heavy write-up. The topic is optional — infer it from the recent conversation and confirm before generating. Use mermaid.js for diagrams when they help.
+description: Explain a topic as a single, readable, self-contained HTML file that the user opens in a browser. Use when the user runs /explain-with-html, or asks to have something explained "as HTML", "in a browser", or with a visual/diagram-heavy write-up. Also covers ELI5 requests ("eli5", "explain like I'm five", a dead-simple picture explainer). The topic is optional — infer it from the recent conversation and confirm before generating. Use mermaid.js for diagrams when they help.
 argument-hint: "[topic]"
 ---
 
@@ -29,13 +29,18 @@ Before writing, decide **whose gap you are closing**. This is what drives qualit
   infer what they already know (terms used correctly, systems they built or referenced) and where
   they are actually stuck (the question asked, the misconception behind it, the parts they re-ask).
   Use what they know as stepping stones; don't re-teach it.
+- **Only what the user wrote counts as known.** Most of an agentic transcript is your own output and
+  tool dumps — the user skimmed or skipped it. Treat everything you produced as unread. When the
+  evidence is thin, aim low: an explanation that is too basic costs a few skimmed lines, one that is
+  too advanced costs the whole document.
+- **ELI5 mode.** If the request explicitly asks for one ("eli5", "explain like I'm five", "완전
+  초보용"), skip the inference: fix the reader at knowing nothing, and build the document around big
+  pictures with few words.
 - **Aim at one gap.** Not an encyclopedia entry — close the specific gap behind "why are they
   asking this now".
 - **Design principles**: motivation before mechanism; known → unknown; big picture → detail;
   concrete/analogy first → abstract later. Refute misconceptions head-on, then give the correct
   model. One concept at a time.
-
-See `reference/explaining-clearly.md` for the full method and rationale.
 
 ## 3. Generate the HTML
 
