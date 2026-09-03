@@ -37,6 +37,8 @@ alias gpp='gpu && gpush'
 alias v='nvim'
 alias nv='nvim'
 alias ls='ls -alh'
+# claude に「迷ったら claude -p で fable に相談する」アドバイザー運用を注入する
+alias claude='claude --append-system-prompt-file "$HOME/.claude/fable-advisor-prompt.md"'
 
 # Completion
 # tab autocompletion with cycle style

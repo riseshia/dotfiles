@@ -35,6 +35,7 @@ ln -sf "$DOTDIR/misc/mise.toml" ~/.config/mise/config.toml
 ln -sf "$DOTDIR/misc/default-gems" ~/.default-gems
 ln -sf "$DOTDIR/misc/default-npm-packages" ~/.default-npm-packages
 ln -sf "$DOTDIR/claude/CLAUDE.md" ~/.claude/CLAUDE.md
+ln -sf "$DOTDIR/claude/fable-advisor-prompt.md" ~/.claude/fable-advisor-prompt.md
 
 # Symlinks: directories
 ln -snf "$DOTDIR/bash/profile.d" ~/.dotfiles/bash_profile.d
