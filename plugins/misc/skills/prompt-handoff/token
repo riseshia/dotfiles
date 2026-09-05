@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+#
+# prompt-handoff - 고유명사를 회차 간 일관된 토큰으로 바꾼다.
+#
+# Usage: token <kind> <value> [<kind> <value> ...]
+#   kind: org / person / system / proj 같은 짧은 식별자
+
+require_relative "handoff_lib"
+
+if ARGV.empty? || ARGV.length.odd?
+  warn "usage: token <kind> <value> [<kind> <value> ...]"
+  exit 1
+end
+
+ARGV.each_slice(2) do |kind, value|
+  puts "#{value}\t#{HandoffLib.token(kind, value)}"
+end

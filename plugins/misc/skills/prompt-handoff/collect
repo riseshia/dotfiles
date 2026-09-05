@@ -1,0 +1,86 @@
+#!/usr/bin/env ruby
+# frozen_string_literal: true
+#
+# prompt-handoff - 세션 로그에서 반출용 발화 목록을 만든다.
+#
+# Usage: collect [--days N | --week N] [--max-chars N] [--out PATH]
+
+require "optparse"
+require_relative "handoff_lib"
+
+# 개인 데스크탑 21일 700 발화 실측: 80자 미만 74%, 200자 미만 95%.
+# 200 을 넘는 5% 는 붙여넣은 덤프이거나 수백 자짜리 작업 지시서이고, 둘 다 관측 재료가 아니다.
+# 600 으로 두면 티켓 키를 단 지시서가 그대로 통과한다 (의심 40건, 그중 지시서 6건).
+DEFAULT_MAX_CHARS = 200
+
+Entry = Data.define(:at, :project, :body)
+
+def render(entries)
+  entries.group_by { _1.at.strftime("%Y-%m-%d") }.map do |date, day|
+    lines = day.map { "- #{_1.at.strftime("%H:%M")} [#{_1.project}] #{_1.body}" }
+    ["## #{date}", *lines].join("\n")
+  end.join("\n\n")
+end
+
+range = nil
+max_chars = DEFAULT_MAX_CHARS
+out = nil
+
+OptionParser.new do |parser|
+  parser.banner = "usage: collect [--days N | --week N] [--max-chars N] [--out PATH]"
+  parser.on("--days N", Integer, "최근 N일 (기본 7)") { range = HandoffLib.recent_range(_1) }
+  parser.on("--week N", Integer, "N 주 전의 일~토 (0 = 이번 주)") { range = HandoffLib.week_range(_1) }
+  parser.on("--max-chars N", Integer, "이 길이를 넘는 발화는 본문을 버린다 (기본 #{DEFAULT_MAX_CHARS})") { max_chars = _1 }
+  parser.on("--out PATH", "산출 경로") { out = _1 }
+end.parse!
+range ||= HandoffLib.recent_range(7)
+
+prompts = HandoffLib.load_prompts(range:)
+
+if prompts.empty?
+  warn "#{range.begin.strftime("%Y-%m-%d %H:%M")} ~ #{range.end.strftime("%Y-%m-%d %H:%M")} 발화 없음"
+  exit
+end
+
+truncated = 0
+redacted = 0
+suspects = []
+
+entries = prompts.map do |prompt|
+  text = prompt.text.gsub(/\s+/, " ").strip
+
+  if text.length > max_chars
+    # 본문은 통째로 버리지만 시각·순서·프로젝트는 남긴다 — 붙여넣었다는 행위 자체가 관측 재료다.
+    truncated += 1
+    body = HandoffLib.paste_placeholder(prompt.text)
+  else
+    redaction = HandoffLib.redact(text)
+    redacted += redaction.count
+    body = redaction.text
+    suspects << [prompt.at, body] if HandoffLib.suspect?(body)
+  end
+
+  Entry.new(at: prompt.at, project: HandoffLib.token("proj", prompt.project), body:)
+end
+
+# range 는 exclusive end 이므로, 실제로 덮는 마지막 날짜는 1초를 뺀 시각의 날짜다.
+covers_end = (range.end - 1).strftime("%Y-%m-%d")
+out ||= "./prompt-handoff-#{covers_end}.md"
+
+frontmatter = <<~YAML
+  ---
+  kagami: queue
+  source: prompts
+  covers: #{range.begin.strftime("%Y-%m-%d")} ~ #{covers_end}
+  masked: true
+  redaction: v1
+  ---
+YAML
+
+File.write(out, "#{frontmatter}\n#{render(entries)}\n")
+
+warn "산출: #{out}"
+warn "발화 #{entries.length}건 / 덩어리 절단 #{truncated}건 / 패턴 치환 #{redacted}건"
+warn ""
+warn "검토 필요 (규칙에 안 걸렸으나 의심되는 줄): #{suspects.length}"
+suspects.each { |at, body| warn "  #{at.strftime("%Y-%m-%d %H:%M")}  #{body}" }
