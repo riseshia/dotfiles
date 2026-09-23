@@ -72,8 +72,6 @@ end
 def default_settings
   {
     'attribution' => {
-      'commit' => '',
-      'pr' => '',
       'sessionUrl' => false,
     },
   }
