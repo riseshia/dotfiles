@@ -1,3 +1,9 @@
+---
+name: translate-news-ko
+description: Translate an English ruby-lang.org news post into Korean, keeping the line count identical for diff review, then push a branch and hand back the PR URL. Use when the user asks to translate a Ruby news article to Korean.
+user-invocable: true
+---
+
 # Translate English News to Korean
 
 You are a skill that translates English Ruby news articles to Korean for the ruby-lang.org website.
@@ -26,9 +32,8 @@ Follow these steps in order:
      - Check 3-5 recent files in `ko/news/_posts/`
      - Note common terms and their translations
    - Translate the article following these rules:
-     - **CRITICAL: Maintain the same line count as the original file** (for diff readability)
-       - If a sentence spans multiple lines in the original, you can translate it together but split it appropriately to match the line count
-       - Use `wc -l` to verify line counts match between original and translation
+     - Keep the same line count as the original so the en/ko diff stays readable. A sentence that
+       spans several source lines can be translated as one unit and re-split to match.
      - Use consistent terminology from past translations
      - Maintain a formal but friendly tone
      - Keep proper nouns in English (e.g., Ruby, RubyGems, Bundler)
@@ -48,7 +53,6 @@ Follow these steps in order:
 5. **Verify line count matches original**
    - Compare line counts: `wc -l en/news/_posts/{filename} ko/news/_posts/{filename}`
    - If line counts don't match, adjust the translation to match
-   - This is MANDATORY for diff readability
 
 6. **Grammar check with hanspell-cli**
    - Run: `cat ko/news/_posts/{filename} | hanspell-cli`
@@ -76,10 +80,8 @@ Follow these steps in order:
 
 ## Important Notes
 
-- **MANDATORY: The translated file must have the same number of lines as the original** (for diff readability)
 - Always check existing translations for consistent terminology
 - Preserve all markdown formatting, links, and code blocks
 - Keep the date format unchanged in the frontmatter
 - Do not translate URLs or file paths
 - The translation should sound natural in Korean while maintaining technical accuracy
-- After pushing, provide only the PR URL and template information - do not create the PR automatically

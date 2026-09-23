@@ -11,7 +11,7 @@ claude -p "<question>" --model claude-fable-5-1 --effort high \
   --permission-mode plan --allowedTools "Read,Grep,Glob,Agent"
 ```
 
-- Keep effort at `high`. `xhigh`/`max` mostly lengthen thinking on prose-heavy replies without improving the judgment.
+- Keep effort at `high` (as of Fable 5.1, 2026-09: `xhigh`/`max` only lengthened thinking on assessment-style replies; re-check on the next model).
 - `--permission-mode plan` and the read-only tool list keep the advisor from editing the working tree. The advisor's deliverable is an assessment, never a fix.
 - Put the question first: `--allowedTools` is variadic and swallows any argument after it.
 - `-p` does not share the current conversation context. Make the question self-contained: include background, constraints, relevant code excerpts, and the options you have already considered with your current leaning.
@@ -23,7 +23,6 @@ Rules for this consult:
 - Answer only the question above. Don't widen it. If you notice adjacent problems, list them under "Follow-ups" in one line each.
 - You are giving an assessment, not applying a fix. Do not edit files.
 - Delegate legwork (reading files, exploring the codebase, running greps) to Sonnet subagents (`model: sonnet`). First list what you need to know; then request every item that doesn't depend on another's result in one batch. Keep reasoning while they run.
-- Remove all mannered prose. Say what you mean in literal phrases.
 - Format the reply exactly as:
   Recommendation: <one sentence>
   Why: <short paragraph or bullets>

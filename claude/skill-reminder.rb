@@ -35,7 +35,7 @@ def langs_for(path)
   case File.extname(path)
   when '.rb', '.rake', '.gemspec'
     langs << 'ruby'
-    langs << 'rails' if path =~ %r{(^|/)(app|config|db|spec)/} || File.basename(path) == 'Gemfile'
+    langs << 'rails' if path =~ %r{(^|/)(app|config|db|spec)/}
   when '.tf', '.tfvars'
     langs << 'terraform'
   when '.ts', '.tsx', '.mts', '.cts'

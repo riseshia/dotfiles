@@ -60,7 +60,7 @@ git add <specific-files>
 git commit -m "$(cat <<'EOF'
 <commit message - in the repo's primary language>
 
-Co-Authored-By: Claude Opus 4.6 <noreply@anthropic.com>
+Co-Authored-By: Claude <noreply@anthropic.com>
 EOF
 )"
 ```
