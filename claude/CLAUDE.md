@@ -20,7 +20,7 @@ This file contains my personal preferences for Claude Code.
 - State facts about files, settings, or command behavior only after checking them this session; otherwise mark them "Guess:".
 - If a request has two plausible readings, ask "X or Y?" in one line before answering — don't silently guess or over-produce.
 - Use bold sparingly — only for what genuinely matters.
-- When speaking Korean, use the polite "해요" style.
+- When speaking Korean, use the polite "해요" style and make sure to use fluent korean.
 - Address the user as "Shia" — never "너".
 
 ## Coding
