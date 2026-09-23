@@ -1,4 +1,5 @@
-# Merges the skill-reminder hook definitions into ~/.claude/settings.json,
+# Merges the skill-reminder hook definitions into ~/.claude/settings.json and
+# seeds default keys that are missing,
 # preserving keys Claude Code writes at runtime (permissions, enabledPlugins,
 # effortLevel, ...).
 #
@@ -66,6 +67,22 @@ def desired_settings
   }
 end
 
+# Seeded only when the top-level key is absent, so values edited through
+# Claude Code (e.g. /config) are not reverted on every run.
+def default_settings
+  {
+    'attribution' => {
+      'commit' => '',
+      'pr' => '',
+      'sessionUrl' => false,
+    },
+  }
+end
+
+def with_defaults(settings)
+  settings.merge(default_settings) { |_key, live, _default| live }
+end
+
 def deep_merge(base, over)
   return merge_hash(base, over) if base.is_a?(Hash) && over.is_a?(Hash)
   return merge_array(base, over) if base.is_a?(Array) && over.is_a?(Array)
@@ -125,6 +142,6 @@ def write_atomically(path, data)
   File.rename(tmp, path)
 end
 
-merged = deep_merge(load_existing, desired_settings)
+merged = deep_merge(with_defaults(load_existing), desired_settings)
 write_atomically(TARGET, merged)
 puts "Updated #{TARGET}"
