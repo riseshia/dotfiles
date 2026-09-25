@@ -9,7 +9,10 @@ require('mason-lspconfig').setup({
     -- 'terraformls',
     'tflint',
     'ts_ls', -- npm install -g typescript typescript-language-server
-  }
+  },
+  automatic_enable = {
+    exclude = { 'ruby_lsp' },
+  },
 })
 local rt = require('rust-tools')
 
