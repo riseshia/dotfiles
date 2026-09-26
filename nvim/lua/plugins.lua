@@ -14,7 +14,6 @@ return require('packer').startup(function()
     'williamboman/mason-lspconfig.nvim',
     'neovim/nvim-lspconfig',
   }
-  use { 'simrat39/rust-tools.nvim' }
 
   use 'hrsh7th/vim-vsnip'
   use {

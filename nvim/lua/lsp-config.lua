@@ -14,8 +14,6 @@ require('mason-lspconfig').setup({
     exclude = { 'ruby_lsp' },
   },
 })
-local rt = require('rust-tools')
-
 -- Mappings.
 -- See `:help vim.diagnostic.*` for documentation on any of the below functions
 local opts = { noremap=true, silent=true }
@@ -49,56 +47,44 @@ local on_attach = function(client, bufnr)
   vim.keymap.set('n', '<space>ca', vim.lsp.buf.code_action, bufopts)
   vim.keymap.set('n', 'gr', vim.lsp.buf.references, bufopts)
   -- vim.keymap.set('n', '<space>f', vim.lsp.buf.formatting, bufopts)
-
-  vim.keymap.set('n', '<C-space>', rt.hover_actions.hover_actions, { buffer = bufnr })
 end
 
 -- Server config for each language server.
+-- mason-lspconfig enables the installed servers (automatic_enable), so only settings live here.
 
-require('lspconfig')['ts_ls'].setup{
+vim.lsp.config('ts_ls', {
   on_attach = on_attach,
-}
+})
 
-require('lspconfig')['bashls'].setup{
+vim.lsp.config('bashls', {
   on_attach = on_attach,
-}
+})
 
-require'lspconfig'.jsonnet_ls.setup{
+vim.lsp.config('jsonnet_ls', {
   on_attach = on_attach,
-}
+})
 
-local rust_opts = {
-  tools = { -- rust-tools options
-    inlay_hints = {
-      auto = true,
-      show_parameter_hints = false,
-      parameter_hints_prefix = "",
-      other_hints_prefix = "",
-    },
-  },
-
-  -- all the opts to send to nvim-lspconfig
-  -- these override the defaults set by rust-tools.nvim
-  -- see https://github.com/neovim/nvim-lspconfig/blob/master/doc/server_configurations.md#rust_analyzer
-  server = {
-    -- on_attach is a callback called when the language server attachs to the buffer
-    on_attach = on_attach,
-    settings = {
-      -- to enable rust-analyzer settings visit:
-      -- https://github.com/rust-analyzer/rust-analyzer/blob/master/docs/user/generated_config.adoc
-      ["rust-analyzer"] = {
-        -- enable clippy on save
-        checkOnSave = {
-          command = "clippy"
-        },
-        diagnostics = {
-          disabled = { "inactive-code" } -- Suppress #[cfg(not(test))] warning..
-        },
-      }
+vim.lsp.config('rust_analyzer', {
+  on_attach = function(client, bufnr)
+    on_attach(client, bufnr)
+    -- Replaces rust-tools' automatic inlay hints.
+    vim.lsp.inlay_hint.enable(true, { bufnr = bufnr })
+  end,
+  settings = {
+    -- to enable rust-analyzer settings visit:
+    -- https://github.com/rust-analyzer/rust-analyzer/blob/master/docs/user/generated_config.adoc
+    ["rust-analyzer"] = {
+      -- enable clippy on save
+      checkOnSave = true,
+      check = {
+        command = "clippy"
+      },
+      diagnostics = {
+        disabled = { "inactive-code" } -- Suppress #[cfg(not(test))] warning..
+      },
     }
   },
-}
-rt.setup(rust_opts)
+})
 
 local lspconfig = require 'lspconfig'
 local configs = require 'lspconfig.configs'
