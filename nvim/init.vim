@@ -30,6 +30,7 @@ lua require('plugins')
 lua require('treesitter-config')
 lua require('lsp-config')
 lua require('completion')
+lua require('tsugai').setup({ instructions = 'Use fluent Korean when communicating.' })
 
 " Make inactive panel darker
 " autocmd WinEnter,BufWinEnter * setlocal wincolor=

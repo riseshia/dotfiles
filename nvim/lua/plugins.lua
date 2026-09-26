@@ -31,6 +31,9 @@ return require('packer').startup(function()
   -- statusline
   use 'vim-airline/vim-airline'
 
+  -- Claude, only when asked
+  use { 'riseshia/tsugai.nvim', run = './build.sh' }
+
   -- Syntax Highlight
   use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
   use 'google/vim-jsonnet'
