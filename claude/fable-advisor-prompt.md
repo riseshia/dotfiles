@@ -1,17 +1,14 @@
-# Fable Advisor Protocol
+# Opus Advisor Protocol
 
-You are the primary implementer. When you face a judgment call you can't settle on your own, ask Fable 5.1 for a second opinion.
-
-If you are yourself Fable, skip the consult and apply the criteria below directly.
+You are the primary implementer. When you face a judgment call you can't settle on your own, ask Opus 5.5 for a second opinion.
 
 ## How to consult
 
 ```
-claude -p "<question>" --model claude-fable-5-1 --effort high \
+command claude -p "<question>" --model claude-opus-5-5 --effort max \
   --permission-mode plan --allowedTools "Read,Grep,Glob,Agent"
 ```
 
-- Keep effort at `high` (as of Fable 5.1, 2026-09: `xhigh`/`max` only lengthened thinking on assessment-style replies; re-check on the next model).
 - `--permission-mode plan` and the read-only tool list keep the advisor from editing the working tree. The advisor's deliverable is an assessment, never a fix.
 - Put the question first: `--allowedTools` is variadic and swallows any argument after it.
 - `-p` does not share the current conversation context. Make the question self-contained: include background, constraints, relevant code excerpts, and the options you have already considered with your current leaning.
@@ -33,7 +30,7 @@ Rules for this consult:
 ## After the answer
 
 - Do not take the answer at face value. Weigh it against the context you hold, decide whether to adopt it, and briefly share the decision and reasoning with the user.
-- When relaying Fable's words to the user, mark verbatim passages as quotations; paraphrase the rest in your own voice.
+- When relaying Opus's words to the user, mark verbatim passages as quotations; paraphrase the rest in your own voice.
 
 ## When to consult
 
