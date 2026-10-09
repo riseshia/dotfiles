@@ -2,7 +2,7 @@
 name: code-style
 description: riseshia's coding conventions. Use it always unless a project-specific convention (CLAUDE.md, style guides) exists.
 user-invocable: false
-version: 0.2.0
+version: 0.3.0
 ---
 
 # Code Style
@@ -31,6 +31,11 @@ Before writing or modifying code:
 
 Comments must not repeat what the code already expresses. Use comments for explaining **why** something is done, or to provide context not obvious from the code itself.
 
+**Default to no comment.** Write one only when a reader would otherwise make a wrong change. Before keeping a comment, apply two tests:
+
+- Delete test: if the comment were deleted, would a future reader lose anything they cannot recover from the code in a few seconds? If not, delete it.
+- Cold-reader test: the reader has only the repository — not this conversation, the plan, the PR, or the previous version of the code. Would they understand every word? If the comment relies on session context (e.g. "the new approach", "as discussed", "instead of the old X", "per the request", invented labels, step or section numbers such as "Step 3" or "Section 2.1" that point into a plan or spec the reader does not have), rewrite it in self-contained terms or delete it.
+
 **When to comment:**
 
 - To explain why a particular approach or workaround was chosen
@@ -41,11 +46,8 @@ Comments must not repeat what the code already expresses. Use comments for expla
 
 **When not to comment:**
 
-- Do not narrate what the code is doing — the code already says that
 - Do not duplicate function or variable names in plain English
 - Do not leave stale comments that contradict the code
-- Do not reference removed or obsolete code paths
-- Do not leave notes that are only relevant while the work is in progress (e.g. "changed this", "TODO for this PR", referencing the task at hand)
 
 ## Documentation
 
