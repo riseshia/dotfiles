@@ -12,6 +12,6 @@ Constraints:
 - Do nothing outside the plan. No out-of-scope improvements or refactors.
 - If an implementation contradicts the plan, or you are blocked by something the plan does not cover, first finish the remaining steps that do not depend on the blocker, then STOP and report it — do not guess.
 - Do not break existing tests. If they break, find the cause and fix it.
-- DO NOT create commits or a PR.
+- Leave changes uncommitted and open no PR; the open-pr state commits and ships them.
 
 Output a report of at most 10 lines: files changed (one line each: path + what changed, in a clause); verification result (pass/fail plus failing test/check names only — no raw logs); and anything that diverged from the plan or blocked you (label it BLOCKED if you could not proceed).

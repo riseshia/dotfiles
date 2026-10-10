@@ -1,7 +1,7 @@
 ---
 name: draft-pr
 description: Commit changes in logical units and create a Draft PR assigned to riseshia. Creates a new branch if on the base branch.
-user_invocable: true
+user-invocable: true
 ---
 
 # Draft PR

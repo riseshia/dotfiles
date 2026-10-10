@@ -1,7 +1,7 @@
 ---
 name: commit
 description: Create a git commit with auto-generated message
-user_invocable: true
+user-invocable: true
 ---
 
 ## Context

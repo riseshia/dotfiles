@@ -63,7 +63,7 @@ with a slug reflecting the topic (e.g. `dynamodb-lock.html`).
 
 ## 4. Open it
 
-After generating, open it on macOS:
+After generating, open it with the platform's opener — `open` on macOS, `xdg-open` on Linux, `wslview` on WSL:
 
 ```bash
 open "<scratchpad>/<slug>.html"

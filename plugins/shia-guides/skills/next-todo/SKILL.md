@@ -1,7 +1,7 @@
 ---
 name: next-todo
 description: Read todo.md and recommend the next task to work on
-user_invocable: true
+user-invocable: true
 arguments: priority_filter
 ---
 

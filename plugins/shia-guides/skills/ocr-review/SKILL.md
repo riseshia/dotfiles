@@ -2,7 +2,7 @@
 name: ocr-review
 description: High-precision code review inspired by Alibaba Open Code Review. Script-driven pre-processing, per-file isolated review, three-layer false-positive reduction.
 user-invocable: true
-version: 0.4.0
+version: 0.5.0
 license: CC0-1.0
 ---
 
@@ -28,7 +28,7 @@ Core insight: **deterministic engineering for precision-critical steps beats pro
 
 Read the output. Key fields:
 - `diff_base`: the git ref to pass to `file-context`
-- `[REVIEW]` section: one line per reviewable file — `path  status  changed_lines  plan_needed  checklists`
+- `[REVIEW]` section: one line per reviewable file — `path  status  changed_lines  checklists`
 
 If `reviewable_count: 0`, report "No reviewable files changed." and stop.
 
@@ -43,15 +43,6 @@ For each file in `[REVIEW]`, run:
 ```
 
 This outputs the complete review input: other changed files, unified diff, and composed checklists — all structured as XML-like blocks. Read the output and review it.
-
-### Plan phase (if plan_needed = yes)
-
-For files with >50 changed lines, produce a brief plan before reviewing:
-- One-sentence change summary
-- Risk areas ordered by severity (high > medium > low)
-- Which areas need additional context to confirm
-
-Use this as advisory guidance — not binding.
 
 ### Review
 

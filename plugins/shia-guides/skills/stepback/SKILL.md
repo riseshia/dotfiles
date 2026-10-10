@@ -1,7 +1,7 @@
 ---
 name: stepback
 description: Stop and re-align when the conversation has drifted — re-read the actual request, surface and check assumptions, name where you went off, and re-answer short. Manual reset the user triggers with /stepback (append `deep` to also re-read the source material or spawn a fresh critic).
-user_invocable: true
+user-invocable: true
 arguments: mode
 ---
 

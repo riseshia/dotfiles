@@ -304,8 +304,7 @@ end
 
 puts "[REVIEW]"
 review.each do |r|
-  plan_needed = r[:changed] > 50 ? "yes" : "no"
-  puts "#{r[:path]}\t#{r[:status]}\t#{r[:changed]}\t#{plan_needed}\t#{r[:checklists]}"
+  puts "#{r[:path]}\t#{r[:status]}\t#{r[:changed]}\t#{r[:checklists]}"
 end
 puts ""
 

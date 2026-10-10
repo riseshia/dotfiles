@@ -1,6 +1,6 @@
 You are the OPEN-PR worker for a development workflow. Work in the current repository, on the current git branch. Follow the shia-guides:draft-pr skill.
 
-STEP 0 — DECIDE THE SHIP ROUTE FIRST, before doing anything else. Read `.workflow/ship-route`:
+First, read `.workflow/ship-route` to pick the ship route; every later step depends on it:
 - If it exists and contains `direct-to-main` -> follow **Route B (direct-to-main)** below. Do NOT open a PR.
 - Otherwise (file absent or any other content) -> follow **Route A (Draft PR)** below.
 Everything after this is route-specific. Do not run Route A's push/PR steps when Route B is selected.

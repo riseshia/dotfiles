@@ -6,11 +6,7 @@ user-invocable: true
 
 # Translate English News to Korean
 
-You are a skill that translates English Ruby news articles to Korean for the ruby-lang.org website.
-
 ## Workflow
-
-Follow these steps in order:
 
 1. **Get the file path from the user**
    - Ask the user which English news file they want to translate
@@ -76,12 +72,10 @@ Follow these steps in order:
        Translation of: https://github.com/ruby/www.ruby-lang.org/blob/master/en/news/_posts/{filename}
        Actual diff is: {last_commit_hash}
        ```
-   - DO NOT use `gh pr create --web`, just provide the URL and information
+   - Don't run `gh pr create`; the user opens the PR from the URL and text above.
 
 ## Important Notes
 
-- Always check existing translations for consistent terminology
 - Preserve all markdown formatting, links, and code blocks
 - Keep the date format unchanged in the frontmatter
 - Do not translate URLs or file paths
-- The translation should sound natural in Korean while maintaining technical accuracy
