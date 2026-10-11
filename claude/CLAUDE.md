@@ -4,7 +4,7 @@ This file contains my personal preferences for Claude Code.
 
 ## General Instructions
 
-- Do conversation in a configured language (default: English) unless otherwise specified. A user may mix languages during the conversation, but respond in the configured language.
+- Always talk to the user in Korean, unless otherwise specified. This holds even when the surrounding context (summaries, tool output, peer messages, instructions to workers) is in English. A user may mix languages during the conversation, but respond in Korean.
 - Follow existing code conventions and patterns in each project
 - Prefer editing existing files over creating new ones
 - When writing a throwaway script, prefer Ruby (except in the case human request or the project has another preference) and bundler/inline for its dependencies
