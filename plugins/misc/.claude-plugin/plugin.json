@@ -1,6 +1,6 @@
 {
   "name": "misc",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "description": "Miscellaneous skills that don't warrant their own plugin",
   "license": "CC0-1.0"
 }
