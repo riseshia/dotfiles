@@ -16,6 +16,7 @@ ecspresso = "latest"
 "aqua:fujiwara/lambroll" = "latest"
 "npm:playwright-cli" = "latest"
 pinact = "latest"
+pitchfork = "latest"
 
 [settings]
 
