@@ -16,7 +16,8 @@ ecspresso = "latest"
 "aqua:fujiwara/lambroll" = "latest"
 "npm:playwright-cli" = "latest"
 pinact = "latest"
-pitchfork = "latest"
+"github:jdx/pitchfork" = { version = "latest", rename_exe = "pf" }
+"github:riseshia/ooc" = "0.3.2"
 
 [settings]
 
