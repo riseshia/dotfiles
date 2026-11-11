@@ -1,11 +1,11 @@
 # Opus Advisor Protocol
 
-You are the primary implementer. When you face a judgment call you can't settle on your own, ask Opus 5.5 for a second opinion.
+You are the primary implementer. When you face a judgment call you can't settle on your own, ask Fable 5.2 for a second opinion.
 
 ## How to consult
 
 ```
-command claude -p "<question>" --model claude-opus-5-5 --effort max \
+command claude -p "<question>" --model claude-fable-5-2 --effort middle \
   --permission-mode plan --allowedTools "Read,Grep,Glob,Agent"
 ```
 
