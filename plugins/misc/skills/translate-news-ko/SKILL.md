@@ -34,6 +34,8 @@ Follow these steps in order:
 3. **Copy each file to the Korean directory**
    - For each file: `cp en/news/_posts/{file} ko/news/_posts/{file}` and commit it alone with message
      `cp {en,ko}/news/_posts/{file}`
+   - If the ko file already exists (the source PR updates a translated post), skip the cp commit and
+     apply only the source diff to the existing ko file. Leave already-reviewed wording alone.
 
 4. **Translate the article**
    - Read 3-5 recent files in `ko/news/_posts/` of the same kind (release post, security advisory, ...).
@@ -42,7 +44,9 @@ Follow these steps in order:
      or a post this article links to) take priority. Known choices:
      - "release" → "릴리스", "bug fix" → "버그 수정", "security" → "보안", "vulnerability" → "취약점",
        "recommend" → "권장합니다", "contribution" → "기여"
-     - "double free" → "중복 할당 해제"
+     - "double free" → "이중 해제" (the reviewer's choice in #4071; 2022 posts say "중복 할당 해제")
+     - "overflow" → "오버플로" (standard spelling, not "오버플로우"), "expression" → "표현식",
+       "original class" → "기존 클래스", "Sincerely," → "마음을 담아,"
      - "security maintenance phase" → "보안 유지보수 단계", "series" → "버전대"
      - "CVE identifier" → "CVE 번호", "advisory" → "보안 권고", "default gem" → "기본 젬"
      - "Please see the topic(s) below for details." → "자세한 내용은 아래 항목을 참조하세요."
@@ -55,6 +59,19 @@ Follow these steps in order:
      - Keep the same line count as the original so the en/ko diff stays readable
      - Write natural Korean, not translationese. Restructure sentences rather than mirroring English
        syntax (e.g. not "원격 코드 실행으로 이어지게 할 수 있음을 발견" but "악용하면 원격 코드를 실행할 수 있다는 것을 발견").
+     - Patterns from past reviews (by yous):
+       - "{bug} in {operation}" in titles and headings: "X 시 발생하는 Y", not "X의 Y"
+         (e.g. "문자열 대소문자 변환 시 발생하는 힙 버퍼 오버플로").
+       - Add no words the original lacks: no "즉", "자동으로 autoload", "번들로 제공" (→ "제공"), and no
+         leading "이는" that only restates the subject.
+       - Describe a state as a state: "폐기 예정입니다", not "폐기 예정되었습니다".
+       - End a sentence that introduces a list with ".", not ":".
+       - A bullet summarizing a feature may end in a noun phrase ("링크 추가 가능").
+       - No excess honorifics toward readers: "있으면", not "있으시면".
+       - Prefer the natural collocation to the literal one: "사이트로 만들었습니다",
+         "일관성 문제" over "불일치", "내장된 버전" over "번들 버전".
+       - Attach a particle directly after a closing parenthesis: "security@ruby-lang.org([PGP 공개 키](...))로".
+       - Translate every heading, including easy-to-miss ones like "The following bundled gems are updated.".
      - Keep proper nouns in English (Ruby, RubyGems, Bundler, GitLab, ...)
      - Frontmatter: `lang: en` → `lang: ko`, add `translator: "shia"`, translate `title`, keep the rest.
    - **Internal links**: rewrite `{% link en/news/... %}` to `{% link ko/news/... %}`, and reuse the Korean
